@@ -53,9 +53,6 @@ void display(void)
 	glutSetWindow(window);
 //	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//	setUserView();
-
-
 	glutSwapBuffers();
 }
 
@@ -112,7 +109,7 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT);
 
-	window = glutCreateWindow("NOT Space Cowboy");
+	window = glutCreateWindow("Space Renegade");
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(readKeyboard);

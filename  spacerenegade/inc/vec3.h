@@ -12,7 +12,7 @@ public:
 
 	Vec3();
 	Vec3(int a, int b, int c);
-	Vec3(const Vec3 a);
+	Vec3(const Vec3& a);
 
 	int x();
 	int y();

@@ -30,7 +30,7 @@ const Vec3 Vec3::operator-(const Vec3& a)
 // Dot product of two vectors.
 const Vec3 Vec3::operator*(const Vec3& a)
 {
-	return Vec3(_y * a._z - _z * a._y, _z * a._x - _x * z._z, _x * a._y, - _y * a._x);
+	return Vec3(_y * a._z - _z * a._y, _z * a._x - _x * a._z, _x * a._y - _y * a._x);
 }
 
 // Cross product of two vectors.
