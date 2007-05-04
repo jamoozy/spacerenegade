@@ -5,30 +5,21 @@
 
 // Creates a new stationary Asteroid at the origin.
 Asteroid::Asteroid() :
+	Object(),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{
-	position = Vec3(0.0,0.0,0.0);
-	velocity = Vec3(0.0,0.0,0.0);
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double px, double py, double pz, double vx, double vy, double vz) :
+	Object(px, py, pz, vx, vy, vz),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{
-	position = Vec3(px,py,pz);
-	velocity = Vec3(vx,vy,vz);
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(const Vec3& pos, const Vec3& v) :
+	Object(pos, v),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{
-	position = pos;
-	velocity = v;
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Draw this asteroid.
 void Asteroid::draw()
