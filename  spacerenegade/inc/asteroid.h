@@ -6,6 +6,10 @@
 
 class Asteroid : Object
 {
+private:
+	Vec3 angle;
+	Vec3 avelocity;
+
 public:
 	Asteroid();
 	Asteroid(double px, double py, double pz, double vx, double vy, double vz);
