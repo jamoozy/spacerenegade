@@ -1,23 +1,30 @@
 #include <iostream>
+#include <cmath>
 #include "GL/glut.h"
 #include "asteroid.h"
 
 // Creates a new stationary Asteroid at the origin.
-Asteroid::Asteroid()
+Asteroid::Asteroid() :
+	angle(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX),
+	avelocity(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX)
 {
 	position = Vec3(0.0,0.0,0.0);
 	velocity = Vec3(0.0,0.0,0.0);
 }
 
 // Creates a new asteroid at the given point with the given velocity.
-Asteroid::Asteroid(double px, double py, double pz, double vx, double vy, double vz)
+Asteroid::Asteroid(double px, double py, double pz, double vx, double vy, double vz) :
+	angle(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX),
+	avelocity(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX)
 {
 	position = Vec3(px,py,pz);
 	velocity = Vec3(vx,vy,vz);
 }
 
 // Creates a new asteroid at the given point with the given velocity.
-Asteroid::Asteroid(const Vec3& pos, const Vec3& v)
+Asteroid::Asteroid(const Vec3& pos, const Vec3& v) :
+	angle(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX),
+	avelocity(rand()/(double)RAND_MAX,rand()/(double)RAND_MAX,rand()/(double)RAND_MAX)
 {
 	position = pos;
 	velocity = v;
@@ -26,16 +33,20 @@ Asteroid::Asteroid(const Vec3& pos, const Vec3& v)
 // Draw this asteroid.
 void Asteroid::draw()
 {
-	std::cout << "position before: " << position.str() << std::endl;
-	std::cout << "velocity: " << velocity.str() << std::endl;
+//	std::cout << "position before: " << position.str() << std::endl;
+//	std::cout << "velocity: " << velocity.str() << std::endl;
 	position += velocity;
-	std::cout << "position after: " << position.str() << std::endl;
+	angle += avelocity;
+//	std::cout << "position after: " << position.str() << std::endl;
 
 	glPushMatrix();
 
 	glColor3f(0.0f,1.0f,0.0f);
 	glTranslated(position.x(), position.y(), position.z());
-	glutWireSphere(5,8,12);
+	glRotated(angle.x(),  1.0,0.0,0.0);
+	glRotated(angle.y(),  0.0,1.0,0.0);
+	glRotated(angle.z(),  0.0,0.0,1.0);
+	glutWireSphere(5,4,2);
 
 	glPopMatrix();
 }
