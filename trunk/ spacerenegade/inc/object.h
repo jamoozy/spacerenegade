@@ -3,16 +3,19 @@
 
 #include "vec3.h"
 
-
 class Object
 {
 protected:
 	Vec3 position;
+	Vec3 velocity;
 
 public:
 	Object();
-	~Object();
-	void draw();
+	Object(const Vec3& pos, const Vec3& v);
+	Object(double px, double py, double pz, double vx, double vy, double vz);
+	virtual ~Object();
+
+	virtual void draw();
 };
 		
 #endif

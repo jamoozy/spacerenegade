@@ -1,28 +1,35 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <sstream>
+#include <string>
+
 class Vec3
 {
 private:
-	int _x;
-	int _y;
-	int _z;
+	double _x;
+	double _y;
+	double _z;
 
 public:
 
 	Vec3();
-	Vec3(int a, int b, int c);
+	Vec3(double a, double b, double c);
 	Vec3(const Vec3& a);
 
-	int x();
-	int y();
-	int z();
-		
-	const Vec3 operator+(const Vec3& a); // element-wise sum
-	const Vec3 operator-(const Vec3& a); // element-wise difference
-	const Vec3 operator*(const Vec3& a); // dot product
-	const Vec3 operator^(const Vec3& a); // cross product
+	// Coordinates of this object.
+	double x();
+	double y();
+	double z();
 
+	const std::string str();
+		
+	const Vec3 operator+(const Vec3& a);  // element-wise sum
+	Vec3 operator+=(const Vec3& a); // element-wise sum
+	const Vec3 operator-(const Vec3& a);  // element-wise difference
+	Vec3 operator-=(const Vec3& a); // element-wise difference
+	const Vec3 operator*(const Vec3& a);  // dot product
+	const Vec3 operator^(const Vec3& a);  // cross product
 	Vec3& operator=(const Vec3& a);
 };
 
