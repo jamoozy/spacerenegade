@@ -12,7 +12,7 @@ SRCDIR = src
 OBJDIR = obj
 INCDIR = inc
 
-GLUT = /opt/glut-3.7
+GLUT = #/opt/glut-3.7
 
 INC_DIRS = -I$(INCDIR) -I$(GLUT)/include
 
@@ -21,7 +21,7 @@ GLLIBS = -lXext -lX11 -lm -lGL -lGLU -lpthread -lXmu -lglut -lXi -L/usr/X11R6/li
 
 CCFLAGS = -g -Wall -Wno-deprecated 
 
-TARGET = final
+TARGET = SpaceR
 
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 
@@ -46,13 +46,13 @@ dirs:
 
 # count the number of lines 
 wc:
-	wc -l src/*.cpp include/*.h
+	wc -l $(SRCDIR)/*.cpp $(INCDIR)/*.h
 
 # Project source dependencies and subtargets
 clean:
-	rm -f core* obj/*.o  src/*~ include/*~ *~
+	rm -f $(OBJDIR)/*.o  $(SRCDIR)/*~ $(INCDIR)/*~ *~ $(TARGET)
 
-run :
-	./$(TARGET) bunny.ply
+test:
+	./$(TARGET)
 
 
