@@ -14,7 +14,7 @@ private:
 public:
 
 	Vec3();
-	Vec3(double a, double b, double c);
+	Vec3(const double a, const double b, const double c);
 	Vec3(const Vec3& a);
 
 	// Coordinates of this object.
@@ -22,15 +22,20 @@ public:
 	double y();
 	double z();
 
-	const std::string str();
+	void normalize();  // Maintain direction but make length 1
+
+	const std::string str();  // String representation: [x, y, z]
 		
-	const Vec3 operator+(const Vec3& a);  // element-wise sum
+	const Vec3 operator+(const Vec3& a) const;  // element-wise sum
 	Vec3 operator+=(const Vec3& a); // element-wise sum
-	const Vec3 operator-(const Vec3& a);  // element-wise difference
+	const Vec3 operator-(const Vec3& a) const;  // element-wise difference
 	Vec3 operator-=(const Vec3& a); // element-wise difference
-	const Vec3 operator*(const Vec3& a);  // dot product
-	const Vec3 operator^(const Vec3& a);  // cross product
+	const double operator*(const Vec3& a) const;  // dot product
+	const Vec3 operator*(const double a) const;  // scalar product
+	const Vec3 operator^(const Vec3& a) const;  // cross product
 	Vec3& operator=(const Vec3& a);
 };
+
+const Vec3 operator*(const double a, const Vec3& b);
 
 #endif
