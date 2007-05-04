@@ -12,6 +12,7 @@
 #include <GL/glut.h>
 #include "input.h"
 #include "asteroid.h"
+#include "globals.h"
 
 int window;
 
@@ -23,8 +24,6 @@ time_t last_time;
 int frames_this_second;
 #endif
 
-Asteroid *ast;
-
 struct perspectiveData 
 {
 	float fieldOfView;
@@ -35,7 +34,7 @@ struct perspectiveData
 
 void cleanup(int sig)
 {
-	delete [] ast;
+	delete [] asteroids;
 	exit(0);
 }
 
@@ -61,7 +60,7 @@ void display(void)
 
 
 	for (int i = 0; i < 6; i++)
-		ast[i].draw();
+		asteroids[i].draw();
 
 	glutSwapBuffers();
 }
@@ -95,14 +94,14 @@ void initDisplay()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	ast = new Asteroid[6];
+	asteroids = new Asteroid[6];
 	
-	ast[0] = Asteroid( 0, 0,-9 ,  0.00,0.00,-0.01);
-	ast[1] = Asteroid( 0, 0, 9 ,  0.00,0.00,-0.01);
-	ast[2] = Asteroid( 0,-9, 0 ,  0.00,0.00,-0.01);
-	ast[3] = Asteroid( 0, 9, 0 ,  0.00,0.00,-0.01);
-	ast[4] = Asteroid(-9, 0, 0 ,  0.00,0.00,-0.01);
-	ast[5] = Asteroid( 9, 0, 0 ,  0.00,0.00,-0.01);
+	asteroids[0] = Asteroid( 0, 0,-9 ,  0.00,0.00,-0.01);
+	asteroids[1] = Asteroid( 0, 0, 9 ,  0.00,0.00,-0.01);
+	asteroids[2] = Asteroid( 0,-9, 0 ,  0.00,0.00,-0.01);
+	asteroids[3] = Asteroid( 0, 9, 0 ,  0.00,0.00,-0.01);
+	asteroids[4] = Asteroid(-9, 0, 0 ,  0.00,0.00,-0.01);
+	asteroids[5] = Asteroid( 9, 0, 0 ,  0.00,0.00,-0.01);
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearIndex(0);
