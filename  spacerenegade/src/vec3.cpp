@@ -17,6 +17,12 @@ double Vec3::x() { return _x; }
 double Vec3::y() { return _y; }
 double Vec3::z() { return _z; }
 
+// Find the length of the vector.
+double Vec3::norm()
+{
+	return sqrt(_x * _x + _y * _y + _z * _z);
+}
+
 // Make this vector's length 1.
 void Vec3::normalize()
 {
@@ -80,6 +86,16 @@ const double Vec3::operator*(const Vec3& a) const
 const Vec3 Vec3::operator*(const double a) const
 {
 	return Vec3(_x * a, _y * a, _z * a);
+}
+
+// Multiply a vector by a scalar and return it.
+const Vec3 Vec3::operator*=(const double a)
+{
+	this->_x *= a;
+	this->_y *= a;
+	this->_z *= a;
+
+	return *this;
 }
 
 // Multiply a scalar by each component of the vector.
