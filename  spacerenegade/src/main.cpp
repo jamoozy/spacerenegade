@@ -19,6 +19,7 @@ int window;
 #define IMAGE_WIDTH 800
 #define IMAGE_HEIGHT 600
 
+#define PRINT_FPS false
 #if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
