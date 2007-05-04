@@ -1,3 +1,4 @@
+#include <iostream>
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
@@ -7,26 +8,22 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
-//#ifdef __APPLE__
-//#include <OpenGL/gl.h>
-//#include <GLUT/glut.h>
-//#else
 #include <GL/gl.h>
 #include <GL/glut.h>
-//#endif
-//#include "viewModule.h"
 #include "input.h"
-//#include "cube.h"
-//#include "bouncer.h"
-//#include "geometry.h"
+#include "asteroid.h"
 
 int window;
-//int updateFlag;
-
-//bool running_mode = kay;
 
 #define IMAGE_WIDTH 800
 #define IMAGE_HEIGHT 600
+
+#if (PRINT_FPS)
+time_t last_time;
+int frames_this_second;
+#endif
+
+Asteroid *ast;
 
 struct perspectiveData 
 {
@@ -38,9 +35,7 @@ struct perspectiveData
 
 void cleanup(int sig)
 {
-	// insert cleanup code here (i.e. deleting structures or so)
-	//fprintf(stderr,"Cleaning up\n");
-
+	delete [] ast;
 	exit(0);
 }
 
@@ -51,7 +46,22 @@ void cleanup(int sig)
 void display(void)
 {
 	glutSetWindow(window);
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+#if (PRINT_FPS)
+	if (last_time != time(NULL))
+	{
+		std::cout << ctime(&last_time) << "\b\b: " << frames_this_second << std::endl;
+		last_time = time(NULL);
+		frames_this_second = 0;
+	}
+	else
+		frames_this_second++;
+#endif
+
+
+	for (int i = 0; i < 6; i++)
+		ast[i].draw();
 
 	glutSwapBuffers();
 }
@@ -62,15 +72,21 @@ void display(void)
 
 void initDisplay()
 {
+#if (PRINT_FPS)
+	last_time = 0;
+	frames_this_second = 0;
+#endif
+
 	// Perspective projection parameters
 	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
-	pD.farPlane = 50.0;
+	pD.farPlane    = 50.0;
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+//	glTranslated(0,0,0);
 	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
 	// set basic matrix mode
@@ -79,19 +95,30 @@ void initDisplay()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	//glClearColor(1.0, 1.0, 1.0, 1.0);
-	//glClearIndex(0);
-	//glClearDepth(1);
+	ast = new Asteroid[6];
+	
+	ast[0] = Asteroid( 0, 0,-9 ,  0.00,0.00,-0.01);
+	ast[1] = Asteroid( 0, 0, 9 ,  0.00,0.00,-0.01);
+	ast[2] = Asteroid( 0,-9, 0 ,  0.00,0.00,-0.01);
+	ast[3] = Asteroid( 0, 9, 0 ,  0.00,0.00,-0.01);
+	ast[4] = Asteroid(-9, 0, 0 ,  0.00,0.00,-0.01);
+	ast[5] = Asteroid( 9, 0, 0 ,  0.00,0.00,-0.01);
 
-	// setup lights
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearIndex(0);
+	glClearDepth(1);
 
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, black_color);
-	//glLightfv(GL_LIGHT0, GL_POSITION, initial_light_pos);
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, light_color);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+
+	//GLfloat direction[] = {0.0f,-1.0f,0.0f,0.0f};
+	//GLfloat color[] = {0.0f,0.0f,1.0f};
+
+	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color);
+	//glLightfv(GL_LIGHT0, GL_POSITION, direction);
+	//glLightfv(GL_LIGHT0, GL_AMBIENT,  color);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE,  color);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, color);
 }
 
 //##########################################
@@ -99,7 +126,6 @@ void initDisplay()
 
 int main(int argc, char **argv)
 {
-
 	//signal(SIGHUP, cleanup);
 
 	glutInit(&argc, argv);
