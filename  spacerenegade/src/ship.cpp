@@ -5,7 +5,7 @@
 
 
 // Makes a new, boring ship that just sits there.
-Ship::Ship() : Object::Object(), direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), roa(0.01), ros(0.99), rot(.1) {}
+Ship::Ship() : Object::Object(), direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), roa(0.01), ros(0.95), rot(.1) {}
 
 // Set the ship somewhere new.  This should be used primarily
 // for debugging purposes.
@@ -58,8 +58,8 @@ void Ship::stabilize()
 {
 	if (velocity.norm() <= 3 * roa)
 		velocity = Vec3(0,0,0);
-
-	velocity *= ros;
+	else
+		velocity *= ros;
 }
 
 // Tilt the nose up.

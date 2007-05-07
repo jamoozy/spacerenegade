@@ -16,8 +16,8 @@
 
 int window;
 
-#define IMAGE_WIDTH 800
-#define IMAGE_HEIGHT 600
+#define IMAGE_WIDTH 1024
+#define IMAGE_HEIGHT 768
 
 #define PRINT_FPS false
 #if (PRINT_FPS)
@@ -35,9 +35,25 @@ struct perspectiveData
 
 void cleanup(int sig)
 {
+	glutLeaveGameMode();
 	delete [] asteroids;
 	delete playerShip;
 	exit(0);
+}
+
+void handleInput()
+{
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
+		cleanup(0);
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
+		playerShip->yawLeft();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
+		playerShip->yawRight();
+
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
+		playerShip->accelerate();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
+		playerShip->decelerate();
 }
 
 
@@ -46,8 +62,10 @@ void cleanup(int sig)
 
 void display(void)
 {
-	glutSetWindow(window);
+//	glutSetWindow(window);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	handleInput();
 
 #if (PRINT_FPS)
 	if (last_time != time(NULL))
@@ -138,12 +156,19 @@ int main(int argc, char **argv)
 	srand(time(NULL));
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT);
 
-	window = glutCreateWindow("Space Renegade");
+	glutEnterGameMode();
+
+	#ifndef WIN32
+		glutGameModeString("1024x768:32@60");
+	#else
+		glutGameModeString("width=1024;height=768;bpp=32;");
+	#endif
 
 	glutDisplayFunc(display);
 	glutKeyboardFunc(readKeyboard);
+	glutKeyboardUpFunc(readKeyboardUp);
+	glutSpecialFunc(readSpecialKeys);
 	glutMouseFunc(mouseButtHandler);
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
