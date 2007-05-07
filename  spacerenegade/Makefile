@@ -55,4 +55,6 @@ clean:
 test:
 	./$(TARGET)
 
+debug:
+	gdb $(TARGET)
 
