@@ -1,11 +1,23 @@
-#include <GL/gl.h>
 #include <GL/glut.h>
 #include <cmath>
 #include "ship.h"
 
 
+#ifdef WIN32
+#define M_PI 3.14159265358979
+#endif
+
 // Makes a new, boring ship that just sits there.
-Ship::Ship() : Object::Object(), direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), roa(0.01), ros(0.95), rot(.1) {}
+Ship::Ship() :
+#ifndef WIN32
+	Object::Object(),
+#endif
+	direction(0,0,1),
+	degpyr(0,0,0),
+	radpyr(0,0,0),
+	roa(0.01),
+	ros(0.95),
+	rot(.1) {}
 
 // Set the ship somewhere new.  This should be used primarily
 // for debugging purposes.
