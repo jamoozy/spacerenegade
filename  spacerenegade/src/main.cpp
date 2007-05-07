@@ -19,7 +19,7 @@ int window;
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 
-#define PRINT_FPS false
+#define PRINT_FPS 0
 #if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
@@ -79,8 +79,8 @@ void display(void)
 #endif
 
 
-//	for (int i = 0; i < 6; i++)
-//		asteroids[i].draw();
+	for (int i = 0; i < 6; i++)
+		asteroids[i].draw();
 
 	playerShip->draw();
 
