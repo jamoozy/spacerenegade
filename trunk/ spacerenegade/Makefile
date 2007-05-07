@@ -25,8 +25,8 @@ TARGET = SpaceR
 
 OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 
-SRCS = $(notdir $(wildcard src/*.cpp))
-INCL = $(notdir $(wildcard include/*.h))
+SRCS = $(notdir $(wildcard $(SRCDIR)/*.cpp))
+INCL = $(notdir $(wildcard $(INCDIR)/*.h))
 
 all: dirs $(TARGET)
 
