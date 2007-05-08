@@ -39,7 +39,7 @@ struct perspectiveData
 
 void cleanup(int sig)
 {
-#if (DEBUG_MODE)
+#if (!DEBUG_MODE)
 	glutLeaveGameMode();
 #endif
 	delete [] asteroids;
