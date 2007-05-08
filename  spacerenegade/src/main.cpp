@@ -6,20 +6,24 @@
 #include <cmath>
 //#include <signal.h>
 #ifdef WIN32
-#include <windows.h>
+	#include <windows.h>
 #endif
-#include <GL/gl.h>
 #include <GL/glut.h>
 #include "input.h"
 #include "asteroid.h"
 #include "globals.h"
 
-int window;
+#define DEBUG_MODE 0
+#define PRINT_FPS 0
+
+#if (DEBUG_MODE)
+	int window;
+#endif
+
 
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 
-#define PRINT_FPS 0
 #if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
@@ -35,7 +39,9 @@ struct perspectiveData
 
 void cleanup(int sig)
 {
+#if (DEBUG_MODE)
 	glutLeaveGameMode();
+#endif
 	delete [] asteroids;
 	delete playerShip;
 	exit(0);
@@ -62,21 +68,23 @@ void handleInput()
 
 void display(void)
 {
-//	glutSetWindow(window);
+	#if (DEBUG_MODE)
+		glutSetWindow(window);
+	#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	handleInput();
 
-#if (PRINT_FPS)
-	if (last_time != time(NULL))
-	{
-		std::cout << ctime(&last_time) << "\b\b: " << frames_this_second << std::endl;
-		last_time = time(NULL);
-		frames_this_second = 0;
-	}
-	else
-		frames_this_second++;
-#endif
+	#if (PRINT_FPS)
+		if (last_time != time(NULL))
+		{
+			std::cout << ctime(&last_time) << "\b\b: " << frames_this_second << std::endl;
+			last_time = time(NULL);
+			frames_this_second = 0;
+		}
+		else
+			frames_this_second++;
+	#endif
 
 
 	for (int i = 0; i < 6; i++)
@@ -157,12 +165,16 @@ int main(int argc, char **argv)
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
-	glutEnterGameMode();
-
-	#ifndef WIN32
-		glutGameModeString("1024x768:32@60");
+	#if (DEBUG_MODE)
+		glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT); 
+		window = glutCreateWindow("Space Renegade"); 
 	#else
-		glutGameModeString("width=1024;height=768;bpp=32;");
+		glutEnterGameMode();
+		#ifndef WIN32
+			glutGameModeString("1024x768:32@60");
+		#else
+			glutGameModeString("width=1024;height=768;bpp=32;");
+		#endif
 	#endif
 
 	glutDisplayFunc(display);
