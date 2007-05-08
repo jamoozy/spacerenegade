@@ -7,7 +7,7 @@ Keyboard *Keyboard::keyboard = NULL;
 
 Keyboard::Keyboard() : keys(new bool[SR_NUM_KEYS])
 {
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < SR_NUM_KEYS; i++)
 		keys[i] = false;
 }
 
