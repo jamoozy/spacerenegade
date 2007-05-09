@@ -22,13 +22,13 @@ void Camera::cleanUp()
 }
 
 // Initialize a boring camera looking down the z-axis.
-Camera::Camera() : pos(0,-.5,0), lookAt(0,0,-1), up(0,1,0) {}
+Camera::Camera() : pos(0,10,0), look(0,0,-1), up(0,1,0) {}
 
 // Draw is just a call to gluLookAt.
 void Camera::draw()
 {
 	gluLookAt(pos.x(), pos.y(), pos.z(),
-	          lookAt.x(), lookAt.y(), lookAt.z(),
+	          pos.x() + look.x(), pos.y() + look.y(), pos.z() + look.z(),
 			  up.x(), up.y(), up.z());
 }
 

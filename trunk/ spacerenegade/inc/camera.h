@@ -13,7 +13,7 @@ public:
 
 private:
 	Vec3 pos;
-	Vec3 lookAt;
+	Vec3 look;  // direction, not point.
 	Vec3 up;
 
 	Camera();
