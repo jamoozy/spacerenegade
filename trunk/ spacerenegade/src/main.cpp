@@ -13,7 +13,7 @@
 #include "asteroid.h"
 #include "globals.h"
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 #define PRINT_FPS 0
 
 #if (DEBUG_MODE)
@@ -181,6 +181,7 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(readKeyboard);
 	glutKeyboardUpFunc(readKeyboardUp);
 	glutSpecialFunc(readSpecialKeys);
+	glutSpecialUpFunc(readSpecialKeysUp);
 	glutMouseFunc(mouseButtHandler);
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
