@@ -10,6 +10,7 @@
 #endif
 #include <GL/glut.h>
 #include "input.h"
+#include "camera.h"
 #include "asteroid.h"
 #include "globals.h"
 
@@ -42,6 +43,8 @@ void cleanup(int sig)
 #if (!DEBUG_MODE)
 	glutLeaveGameMode();
 #endif
+	Camera::cleanUp();
+	Keyboard::cleanUp();
 	delete [] asteroids;
 	delete playerShip;
 	exit(0);
@@ -73,6 +76,12 @@ void display(void)
 	#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	adjustCamera();
+
 	handleInput();
 
 	#if (PRINT_FPS)
@@ -87,8 +96,8 @@ void display(void)
 	#endif
 
 
-	for (int i = 0; i < 6; i++)
-		asteroids[i].draw();
+//	for (int i = 0; i < 6; i++)
+//		asteroids[i].draw();
 
 	playerShip->draw();
 
@@ -101,10 +110,10 @@ void display(void)
 
 void initDisplay()
 {
-#if (PRINT_FPS)
-	last_time = 0;
-	frames_this_second = 0;
-#endif
+	#if (PRINT_FPS)
+		last_time = 0;
+		frames_this_second = 0;
+	#endif
 
 	// Perspective projection parameters
 	pD.fieldOfView = 45.0;
