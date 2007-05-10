@@ -1,5 +1,4 @@
 
+//BuildComponent::BuildComponent()
+//{}
 
-
-BuildComponent::BuildComponent()
-{}
