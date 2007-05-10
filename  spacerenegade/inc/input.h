@@ -1,6 +1,11 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Key/Button name enums -------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// For all keys.
 enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
 	   SR_KEY_H, SR_KEY_I, SR_KEY_J, SR_KEY_K, SR_KEY_L, SR_KEY_M, SR_KEY_N,
 	   SR_KEY_O, SR_KEY_P, SR_KEY_Q, SR_KEY_R, SR_KEY_S, SR_KEY_T, SR_KEY_U,
@@ -20,39 +25,83 @@ enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
 
        SR_NUM_KEYS };
 
+// For all buttons.
+enum { SR_MOUSE_LEFT = 0, SR_MOUSE_CENTER, SR_MOUSE_RIGHT };
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Input Device Classes --------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// This class knows all about which keys are pressed.
 class Keyboard
 {
-	static Keyboard *keyboard;
+	static Keyboard *keyboard;       // Only allowable instance of this class.
 
 public:
-	static Keyboard *getKeyboard();
-	static void cleanUp();
-
-
+	static Keyboard *getKeyboard();  // Get the only allowable instance.
+	static void cleanUp();           // Delete the only instance.
 
 // ---- Object part ------
 
 private:
-	bool *keys;
-	Keyboard();
+	bool *keys;   // The keys -- true means the key is pressed.
+	Keyboard();   // Create the key array of size SR_NUM_KEYS.
 
 public:
+	~Keyboard();  // Delete keys.
 
-
-	~Keyboard();
-
-	bool isDown(int key);
-	void setDown(int key);
-	void setUp(int key);
+	bool isDown(int key);   // Returns true if the key is pressed.
+	void setDown(int key);  // Set key as pushed.
+	void setUp(int key);    // Set key as not pushed.
 };
 
+
+// This class holds details about what the mouse is up to.
+class Mouse
+{
+	static Mouse *mouse;       // The only allowable mouse object.
+
+public:
+	static Mouse *getMouse();  // Get the only allowable mouse object.
+	static void cleanUp();     // Destroy the only mouse object.
+
+// ---- Object part ------
+
+private:
+	int lastX, lastY,   // Last known position of the mouse cursor.
+	    diffX, diffY;   // Difference between last position and the
+	                    // position before.
+	bool *buttons;      // The 3 mouse buttons.  True if pushed.
+
+	Mouse();  // Makes everything 0 and buttons new bool[3].
+
+public:
+	~Mouse(); // Delete butttons.
+
+	void setLastMousePos(int x, int y);  // Updates last* and diff*
+	void isDown(int button);             // Returns true if the button is pressed.
+	void setDown(int button);            // Set button as pushed.
+	void setUp(int button);              // Set button as not pushed.
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Global GLUT callbacks -------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Detect key input and act upon the keyboard object accordingly ...
+//    i.e. set the corresponding key as pressed or not pressed.
 void readKeyboard(unsigned char key, int x, int y);
 void readKeyboardUp(unsigned char key, int x, int y);
-
 void readSpecialKeys(int key, int x, int y);
 void readSpecialKeysUp(int key, int x, int y);
 
+// Update the mouse object.
 void mouseButtHandler(int button, int state, int x, int y);
 void mouseMoveHandler(int x, int y);
 
 #endif
+

@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <iostream>
+#include "camera.h"
 #include "input.h"
 #include "ship.h"
 
@@ -42,6 +43,53 @@ void Keyboard::setUp(int key)
 void Keyboard::cleanUp()
 {
 	delete keyboard;
+}
+
+Mouse *Mouse::mouse = NULL;
+
+Mouse *Mouse::getMouse()
+{
+	if (mouse == NULL)
+		mouse = new Mouse();
+
+	return mouse;
+}
+
+void Mouse::cleanUp()
+{
+	if (mouse != NULL)
+	{
+		delete mouse;
+		mouse = NULL;
+	}
+}
+
+Mouse::Mouse() : lastX(0), lastY(0), diffX(0), diffY(0), buttons(new bool[3])
+{
+	buttons[0] = buttons[1] = buttons[2] = false;
+}
+
+Mouse::~Mouse()
+{
+	delete [] buttons;
+}
+
+void Mouse::setLastMousePos(int x, int y)
+{
+	diffX = x - lastX;
+	diffY = y - lastY;
+	lastX = x;
+	lastY = y;
+}
+
+void Mouse::setDown(int button)
+{
+	buttons[button] = true;
+}
+
+void Mouse::setUp(int button)
+{
+	buttons[button] = false;
 }
 
 extern Ship *playerShip;
@@ -135,13 +183,27 @@ void readSpecialKeysUp(int key, int x, int y)
 	}
 }
 
+// Right now all this does is go into look-around mode
+// when any button is held down.
 void mouseButtHandler(int button, int state, int x, int y)
 {
+	// Things to do when the button is pushed.
+	if (state == GLUT_UP)
+	{
+		Camera::getCamera()->setMode(CAMERA_MODE_FOLLOW);
+	}
+	// Things to do when the button is released.
+	else // state == GLUT_DOWN
+	{
+		Mouse::getMouse()->setLastMousePos(x, y);
+		Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
+	}
 //	glutPostRedisplay();
 }
 
 void mouseMoveHandler(int x, int y)
 {
+	Mouse::getMouse()->setLastMousePos(x, y);
 //	glutPostRedisplay();
 }
 
