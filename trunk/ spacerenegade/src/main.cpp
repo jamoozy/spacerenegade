@@ -45,6 +45,7 @@ void cleanup(int sig)
 #endif
 	Camera::cleanUp();
 	Keyboard::cleanUp();
+	Mouse::cleanUp();
 	delete [] asteroids;
 	delete playerShip;
 	exit(0);
