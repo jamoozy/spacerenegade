@@ -1,5 +1,4 @@
 #include <GL/glut.h>
-#include <iostream>
 #include <cmath>
 #include "ship.h"
 #include "input.h"
@@ -52,8 +51,8 @@ void Camera::cleanUp()
 
 // Initialize a boring camera looking down the z-axis.
 Camera::Camera() : pos(0,0,0), lookat(0,0,-50), up(0,1,0),
-                   _mode(CAMERA_MODE_FOLLOW),
-				   theta(M_PI), phi(0), lookinc(.005)
+				   theta(M_PI), phi(0), lookinc(.005),
+                   _mode(CAMERA_MODE_FOLLOW)
 {
 	recomputeLook();
 }
@@ -68,14 +67,13 @@ void Camera::draw()
 
 void Camera::recomputeLook()
 {
-	std::cout << "LookAt: " << lookat.str() << std::endl;
 	Vec3 look = Vec3(sin(theta) * cos(phi), sin(phi), cos(theta) * cos(phi));
 
 	double dist = (pos - lookat).norm();
 	pos = lookat + look * (-dist);
 }
 
-void Camera::turnUD(int amt)
+void Camera::turnUD(double amt)
 {
 	double newphi = phi - lookinc * amt;
 	
@@ -86,11 +84,9 @@ void Camera::turnUD(int amt)
 	}
 }
 
-void Camera::turnLR(int amt)
+void Camera::turnLR(double amt)
 {
-	std::cout << "old: " << theta << std::endl;
 	theta += lookinc * amt;
-	std::cout << "new: " << theta << std::endl;
 	recomputeLook();
 }
 
@@ -105,7 +101,7 @@ void Camera::setMode(int newMode)
 }
 
 // Start looking at the point and remain stationary.
-void Camera::setFocus(Vec3 &p)
+void Camera::setFocus(const Vec3 &p)
 {
 	lookat = p;
 	Vec3 look = lookat - pos;
@@ -119,7 +115,7 @@ void Camera::setFocus(Vec3 &p)
 }
 
 // Start looking at the point and remain "dist" away from it.
-void Camera::setFocus(Vec3 &p, double dist)
+void Camera::setFocus(const Vec3 &p, double dist)
 {
 	lookat = p;
 	Vec3 look = lookat - pos;

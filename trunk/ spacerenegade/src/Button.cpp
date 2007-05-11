@@ -4,7 +4,7 @@
 using std::string;
 
 Button::Button()
-:width(0), length(0), xPos(0), yPos(0)
+:length(0), width(0), xPos(0), yPos(0)
 {
 	RGB = new GLfloat[3];
 	RGB[0] = 0;
@@ -12,7 +12,7 @@ Button::Button()
 	RGB[2] = 0;
 }
 Button::Button(string title, GLfloat length, GLfloat width, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue)
-:width(width), length(length), xPos(xPos), yPos(yPos),title(title)
+:title(title), length(length), width(width), xPos(xPos), yPos(yPos)
 {
 	RGB = new GLfloat[3];
 	RGB[0] = red;
