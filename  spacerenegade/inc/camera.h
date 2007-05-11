@@ -32,11 +32,11 @@ public:
 	void setMode(int newMode);
 	
 	// Controls
-	void turnUD(int amt);
-	void turnLR(int amt);
+	void turnUD(double amt);
+	void turnLR(double amt);
 
-	void setFocus(Vec3 &p);
-	void setFocus(Vec3 &p, double dist);
+	void setFocus(const Vec3 &p);
+	void setFocus(const Vec3 &p, double dist);
 };
 
 void adjustCamera();
