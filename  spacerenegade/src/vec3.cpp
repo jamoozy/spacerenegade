@@ -110,6 +110,12 @@ const Vec3 Vec3::operator^(const Vec3& a) const
 	return Vec3(_y * a._z - _z * a._y, _z * a._x - _x * a._z, _x * a._y - _y * a._x);
 }
 
+// Unary negation.
+const Vec3& Vec3::operator-() const
+{
+	return Vec3(-_x, -_y, -_z);
+}
+
 // Assign one vector to another (copy it).
 Vec3& Vec3::operator=(const Vec3& a)
 {
