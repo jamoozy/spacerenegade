@@ -38,7 +38,7 @@ struct perspectiveData
 	float farPlane;
 } pD;
 
-void cleanup(int sig)
+void cleanup()
 {
 #if (!DEBUG_MODE)
 	glutLeaveGameMode();
@@ -54,7 +54,7 @@ void cleanup(int sig)
 void handleInput()
 {
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
-		cleanup(0);
+		cleanup();
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
 		playerShip->yawLeft();
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
@@ -97,8 +97,8 @@ void display(void)
 	#endif
 
 
-//	for (int i = 0; i < 6; i++)
-//		asteroids[i].draw();
+	for (int i = 0; i < 6; i++)
+		asteroids[i].draw();
 
 	playerShip->draw();
 
