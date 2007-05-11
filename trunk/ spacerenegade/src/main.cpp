@@ -16,6 +16,7 @@
 
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
+#define FPS 60
 
 #if (DEBUG_MODE)
 	int window;
@@ -25,10 +26,9 @@
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 
-#if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
-#endif
+int frame_staller;
 
 struct perspectiveData 
 {
@@ -55,15 +55,26 @@ void handleInput()
 {
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
 		cleanup();
+
+	// Yaw.
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
 		playerShip->yawLeft();
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
 		playerShip->yawRight();
 
+	// Acceleration.
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
 		playerShip->accelerate();
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
 		playerShip->decelerate();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_G))
+		playerShip->stabilize();
+
+	// Pitch.
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_D))
+		playerShip->pitchBack();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
+		playerShip->pitchForward();
 }
 
 
@@ -72,6 +83,8 @@ void handleInput()
 
 void display(void)
 {
+	for (int i = 0; i < frame_staller; i++);
+
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
 	#endif
@@ -85,16 +98,19 @@ void display(void)
 
 	handleInput();
 
-	#if (PRINT_FPS)
-		if (last_time != time(NULL))
-		{
-			std::cout << ctime(&last_time) << "\b\b: " << frames_this_second << std::endl;
-			last_time = time(NULL);
-			frames_this_second = 0;
-		}
-		else
-			frames_this_second++;
-	#endif
+	if (last_time != time(NULL))
+	{
+		#if (PRINT_FPS)
+			std::cout << ctime(&last_time) << "fps: " << frames_this_second;
+			std::cout << "    staller: " << frame_staller << std::endl;
+		#endif
+		int difference = frames_this_second - FPS;
+		frame_staller += 4000 * (difference);
+		last_time = time(NULL);
+		frames_this_second = 0;
+	}
+	else
+		frames_this_second++;
 
 
 	for (int i = 0; i < 6; i++)
@@ -111,10 +127,8 @@ void display(void)
 
 void initDisplay()
 {
-	#if (PRINT_FPS)
-		last_time = 0;
-		frames_this_second = 0;
-	#endif
+	last_time = 0;
+	frames_this_second = FPS;
 
 	// Perspective projection parameters
 	pD.fieldOfView = 45.0;
@@ -168,6 +182,8 @@ void initDisplay()
 int main(int argc, char **argv)
 {
 	//signal(SIGHUP, cleanup);
+
+	frame_staller = 8000000;
 
 	glutInit(&argc, argv);
 

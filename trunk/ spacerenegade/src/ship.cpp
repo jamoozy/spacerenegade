@@ -38,11 +38,11 @@ void Ship::draw()
 	
 	// direction rotation
 	glRotated(degpyr.y(),  0,1,0);
-	glRotated(degpyr.z(),  0,0,1);
 	glRotated(degpyr.x(),  1,0,0);
+	glRotated(degpyr.z(),  0,0,1);
 
 	// Drawing function
-	glColor3d(1,1,1);
+	glColor3d(1,0,0);
 	glutWireCone(-2.5, 5, 4, 2);
 	
 #ifdef WIN32
@@ -64,7 +64,9 @@ void Ship::draw()
 
 void Ship::recompdir()
 {
-	direction = Vec3(sin(radpyr.y()), sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
+//	Vec3 look = Vec3(sin(theta) * cos(phi), sin(phi), cos(theta) * cos(phi));
+	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
+//	direction = Vec3(sin(radpyr.y()) , sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
 	degpyr = radpyr * (180 / M_PI);
 }
 
@@ -92,14 +94,14 @@ void Ship::stabilize()
 // Tilt the nose up.
 void Ship::pitchBack()
 {
-	radpyr += Vec3(rot, 0, 0);
+	radpyr -= Vec3(rot, 0, 0);
 	recompdir();
 }
 
 // Tilt the nose down.
 void Ship::pitchForward()
 {
-	radpyr -= Vec3(rot, 0, 0);
+	radpyr += Vec3(rot, 0, 0);
 	recompdir();
 }
 
