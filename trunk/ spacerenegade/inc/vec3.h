@@ -35,7 +35,8 @@ public:
 	const Vec3 operator*(const double a) const;  // scalar product
 	const Vec3 operator*=(const double a); // scalar product
 	const Vec3 operator^(const Vec3& a) const;  // cross product
-	Vec3& operator=(const Vec3& a);
+	const Vec3& operator-() const;  // Unary negation.
+	Vec3& operator=(const Vec3& a);  // Assignment.
 };
 
 const Vec3 operator*(const double a, const Vec3& b);
