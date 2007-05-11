@@ -3,8 +3,8 @@
 #include "ship.h"
 
 
-#ifdef WIN32
-#define M_PI 3.14159265358979
+#ifndef M_PI
+	#define M_PI 3.14159265358979
 #endif
 
 // Makes a new, boring ship that just sits there.
@@ -42,7 +42,22 @@ void Ship::draw()
 	glRotated(degpyr.x(),  1,0,0);
 
 	// Drawing function
+	glColor3d(1,1,1);
 	glutWireCone(-2.5, 5, 4, 2);
+	
+#ifdef WIN32
+	glBegin(GL_TRIANGLE_STRIP);
+	glVertex3f( 0, 0, 4);
+	glVertex3f(-2, 2,-1);
+	glVertex3f( 2, 2,-1);
+	glVertex3f( 2,-2,-1);
+	glVertex3f( 0, 0, 4);	
+	glVertex3f(-2,-2,-1);
+	glVertex3f(-2, 2,-1);
+	glVertex3f( 2,-2,-1);
+	glEnd();
+#endif
+		
 
 	glPopMatrix();
 }
