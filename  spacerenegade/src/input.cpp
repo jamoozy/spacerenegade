@@ -25,7 +25,7 @@ Keyboard *Keyboard::getKeyboard()
 	return keyboard;
 }
 
-bool Keyboard::isDown(int key)
+bool Keyboard::isDown(int key) const
 {
 	return keys[key];
 }
@@ -92,8 +92,30 @@ void Mouse::setUp(int button)
 	buttons[button] = false;
 }
 
+double Mouse::getDiffX() const
+{
+	return diffX;
+}
+
+double Mouse::getDiffY() const
+{
+	return diffY;
+}
+
+void Mouse::clearDiffs()
+{
+	diffX = diffY = 0;
+}
+
 extern Ship *playerShip;
 
+
+
+/////////////////////////////////////
+// Global Input-Handling Functions //
+/////////////////////////////////////
+
+// Reads any key that emits a character.
 void readKeyboard(unsigned char key, int x, int y)
 {
 	if ('a' <= key && key <= 'z')
@@ -123,6 +145,7 @@ void readKeyboardUp(unsigned char key, int x, int y)
 		std::cout << "got a " << key << " up." << std::endl;
 }
 
+// Reads the arrow, F- and special keys.
 void readSpecialKeys(int key, int x, int y)
 {
 	switch (key)
@@ -198,12 +221,9 @@ void mouseButtHandler(int button, int state, int x, int y)
 		Mouse::getMouse()->setLastMousePos(x, y);
 		Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
 	}
-//	glutPostRedisplay();
 }
 
 void mouseMoveHandler(int x, int y)
 {
 	Mouse::getMouse()->setLastMousePos(x, y);
-//	glutPostRedisplay();
 }
-
