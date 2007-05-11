@@ -16,6 +16,7 @@ public:
 	virtual ~Object();
 
 	virtual void draw();
+	virtual Vec3 getPos();
 };
 		
 #endif

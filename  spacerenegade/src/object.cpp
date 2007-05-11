@@ -1,5 +1,5 @@
 #include "object.h"
-
+#include "vec3.h"
 
 // Create a new obect at the origin that does not move.
 Object::Object() : position(0,0,0), velocity(0,0,0) {}
@@ -18,4 +18,10 @@ Object::~Object() {}
 void Object::draw()
 {
 	position += velocity;
+}
+
+// Get the position of this object.
+Vec3 Object::getPos()
+{
+	return position;
 }
