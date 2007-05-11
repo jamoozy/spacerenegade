@@ -16,7 +16,8 @@
 
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
-#define FPS 60
+static int FPS;
+static int MSPF;
 
 #if (DEBUG_MODE)
 	int window;
@@ -26,9 +27,11 @@
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 
+#if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
 int frame_staller;
+#endif
 
 struct perspectiveData 
 {
@@ -81,9 +84,15 @@ void handleInput()
 //##########################################
 // OpenGL Display function
 
+void doNextFrame(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(MSPF, doNextFrame, 0);
+}
+
 void display(void)
 {
-	for (int i = 0; i < frame_staller; i++);
+//	for (int i = 0; i < frame_staller; i++);
 
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
@@ -98,19 +107,19 @@ void display(void)
 
 	handleInput();
 
-	if (last_time != time(NULL))
-	{
-		#if (PRINT_FPS)
+	#if (PRINT_FPS)
+		if (last_time != time(NULL))
+		{
 			std::cout << ctime(&last_time) << "fps: " << frames_this_second;
 			std::cout << "    staller: " << frame_staller << std::endl;
-		#endif
-		int difference = frames_this_second - FPS;
-		frame_staller += 4000 * (difference);
-		last_time = time(NULL);
-		frames_this_second = 0;
-	}
-	else
-		frames_this_second++;
+//			int difference = frames_this_second - FPS;
+//			frame_staller += 4000 * (difference);
+			last_time = time(NULL);
+			frames_this_second = 0;
+		}
+		else
+			frames_this_second++;
+	#endif
 
 
 	for (int i = 0; i < 6; i++)
@@ -127,8 +136,10 @@ void display(void)
 
 void initDisplay()
 {
-	last_time = 0;
-	frames_this_second = FPS;
+	#if (PRINT_FPS)
+		last_time = 0;
+		frames_this_second = FPS;
+	#endif
 
 	// Perspective projection parameters
 	pD.fieldOfView = 45.0;
@@ -183,9 +194,12 @@ int main(int argc, char **argv)
 {
 	//signal(SIGHUP, cleanup);
 
-	frame_staller = 8000000;
+//	frame_staller = 8000000;
 
 	glutInit(&argc, argv);
+
+	FPS = 60;
+	MSPF = 17;
 
 	srand(time(NULL));
 
@@ -203,6 +217,7 @@ int main(int argc, char **argv)
 		#endif
 	#endif
 
+	glutTimerFunc(MSPF, doNextFrame, 0);
 	glutDisplayFunc(display);
 	glutKeyboardFunc(readKeyboard);
 	glutKeyboardUpFunc(readKeyboardUp);
@@ -211,7 +226,7 @@ int main(int argc, char **argv)
 	glutMouseFunc(mouseButtHandler);
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
-	glutIdleFunc(display);
+	glutIdleFunc(NULL);
 
 	initDisplay();
 
