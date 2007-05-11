@@ -7,9 +7,9 @@
 
 // For all keys.
 enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
-	   SR_KEY_H, SR_KEY_I, SR_KEY_J, SR_KEY_K, SR_KEY_L, SR_KEY_M, SR_KEY_N,
-	   SR_KEY_O, SR_KEY_P, SR_KEY_Q, SR_KEY_R, SR_KEY_S, SR_KEY_T, SR_KEY_U,
-	   SR_KEY_V, SR_KEY_W, SR_KEY_X, SR_KEY_Y, SR_KEY_Z,
+       SR_KEY_H, SR_KEY_I, SR_KEY_J, SR_KEY_K, SR_KEY_L, SR_KEY_M, SR_KEY_N,
+       SR_KEY_O, SR_KEY_P, SR_KEY_Q, SR_KEY_R, SR_KEY_S, SR_KEY_T, SR_KEY_U,
+       SR_KEY_V, SR_KEY_W, SR_KEY_X, SR_KEY_Y, SR_KEY_Z,
 
        SR_KEY_SPACE, 
 
@@ -20,7 +20,7 @@ enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
        SR_KEY_7, SR_KEY_8, SR_KEY_9, SR_KEY_10, SR_KEY_11, SR_KEY_12,
 
        SR_KEY_LEFT, SR_KEY_UP, SR_KEY_RIGHT, SR_KEY_DOWN,
-	   
+
        SR_KEY_PAGE_UP, SR_KEY_PAGE_DOWN, SR_KEY_HOME, SR_KEY_END, SR_KEY_INSERT,
 
        SR_NUM_KEYS };
@@ -52,9 +52,9 @@ private:
 public:
 	~Keyboard();  // Delete keys.
 
-	bool isDown(int key);   // Returns true if the key is pressed.
-	void setDown(int key);  // Set key as pushed.
-	void setUp(int key);    // Set key as not pushed.
+	bool isDown(int key) const;  // Returns true if the key is pressed.
+	void setDown(int key);       // Set key as pushed.
+	void setUp(int key);         // Set key as not pushed.
 };
 
 
@@ -81,9 +81,12 @@ public:
 	~Mouse(); // Delete butttons.
 
 	void setLastMousePos(int x, int y);  // Updates last* and diff*
-	void isDown(int button);             // Returns true if the button is pressed.
+	void isDown(int button) const;       // Returns true if the button is pressed.
 	void setDown(int button);            // Set button as pushed.
 	void setUp(int button);              // Set button as not pushed.
+	double getDiffX() const;
+	double getDiffY() const;
+	void clearDiffs();
 };
 
 
