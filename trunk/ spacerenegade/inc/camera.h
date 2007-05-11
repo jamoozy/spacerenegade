@@ -10,25 +10,35 @@ class Camera
 	static Camera *camera;
 
 public:
+	static double DEFAULT_DIST;
 	static Camera *getCamera();
 	static void cleanUp();
 
 private:
 	Vec3 pos;
-	Vec3 look;  // direction, not point.
+	Vec3 lookat;  // direction, not point.
 	Vec3 up;
+
+	double theta, phi, lookinc;  // Theta is around the up vector, phi above the horizon.
 
 	int _mode;
 
 	Camera();
+	void recomputeLook();
 
 public:
 	void draw();
 	int mode();
 	void setMode(int newMode);
+	
+	// Controls
+	void turnUD(int amt);
+	void turnLR(int amt);
+
+	void setFocus(Vec3 &p);
+	void setFocus(Vec3 &p, double dist);
 };
 
 void adjustCamera();
 
 #endif
-
