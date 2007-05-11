@@ -18,7 +18,7 @@ double Vec3::y() { return _y; }
 double Vec3::z() { return _z; }
 
 // Find the length of the vector.
-double Vec3::norm()
+double Vec3::norm() const
 {
 	return sqrt(_x * _x + _y * _y + _z * _z);
 }
@@ -45,7 +45,7 @@ const std::string Vec3::str()
 }
 
 // Add two vectors.
-const Vec3 Vec3::operator+(const Vec3& a) const
+Vec3 Vec3::operator+(const Vec3& a) const
 {
 	return Vec3(a._x + _x, a._y + _y, a._z + _z);
 }
@@ -61,7 +61,7 @@ Vec3 Vec3::operator+=(const Vec3& a)
 }
 
 // Subtract two vectors.
-const Vec3 Vec3::operator-(const Vec3& a) const
+Vec3 Vec3::operator-(const Vec3& a) const
 {
 	return Vec3(_x - a._x, _y - a._y, _z - a._z);
 }
