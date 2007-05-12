@@ -1,7 +1,7 @@
 #ifndef SHIP_H
 #define SHIP_H
 
-
+#include "Model_3DS.h"
 #include "object.h"
 #include "vec3.h"
 
@@ -10,6 +10,7 @@ class Ship : public Object
 {
 private:
 	Vec3 direction;
+	Model_3DS model; // 3D Model of the ship
 
 	// "Why store both degrees AND radians?" you may ask.  Because
 	// cmath works in radians and OpenGL works in degrees.
@@ -25,6 +26,7 @@ private:
 
 public:
 	Ship();
+	virtual ~Ship();
 	void draw();
 	void accelerate();
 	void decelerate();
