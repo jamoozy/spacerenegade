@@ -13,6 +13,9 @@ Node::Node() {}
 // This does something very important ...
 Node::~Node() {}
 
+// Nothing to update.
+void Node::update() {}
+
 // This node can't be used, so it can contain nothing.
 bool Node::isResident(Object *o) const { return false; }
 
@@ -47,7 +50,6 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 		for (int i = 0; i < 8; i++)
 			kids[i] = new Leaf();
 	}
-
 }
 
 // Delete the kids.
@@ -56,6 +58,13 @@ Branch::~Branch()
 	for (int i = 0; i < 8; i++)
 		if (kids[i] != NULL)
 			delete kids[i];
+}
+
+// Update all the children.
+void Branch::update()
+{
+	for (int i = 0; i < 8; i++)
+		kids[i]->update();
 }
 
 // Gets the index of the child the passed object is in.
@@ -72,12 +81,13 @@ int Branch::getIndex(Object *o) const
 	return i;
 }
 
+// Determine if the passed object pointer points to an object in this tree.
 bool Branch::isResident(Object* o) const
 {
 	return kids[getIndex(o)]->isResident(o);
 }
 
-
+// Add an object to the tree.  If it's already in the node, it will not be added.
 void Branch::add(Object* o)
 {
 	kids[getIndex(o)]->add(o);
@@ -106,12 +116,24 @@ bool Leaf::isResident(Object *o) const
 	return false;
 }
 
+void Leaf::update()
+{
+	for (unsigned int i = 0; i < data.size(); i++)
+		data[i]->draw();
+}
+
 void Leaf::add(Object *o)
 {
 	if (!isResident(o))
 		data.push_back(o);
 }
 
+void Leaf::remove(Object *o)
+{
+	for (unsigned int i = 0; i < data.size(); i++)
+		if (data[i] == o)
+			data.erase(data.begin()+i);
+}
 
 
 
@@ -131,16 +153,14 @@ OctTree::~OctTree()
 	delete head;
 }
 
-void OctTree::add(Object& o)
+void OctTree::add(Object* o)
 {
-}
-
-void OctTree::checkCollisions()
-{
+	head->add(o);
 }
 
 void OctTree::update()
 {
+	head->update();
 }
 
 

@@ -11,7 +11,9 @@
 #include "input.h"
 #include "camera.h"
 #include "asteroid.h"
-#include "globals.h"
+//#include "globals.h"
+#include "ship.h"
+#include "environment.h"
 
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
@@ -21,6 +23,9 @@ static int MSPF;
 #if (DEBUG_MODE)
 	int window;
 #endif
+
+Ship *playerShip;
+OctTree *env;
 
 
 #define IMAGE_WIDTH 1024
@@ -47,8 +52,7 @@ void cleanup()
 	Camera::cleanUp();
 	Keyboard::cleanUp();
 	Mouse::cleanUp();
-	delete [] asteroids;
-	delete playerShip;
+	delete env;
 	exit(0);
 }
 
@@ -115,11 +119,7 @@ void display(void)
 			frames_this_second++;
 	#endif
 
-
-	for (int i = 0; i < 6; i++)
-		asteroids[i].draw();
-
-	playerShip->draw();
+	env->update();
 
 	glutSwapBuffers();
 }
@@ -153,17 +153,6 @@ void initDisplay()
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
 
-	asteroids = new Asteroid[6];
-	asteroids[0] = Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
-	asteroids[1] = Asteroid( 0, 0,-41 ,  0.00,0.00,-0.00);
-	asteroids[2] = Asteroid( 0,-9,-50 ,  0.00,0.00,-0.00);
-	asteroids[3] = Asteroid( 0, 9,-50 ,  0.00,0.00,-0.00);
-	asteroids[4] = Asteroid(-9, 0,-50 ,  0.00,0.00,-0.00);
-	asteroids[5] = Asteroid( 9, 0,-50 ,  0.00,0.00,-0.00);
-
-	playerShip = new Ship();
-	playerShip->setAt(0,0,-30);
-
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearIndex(0);
 	glClearDepth(1);
@@ -190,6 +179,26 @@ int main(int argc, char **argv)
 
 	FPS = 60;
 	MSPF = 17;
+
+	env = new OctTree();
+
+	Asteroid *asteroids[6];
+	asteroids[0] = new Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
+	env->add(asteroids[0]);
+	asteroids[1] = new Asteroid( 0, 0,-41 ,  0.00,0.00,-0.00);
+	env->add(asteroids[1]);
+	asteroids[2] = new Asteroid( 0,-9,-50 ,  0.00,0.00,-0.00);
+	env->add(asteroids[2]);
+	asteroids[3] = new Asteroid( 0, 9,-50 ,  0.00,0.00,-0.00);
+	env->add(asteroids[3]);
+	asteroids[4] = new Asteroid(-9, 0,-50 ,  0.00,0.00,-0.00);
+	env->add(asteroids[4]);
+	asteroids[5] = new Asteroid( 9, 0,-50 ,  0.00,0.00,-0.00);
+	env->add(asteroids[5]);
+
+	playerShip = new Ship();
+	playerShip->setAt(0,0,-30);
+	env->add(playerShip);
 
 	srand(time(NULL));
 

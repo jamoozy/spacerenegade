@@ -15,6 +15,7 @@ struct Node
 	Node();
 	virtual ~Node();
 
+	virtual void update();
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
 };
@@ -27,7 +28,8 @@ struct Branch : public Node
 	Branch(int generation, Vec3 split);
 	virtual ~Branch();
 
-	virtual int getIndex(Object *o) const;
+	virtual void update();
+	virtual int getIndex(Object* o) const;
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
 };
@@ -39,8 +41,10 @@ struct Leaf : public Node
 	Leaf();
 	virtual ~Leaf();
 
+	virtual void update();
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
+	virtual void remove(Object* o);
 };
 
 // ------------- top level part we interact with.
@@ -55,7 +59,7 @@ public:
 	OctTree();
 	virtual ~OctTree();
 
-	void add(Object& o);
+	void add(Object* o);
 	void checkCollisions();
 	void update();
 };
