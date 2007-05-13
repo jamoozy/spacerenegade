@@ -14,17 +14,9 @@
 #endif
 
 // Makes a new, boring ship that just sits there.
-Ship::Ship() :
-#ifndef WIN32
-	Object::Object(),
-#endif
-	direction(0,0,1),
-	degpyr(0,0,0),
-	radpyr(0,0,0),
-	roa(0.005),
-	rod(0.001),
-	ros(0.95),
-	rot(0.02)
+Ship::Ship() : Object(),
+	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
+	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
 {
 	model.Load("art/felix.3DS"); // Load the model
 	for(int i = 0; i < model.numObjects; i++)
