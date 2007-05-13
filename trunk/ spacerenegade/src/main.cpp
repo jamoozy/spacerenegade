@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
-//#include <signal.h>
 #ifdef WIN32
 	#include <windows.h>
 #endif
@@ -42,9 +41,9 @@ struct perspectiveData
 
 void cleanup()
 {
-#if (!DEBUG_MODE)
-	glutLeaveGameMode();
-#endif
+	#if (!DEBUG_MODE)
+		glutLeaveGameMode();
+	#endif
 	Camera::cleanUp();
 	Keyboard::cleanUp();
 	Mouse::cleanUp();
@@ -187,8 +186,6 @@ void initDisplay()
 
 int main(int argc, char **argv)
 {
-	//signal(SIGHUP, cleanup);
-
 	glutInit(&argc, argv);
 
 	FPS = 60;
