@@ -51,7 +51,7 @@ void Camera::cleanUp()
 
 // Initialize a boring camera looking down the z-axis.
 Camera::Camera() : pos(0,0,0), lookat(0,0,-50), up(0,1,0),
-				   theta(M_PI), phi(0), lookinc(.005),
+				   theta(M_PI), phi(0), lookinc(.02),
                    _mode(CAMERA_MODE_FOLLOW)
 {
 	recomputeLook();
