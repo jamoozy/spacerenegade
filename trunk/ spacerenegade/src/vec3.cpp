@@ -13,9 +13,9 @@ Vec3::Vec3(const double a, const double b, const double c) : _x(a), _y(b), _z(c)
 Vec3::Vec3(const Vec3& a) : _x(a._x), _y(a._y), _z(a._z) {}
 
 // Get the coordinates of this vector.
-double Vec3::x() { return _x; }
-double Vec3::y() { return _y; }
-double Vec3::z() { return _z; }
+double Vec3::x() const { return _x; }
+double Vec3::y() const { return _y; }
+double Vec3::z() const { return _z; }
 
 // Find the length of the vector.
 double Vec3::norm() const
