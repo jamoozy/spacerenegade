@@ -4,7 +4,7 @@
 #include "object.h"
 #include "vec3.h"
 
-class Asteroid : Object
+class Asteroid : public Object
 {
 private:
 	Vec3 angle;
