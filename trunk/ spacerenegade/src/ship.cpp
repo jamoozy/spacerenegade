@@ -27,7 +27,7 @@ Ship::Ship() :
 {
 	model.Load("art/felix.3DS"); // Load the model
 	for(int i = 0; i < model.numObjects; i++)
-		model.Objects[i].rot.y = 180.0f;
+		model.Objects[i].rot.y = 0.0f;
 
 	model.shownormals = false;
 

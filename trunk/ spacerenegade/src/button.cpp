@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include <stdio.h>
-#include "Button.h"
+#include <iostream>
+#include "button.h"
 using std::string;
 
 Button::Button()

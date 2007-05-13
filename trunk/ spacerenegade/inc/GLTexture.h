@@ -37,11 +37,11 @@
 #ifndef GLTEXTURE_H
 #define GLTEXTURE_H
 
-#include <windows.h>		// Header File For Windows
-#include <gl\gl.h>			// Header File For The OpenGL32 Library
-#include <gl\glu.h>			// Header File For The GLu32 Library
-#include <gl\glaux.h>		// Header File For The Glaux Library
+#ifdef WIN32
+	#include <windows.h>  // Header File For Windows
+#endif
 
+#ifdef WIN32
 class GLTexture  
 {
 public:
@@ -59,7 +59,8 @@ public:
 	void Load(char *name);							// Load the texture
 	GLTexture();									// Constructor
 	virtual ~GLTexture();							// Destructor
-
+	char *strlwr(char *str);
 };
 
-#endif GLTEXTURE_H
+#endif // WIN32
+#endif // GLTEXTURE_H

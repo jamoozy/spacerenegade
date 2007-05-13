@@ -30,7 +30,6 @@ static int MSPF;
 #if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
-int frame_staller;
 #endif
 
 struct perspectiveData 
@@ -92,8 +91,6 @@ void doNextFrame(int value)
 
 void display(void)
 {
-//	for (int i = 0; i < frame_staller; i++);
-
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
 	#endif
@@ -110,10 +107,8 @@ void display(void)
 	#if (PRINT_FPS)
 		if (last_time != time(NULL))
 		{
-			std::cout << ctime(&last_time) << "fps: " << frames_this_second;
-			std::cout << "    staller: " << frame_staller << std::endl;
+			std::cout << ctime(&last_time) << "fps: " << frames_this_second << std::endl;
 //			int difference = frames_this_second - FPS;
-//			frame_staller += 4000 * (difference);
 			last_time = time(NULL);
 			frames_this_second = 0;
 		}
@@ -193,8 +188,6 @@ void initDisplay()
 int main(int argc, char **argv)
 {
 	//signal(SIGHUP, cleanup);
-
-//	frame_staller = 8000000;
 
 	glutInit(&argc, argv);
 

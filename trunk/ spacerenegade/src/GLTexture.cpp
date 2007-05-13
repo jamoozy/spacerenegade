@@ -34,12 +34,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifdef WIN32
+
 #include "GLTexture.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "GL/gl.h"   // Header File For The OpenGL32 Library
+#include "GL/glu.h"  // Header File For The GLu32 Library
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include "glbmp.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -54,6 +58,17 @@ GLTexture::~GLTexture()
 {
 
 }
+
+char *GLTexture::strlwr(char *str)
+{
+	// Move over the string.
+	for (int i = 0; str[i] != '\0'; i++)
+		if ('A' <= str[i] && str[i] <= 'Z')
+			str[i] = str[i] - 'A' + 'a';
+		
+	return str;
+}
+
 
 void GLTexture::Load(char *name)
 {
@@ -92,17 +107,20 @@ void GLTexture::Use()
 void GLTexture::LoadBMP(char *name)
 {
 	// Create a place to store the texture
-	AUX_RGBImageRec *TextureImage[1];
+	glbmp_t *TextureImage[1];
 
 	// Set the pointer to NULL
 	memset(TextureImage,0,sizeof(void *)*1);
 
 	// Load the bitmap and assign our pointer to it
-	TextureImage[0] = auxDIBImageLoad(name);
+	if(!glbmp_LoadBitmap(name, 0, TextureImage[0])) {
+		fprintf(stderr, "Could not load texture %s\n", name);
+		return;
+	}
 
 	// Just in case we want to use the width and height later
-	width = TextureImage[0]->sizeX;
-	height = TextureImage[0]->sizeY;
+	width = TextureImage[0]->width;
+	height = TextureImage[0]->height;
 
 	// Generate the OpenGL texture id
 	glGenTextures(1, &texture[0]);
@@ -115,13 +133,13 @@ void GLTexture::LoadBMP(char *name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	// Generate the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->width, TextureImage[0]->height, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->rgb_data);
 
 	// Cleanup
 	if (TextureImage[0])
 	{
-		if (TextureImage[0]->data)
-			free(TextureImage[0]->data);
+		if (TextureImage[0]->rgb_data)
+			free(TextureImage[0]->rgb_data);
 
 		free(TextureImage[0]);
 	}
@@ -188,7 +206,7 @@ void GLTexture::LoadTGA(char *name)
 	}
 
 	// Loop through the image data and swap the 1st and 3rd bytes (red and blue)
-	for(GLuint i = 0; i < int(imageSize); i += bytesPerPixel)
+	for(GLuint i = 0; i < GLuint(imageSize); i += bytesPerPixel)
 	{
 		temp = imageData[i];
 		imageData[i] = imageData[i + 2];
@@ -397,3 +415,5 @@ void GLTexture::BuildColorTexture(unsigned char r, unsigned char g, unsigned cha
 	// Generate the texture
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, 2, 2, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
+
+#endif // WIN32
