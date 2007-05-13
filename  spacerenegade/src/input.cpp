@@ -148,6 +148,9 @@ void readKeyboardUp(unsigned char key, int x, int y)
 // Reads the arrow, F- and special keys.
 void readSpecialKeys(int key, int x, int y)
 {
+	if (key == GLUT_KEY_F9)
+		std::cout << playerShip->getPos().str() << std::endl;
+
 	switch (key)
 	{
 		case GLUT_KEY_F1: Keyboard::getKeyboard()->setDown(SR_KEY_F1); break;
