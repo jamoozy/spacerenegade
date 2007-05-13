@@ -73,6 +73,8 @@ void Camera::recomputeLook()
 	pos = lookat + look * (-dist);
 }
 
+// Turns the camera up or down.  A positive value makes the camera
+// look more up, and a negative one more down.
 void Camera::turnUD(double amt)
 {
 	double newphi = phi - lookinc * amt;
@@ -84,6 +86,8 @@ void Camera::turnUD(double amt)
 	}
 }
 
+// Turns the camera left or right.  A positive value makes the camera
+// look more left , and a negative one more down.
 void Camera::turnLR(double amt)
 {
 	theta += lookinc * amt;
@@ -117,17 +121,26 @@ void Camera::setFocus(const Vec3 &p)
 // Start looking at the point and remain "dist" away from it.
 void Camera::setFocus(const Vec3 &p, double dist)
 {
-	lookat = p;
-	Vec3 look = lookat - pos;
-	look.normalize();
-	phi = asin(look.y());
-	theta = atan(look.x()/look.z());
-	if (look.z() < 0)
-		theta += M_PI;
-	else if (theta < 0)
-		theta += TWO_PI;
+	if (_mode == CAMERA_MODE_LOOK)
+	{
+		Vec3 difference = p - lookat;
+		lookat = p;
+		pos += difference;
+	}
+	else
+	{
+		lookat = p;
+		Vec3 look = lookat - pos;
+		look.normalize();
+		phi = asin(look.y());
+		theta = atan(look.x()/look.z());
+		if (look.z() < 0)
+			theta += M_PI;
+		else if (theta < 0)
+			theta += TWO_PI;
 
-	pos = lookat + (look * (-dist));
+		pos = lookat + (look * (-dist));
+	}
 }
 
 
@@ -145,3 +158,4 @@ void adjustCamera()
 	
 	Camera::getCamera()->draw();
 }
+
