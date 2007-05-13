@@ -75,13 +75,16 @@
 #define warn( x )  message( __FILE__LINE__ #x "\n" )
 
 // You need to uncomment this if you are using MFC
-#pragma warn( You need to uncomment this if you are using MFC )
+//#pragma warn( You need to uncomment this if you are using MFC )
+#ifdef MFC
 //#include "stdafx.h"
+#endif
 
 #include "Model_3DS.h"
 
-#include <math.h>			// Header file for the math library
-#include <gl\gl.h>			// Header file for the OpenGL32 library
+#include <cstring>
+#include <cmath>    // Header file for the math library
+#include "GL/gl.h"  // Header file for the OpenGL32 library
 
 // The chunk's id numbers
 #define MAIN3DS				0x4D4D
@@ -268,7 +271,9 @@ void Model_3DS::Load(char *name)
 			unsigned char r = Materials[j].color.r;
 			unsigned char g = Materials[j].color.g;
 			unsigned char b = Materials[j].color.b;
+#ifdef WIN32
 			Materials[j].tex.BuildColorTexture(r, g, b);
+#endif
 			Materials[j].textured = true;
 		}
 	}
@@ -310,8 +315,10 @@ void Model_3DS::Draw()
 			// Loop through the faces as sorted by material and draw them
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
+#ifdef WIN32
 				// Use the material's texture
 				Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
+#endif
 
 				glPushMatrix();
 
@@ -764,7 +771,9 @@ void Model_3DS::MapNameChunkProcessor(long length, long findex, int matindex)
 	// Load the name and indicate that the material has a texture
 	char fullname[80];
 	sprintf(fullname, "%s%s", path, name);
+#ifdef WIN32
 	Materials[matindex].tex.Load(fullname);
+#endif
 	Materials[matindex].textured = true;
 
 	// move the file pointer back to where we got it so
