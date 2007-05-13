@@ -53,8 +53,9 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 // Delete the kids.
 Branch::~Branch()
 {
-	if (kids != NULL)
-		delete [] kids;
+	for (int i = 0; i < 8; i++)
+		if (kids[i] != NULL)
+			delete kids[i];
 }
 
 // Gets the index of the child the passed object is in.
@@ -89,6 +90,12 @@ void Branch::add(Object* o)
 ////////////////////////////////////////////////////////////////////////////////
 
 Leaf::Leaf() {}
+
+Leaf::~Leaf()
+{
+	for (int i = 0; i < data.size(); i++)
+		delete data[i];
+}
 
 bool Leaf::isResident(Object *o) const
 {
