@@ -19,6 +19,7 @@ private:
 
 	// Rates.
 	double roa;  // Rate of Acceleration
+	double rod;  // Rate of Deceleration
 	double ros;  // Rate of Stabilization
 	double rot;  // Rate of Turn
 
