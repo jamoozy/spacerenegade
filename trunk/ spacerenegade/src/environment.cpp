@@ -93,13 +93,13 @@ Leaf::Leaf() {}
 
 Leaf::~Leaf()
 {
-	for (int i = 0; i < data.size(); i++)
+	for (unsigned int i = 0; i < data.size(); i++)
 		delete data[i];
 }
 
 bool Leaf::isResident(Object *o) const
 {
-	for (int i = 0; i < data.size(); i++)
+	for (unsigned int i = 0; i < data.size(); i++)
 		if (data[i] == o)
 			return true;
 

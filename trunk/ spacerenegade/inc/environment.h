@@ -37,6 +37,7 @@ struct Leaf : public Node
 	std::vector<Object*> data;
 
 	Leaf();
+	virtual ~Leaf();
 
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
