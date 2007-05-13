@@ -18,9 +18,9 @@ public:
 	Vec3(const Vec3& a);
 
 	// Coordinates of this object.
-	double x();
-	double y();
-	double z();
+	double x() const;
+	double y() const;
+	double z() const;
 
 	double norm() const;  // The length of the vector
 	void normalize();  // Maintain direction but make length 1
