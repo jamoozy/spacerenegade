@@ -21,25 +21,26 @@ Ship::Ship() :
 	direction(0,0,1),
 	degpyr(0,0,0),
 	radpyr(0,0,0),
-	roa(0.01),
+	roa(0.005),
+	rod(0.001),
 	ros(0.95),
-	rot(.1)
+	rot(0.02)
 {
 	model.Load("art/felix.3DS"); // Load the model
 	for(int i = 0; i < model.numObjects; i++)
 		model.Objects[i].rot.y = 0.0f;
 
-	model.shownormals = false;
+//	model.shownormals = false;
 
-	//if (!file)
-	//{
-	//	std::cerr << "***ERROR*** Loading 3DS file failed." << std::endl;
-	//	exit(1);
-	//}
-	//else
-	//{
-	//	std::cout << "3DS file loaded successfully!" << std::endl;
-	//}
+//	if (!file)
+//	{
+//		std::cerr << "***ERROR*** Loading 3DS file failed." << std::endl;
+//		exit(1);
+//	}
+//	else
+//	{
+//		std::cout << "3DS file loaded successfully!" << std::endl;
+//	}
 }
 
 // Deconstructor: file is a pointer, so delete it
@@ -67,6 +68,11 @@ void Ship::draw()
 	glRotated(degpyr.x(),  1,0,0);
 	glRotated(degpyr.z(),  0,0,1);
 
+	#ifndef WIN32
+		// Set color to purple.
+		glColor3f(.7,0,.8);
+	#endif
+
 	// Drawing function
  	// You can also build a texture with a single color and use it
 	//GLTexture tex3;
@@ -79,9 +85,7 @@ void Ship::draw()
 
 void Ship::recompdir()
 {
-//	Vec3 look = Vec3(sin(theta) * cos(phi), sin(phi), cos(theta) * cos(phi));
 	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
-//	direction = Vec3(sin(radpyr.y()) , sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
 	degpyr = radpyr * (180 / M_PI);
 }
 
@@ -94,7 +98,7 @@ void Ship::accelerate()
 // Subtracts from the ship's velocity.
 void Ship::decelerate()
 {
-	velocity -= direction * roa;
+	velocity -= direction * rod;
 }
 
 // Brings the velocity down to 0
