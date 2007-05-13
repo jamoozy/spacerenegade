@@ -25,3 +25,10 @@ Vec3 Object::getPos()
 {
 	return position;
 }
+
+// Get the position of the object in the next frame.
+Vec3 Object::getNextPos()
+{
+	return position + velocity;
+}
+

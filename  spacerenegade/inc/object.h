@@ -16,7 +16,9 @@ public:
 	virtual ~Object();
 
 	virtual void draw();
-	virtual Vec3 getPos();
+	virtual Vec3 getPos();      // Get current position.
+	virtual Vec3 getNextPos();  // Get position at next frame (assumes constant velocity).
 };
 		
 #endif
+
