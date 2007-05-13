@@ -7,8 +7,8 @@
 class Asteroid : public Object
 {
 private:
-	Vec3 angle;
-	Vec3 avelocity;
+	Vec3 angle;      // The angle of rotation in the local coord-sys.
+	Vec3 avelocity;  // The change of angle over time.
 
 public:
 	Asteroid();
