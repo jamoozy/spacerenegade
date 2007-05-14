@@ -38,13 +38,6 @@ Ship::Ship() : Object(),
 // Deconstructor: file is a pointer, so delete it
 Ship::~Ship() {}
 
-// Set the ship somewhere new.  This should be used primarily
-// for debugging purposes.
-void Ship::setAt(double x, double y, double z)
-{
-	position = Vec3(x, y, z);
-}
-
 // Draws the ship.
 void Ship::draw()
 {
