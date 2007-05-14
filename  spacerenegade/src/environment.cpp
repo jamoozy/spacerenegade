@@ -11,6 +11,9 @@
 // This really does nothing, actually ...
 Node::Node() {}
 
+// This, too, does nothing.
+void Node::initLeaves() {}
+
 // This does something very important ...
 Node::~Node() {}
 
@@ -73,6 +76,13 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 	}
 }
 
+// Tell all the child-nodes to initialize the leaves.
+void Branch::initLeaves()
+{
+	for (int i = 0; i < 8; i++)
+		kids[i]->initLeaves();
+}
+
 // Delete the kids.
 Branch::~Branch()
 {
@@ -121,6 +131,16 @@ void Branch::add(Object* o)
 ////////////////////////////////////////////////////////////////////////////////
 
 Leaf::Leaf(Vec3 min, Vec3 max) : min(min), max(max) {}
+
+void Leaf::initLeaves()
+{
+	// ---- Another explaination: ----
+	//
+	// I'm using an "anchor" to add objects just slightly out of the range
+	// of this leaf, find where they landed, and that will be a neighbor.
+	// Think of fishing - once the lure hits the bottom a fish grabs it.
+	// Get the fish and re-cast the lure in a different spot.
+}
 
 Leaf::~Leaf()
 {
@@ -179,6 +199,7 @@ const double OctTree::BOUND = 1000;
 
 OctTree::OctTree() : head(new Branch(1 , Vec3(0,0,0))) {}
 
+void OctTree::initLeaves() { head->initLeaves(); }
 
 OctTree::~OctTree()
 {
