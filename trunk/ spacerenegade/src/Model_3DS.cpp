@@ -263,20 +263,20 @@ void Model_3DS::Load(char *name)
 		}
 	}
 
-	// Let's build simple colored textures for the materials w/o a texture
-	for (int j = 0; j < numMaterials; j++)
-	{
-		if (Materials[j].textured == false)
+	#ifdef WIN32
+		// Let's build simple colored textures for the materials w/o a texture
+		for (int j = 0; j < numMaterials; j++)
 		{
-			unsigned char r = Materials[j].color.r;
-			unsigned char g = Materials[j].color.g;
-			unsigned char b = Materials[j].color.b;
-#ifdef WIN32
-			Materials[j].tex.BuildColorTexture(r, g, b);
-#endif
-			Materials[j].textured = true;
+			if (Materials[j].textured == false)
+			{
+				unsigned char r = Materials[j].color.r;
+				unsigned char g = Materials[j].color.g;
+				unsigned char b = Materials[j].color.b;
+				Materials[j].tex.BuildColorTexture(r, g, b);
+				Materials[j].textured = true;
+			}
 		}
-	}
+	#endif
 }
 
 void Model_3DS::Draw()
