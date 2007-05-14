@@ -1,4 +1,3 @@
-#include <iostream>
 #include "object.h"
 #include "vec3.h"
 #include "environment.h"
@@ -43,7 +42,6 @@ void Object::checkResidence()
 		position.y() < leaf->min.y() || leaf->max.y() < position.y() ||
 		position.z() < leaf->min.z() || leaf->max.z() < position.z())
 	{
-		std::cout << "removed!" << std::endl;
 		leaf->remove(this);
 		env->add(this);
 	}
