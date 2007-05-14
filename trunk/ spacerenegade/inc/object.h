@@ -3,8 +3,12 @@
 
 #include "vec3.h"
 
+struct Leaf;
+
 class Object
 {
+	Leaf *leaf;  // Leaf where this object resides.
+
 protected:
 	Vec3 position;
 	Vec3 velocity;
@@ -18,6 +22,10 @@ public:
 	virtual void draw();
 	virtual Vec3 getPos();      // Get current position.
 	virtual Vec3 getNextPos();  // Get position at next frame (assumes constant velocity).
+
+	void checkResidence();
+	Leaf *getResidence();
+	void setResidence(Leaf *l);
 };
 		
 #endif

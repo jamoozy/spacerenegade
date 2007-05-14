@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "object.h"
+#include "vec3.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -38,7 +39,11 @@ struct Leaf : public Node
 {
 	std::vector<Object*> data;
 
-	Leaf();
+	Vec3 min, max;  // Bounds of this leaf node.
+
+	Leaf *neighbors[26];   // Pointers to each of the 26 neighbor-leaves.
+
+	Leaf(Vec3 min, Vec3 max);
 	virtual ~Leaf();
 
 	virtual void update();

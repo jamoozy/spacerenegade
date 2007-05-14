@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <iostream>
+#include "environment.h"
 #include "camera.h"
 #include "input.h"
 #include "ship.h"
@@ -150,6 +151,10 @@ void readSpecialKeys(int key, int x, int y)
 {
 	if (key == GLUT_KEY_F9)
 		std::cout << playerShip->getPos().str() << std::endl;
+
+	if (key == GLUT_KEY_F12)
+		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->min.str() << std::endl
+			      << "Max bound of Leaf: " << playerShip->getResidence()->max.str() << std::endl;
 
 	switch (key)
 	{
