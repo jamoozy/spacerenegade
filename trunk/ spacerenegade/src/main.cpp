@@ -181,6 +181,7 @@ int main(int argc, char **argv)
 	MSPF = 17;
 
 	env = new OctTree();
+	env->initLeaves();
 
 	Asteroid *asteroids[6];
 	asteroids[0] = new Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
