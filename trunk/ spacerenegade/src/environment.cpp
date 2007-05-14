@@ -2,6 +2,7 @@
 #include "environment.h"
 #include "vec3.h"
 
+extern OctTree *env;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +141,117 @@ void Leaf::initLeaves()
 	// of this leaf, find where they landed, and that will be a neighbor.
 	// Think of fishing - once the lure hits the bottom a fish grabs it.
 	// Get the fish and re-cast the lure in a different spot.
+
+	Vec3 center((max+min)/2);
+	double diff = max.x() - center.x() + 1;
+
+	Object *anchor = new Object();
+
+	anchor->setAt(center-Vec3(diff,diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[0] = anchor->getResidence();
+	else
+		neighbors[0] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(diff,diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[1] = anchor->getResidence();
+	else
+		neighbors[1] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(diff,diff,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[2] = anchor->getResidence();
+	else
+		neighbors[2] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(diff,0,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[3] = anchor->getResidence();
+	else
+		neighbors[3] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(diff,0,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[4] = anchor->getResidence();
+	else
+		neighbors[4] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center+Vec3(-diff,0,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[5] = anchor->getResidence();
+	else
+		neighbors[5] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(diff,-diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[6] = anchor->getResidence();
+	else
+		neighbors[6] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center+Vec3(-diff,diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[7] = anchor->getResidence();
+	else
+		neighbors[7] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[8] = anchor->getResidence();
+	else
+		neighbors[8] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[9] = anchor->getResidence();
+	else
+		neighbors[9] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center+Vec3(0,-diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[10] = anchor->getResidence();
+	else
+		neighbors[10] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center+Vec3(0,-diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[11] = anchor->getResidence();
+	else
+		neighbors[11] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,0,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		neighbors[12] = anchor->getResidence();
+	else
+		neighbors[12] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	delete anchor;
 }
 
 Leaf::~Leaf()
