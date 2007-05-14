@@ -23,6 +23,18 @@ void Object::draw()
 	position += velocity;
 }
 
+// Sets the object at a new position.
+void Object::setAt(const Vec3& pos)
+{
+	position = pos;
+}
+
+// Sets the object at a new position.
+void Object::setAt(double x, double y, double z)
+{
+	position = Vec3(x,y,z);
+}
+
 // Get the position of this object.
 Vec3 Object::getPos()
 {

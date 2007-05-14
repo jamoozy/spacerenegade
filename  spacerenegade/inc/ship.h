@@ -38,8 +38,6 @@ public:
 	void rollRight();
 	void pitchBack();
 	void pitchForward();
-
-	void setAt(double x, double y, double z);
 };
 
 #endif
