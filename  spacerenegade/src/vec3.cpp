@@ -99,6 +99,22 @@ const Vec3 Vec3::operator*=(const double a)
 }
 
 // Multiply a scalar by each component of the vector.
+const Vec3 Vec3::operator/(const double a) const
+{
+	return Vec3(_x / a, _y / a, _z / a);
+}
+
+// Multiply a vector by a scalar and return it.
+const Vec3 Vec3::operator/=(const double a)
+{
+	this->_x /= a;
+	this->_y /= a;
+	this->_z /= a;
+
+	return *this;
+}
+
+// Multiply a scalar by each component of the vector.
 const Vec3 operator*(const double a, const Vec3& b)
 {
 	return b * a;
@@ -111,7 +127,7 @@ const Vec3 Vec3::operator^(const Vec3& a) const
 }
 
 // Unary negation.
-const Vec3& Vec3::operator-() const
+const Vec3 Vec3::operator-() const
 {
 	return Vec3(-_x, -_y, -_z);
 }
