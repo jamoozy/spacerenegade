@@ -1,3 +1,4 @@
+#include <cmath>
 #include "environment.h"
 #include "vec3.h"
 
@@ -31,9 +32,21 @@ void Node::add(Object *o) {}
 // Creates a new branch object with the given x,y,z split.
 Branch::Branch(int generation, Vec3 split) : split(split)
 {
-	if (generation < OctTree::DEPTH)
+	// --- An Explaination: ---
+	//
+	// You're probably wondering how the hell I determed where to put the
+	// plusses and where to put the minuses and all that, right?  Well
+	// I'll tell you.  Take a close look at the numbers.  Do you see the
+	// pattern in the Branch constructors formed by the +'s and -'s?
+	// It's a binary pattern.  If you take away everything except the
+	// +'s and -'s, then replace all +'s with a 0 and all -'s with a 1,
+	// you'll get the binary representation of the numbers 0 - 7.  This
+	// allows for (somewhat) fast calculation of index when the time
+	// comes.  For a concrete example, see the getIndex() method.
+
+	if (generation < pow(2, OctTree::DEPTH))
 	{
-		int nextGen = generation * 2;
+		int nextGen = generation + generation;
 		double inc = OctTree::BOUND / nextGen;
 
 		kids[0] = new Branch(nextGen, Vec3(split.x() + inc, split.y() + inc, split.z() + inc));
@@ -47,8 +60,16 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 	}
 	else
 	{
-		for (int i = 0; i < 8; i++)
-			kids[i] = new Leaf();
+		double inc = OctTree::BOUND / generation;
+
+		kids[0] = new Leaf(Vec3(split.x(), split.y(), split.z()), Vec3(split.x()+inc, split.y()+inc, split.z()+inc));
+		kids[1] = new Leaf(Vec3(split.x(), split.y(), split.z()-inc), Vec3(split.x()+inc, split.y()+inc, split.z()));
+		kids[2] = new Leaf(Vec3(split.x(), split.y()-inc, split.z()), Vec3(split.x()+inc, split.y(), split.z()+inc));
+		kids[3] = new Leaf(Vec3(split.x(), split.y()-inc, split.z()-inc), Vec3(split.x()+inc, split.y(), split.z()));
+		kids[4] = new Leaf(Vec3(split.x()-inc, split.y(), split.z()), Vec3(split.x(), split.y()+inc, split.z()+inc));
+		kids[5] = new Leaf(Vec3(split.x()-inc, split.y(), split.z()-inc), Vec3(split.x(), split.y()+inc, split.z()));
+		kids[6] = new Leaf(Vec3(split.x()-inc, split.y()-inc, split.z()), Vec3(split.x(), split.y(), split.z()+inc));
+		kids[7] = new Leaf(Vec3(split.x()-inc, split.y()-inc, split.z()-inc), Vec3(split.x(), split.y(), split.z()));
 	}
 }
 
@@ -99,7 +120,7 @@ void Branch::add(Object* o)
 // ---------------------------- Leaf Object --------------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Leaf::Leaf() {}
+Leaf::Leaf(Vec3 min, Vec3 max) : min(min), max(max) {}
 
 Leaf::~Leaf()
 {
@@ -116,18 +137,29 @@ bool Leaf::isResident(Object *o) const
 	return false;
 }
 
+// Update all of the members of this leaf node.
 void Leaf::update()
 {
 	for (unsigned int i = 0; i < data.size(); i++)
+	{
 		data[i]->draw();
+		data[i]->checkResidence();
+	}
 }
 
+// Add the given object to this Leaf.  If it's already
+// resident, do nothing.
 void Leaf::add(Object *o)
 {
 	if (!isResident(o))
+	{
 		data.push_back(o);
+		o->setResidence(this);
+	}
 }
 
+// Remove the given object from this leaf.  If it's not
+// resident, do nothing.
 void Leaf::remove(Object *o)
 {
 	for (unsigned int i = 0; i < data.size(); i++)
@@ -162,6 +194,4 @@ void OctTree::update()
 {
 	head->update();
 }
-
-
 
