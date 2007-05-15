@@ -9,6 +9,9 @@ class Object
 {
 	Leaf *leaf;  // Leaf where this object resides.
 
+	double radius;   // Radius of the bounding sphere.
+	double radius2;  // Radius squared.
+
 protected:
 	Vec3 position;
 	Vec3 velocity;
@@ -25,10 +28,12 @@ public:
 	virtual Vec3 getPos();      // Get current position.
 	virtual Vec3 getNextPos();  // Get position at next frame (assumes constant velocity).
 
-	void checkResidence();
+	bool checkResidence();
 	Leaf *getResidence();
 	void setResidence(Leaf *l);
+
+	bool collidesWith(Object *o);
 };
-		
+
 #endif
 
