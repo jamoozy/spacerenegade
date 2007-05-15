@@ -109,7 +109,7 @@ void Mouse::clearDiffs()
 }
 
 extern Ship *playerShip;
-
+extern OctTree *env;
 
 
 /////////////////////////////////////
@@ -156,6 +156,13 @@ void readSpecialKeys(int key, int x, int y)
 		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->min.str() << std::endl
 		          << "Max bound of Leaf: " << playerShip->getResidence()->max.str() << std::endl;
 
+	if (key == GLUT_KEY_HOME)
+	{
+		playerShip->getResidence()->remove(playerShip);
+		playerShip->setAt(0,0,0);
+		env->add(playerShip);
+	}
+
 	switch (key)
 	{
 		case GLUT_KEY_F1: Keyboard::getKeyboard()->setDown(SR_KEY_F1); break;
@@ -176,11 +183,11 @@ void readSpecialKeys(int key, int x, int y)
 		case GLUT_KEY_RIGHT: Keyboard::getKeyboard()->setDown(SR_KEY_RIGHT); break;
 		case GLUT_KEY_DOWN: Keyboard::getKeyboard()->setDown(SR_KEY_DOWN); break;
 
-		case SR_KEY_PAGE_UP: Keyboard::getKeyboard()->setDown(SR_KEY_PAGE_UP); break;
-		case SR_KEY_PAGE_DOWN: Keyboard::getKeyboard()->setDown(SR_KEY_PAGE_DOWN); break;
-		case SR_KEY_HOME: Keyboard::getKeyboard()->setDown(SR_KEY_HOME); break;
-		case SR_KEY_END: Keyboard::getKeyboard()->setDown(SR_KEY_END); break;
-		case SR_KEY_INSERT: Keyboard::getKeyboard()->setDown(SR_KEY_INSERT); break;
+		case GLUT_KEY_PAGE_UP: Keyboard::getKeyboard()->setDown(SR_KEY_PAGE_UP); break;
+		case GLUT_KEY_PAGE_DOWN: Keyboard::getKeyboard()->setDown(SR_KEY_PAGE_DOWN); break;
+		case GLUT_KEY_HOME: Keyboard::getKeyboard()->setDown(SR_KEY_HOME); break;
+		case GLUT_KEY_END: Keyboard::getKeyboard()->setDown(SR_KEY_END); break;
+		case GLUT_KEY_INSERT: Keyboard::getKeyboard()->setDown(SR_KEY_INSERT); break;
 	}
 }
 
@@ -206,11 +213,11 @@ void readSpecialKeysUp(int key, int x, int y)
 		case GLUT_KEY_RIGHT: Keyboard::getKeyboard()->setUp(SR_KEY_RIGHT); break;
 		case GLUT_KEY_DOWN: Keyboard::getKeyboard()->setUp(SR_KEY_DOWN); break;
 
-		case SR_KEY_PAGE_UP: Keyboard::getKeyboard()->setUp(SR_KEY_PAGE_UP); break;
-		case SR_KEY_PAGE_DOWN: Keyboard::getKeyboard()->setUp(SR_KEY_PAGE_DOWN); break;
-		case SR_KEY_HOME: Keyboard::getKeyboard()->setUp(SR_KEY_HOME); break;
-		case SR_KEY_END: Keyboard::getKeyboard()->setUp(SR_KEY_END); break;
-		case SR_KEY_INSERT: Keyboard::getKeyboard()->setUp(SR_KEY_INSERT); break;
+		case GLUT_KEY_PAGE_UP: Keyboard::getKeyboard()->setUp(SR_KEY_PAGE_UP); break;
+		case GLUT_KEY_PAGE_DOWN: Keyboard::getKeyboard()->setUp(SR_KEY_PAGE_DOWN); break;
+		case GLUT_KEY_HOME: Keyboard::getKeyboard()->setUp(SR_KEY_HOME); break;
+		case GLUT_KEY_END: Keyboard::getKeyboard()->setUp(SR_KEY_END); break;
+		case GLUT_KEY_INSERT: Keyboard::getKeyboard()->setUp(SR_KEY_INSERT); break;
 	}
 }
 
