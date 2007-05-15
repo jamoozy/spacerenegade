@@ -15,9 +15,19 @@
 #include "ship.h"
 #include "environment.h"
 
+// (JG)
+#ifdef __APPLE__
+	#include <GLUT/glut.h>
+#else
+	#include <GL/glut.h>
+#endif
+
+#include <stdio.h>
+// /(JG)
+
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
-#define LIMIT_FPS 1
+#define LIMIT_FPS 0
 
 static int FPS;
 static int MSPF;
@@ -88,6 +98,81 @@ void handleInput()
 //##########################################
 // OpenGL Display function
 
+// Menus and picking functions... (JG)
+
+void drawSquares(GLenum mode)
+{
+	if(mode == GL_SELECT)
+		glLoadName(1);
+	glColor3f(1.0, 0.0, 0.0);
+	//glRectf(-8, 11.0, -1.0, 0.5);
+	
+	if(mode == GL_SELECT)
+		glLoadName(2);
+	glColor3f(0.0, 1.0, 1.0);
+	//glRectf(0.0, 0.0, 10.0, 5.0);
+	//glutSolidCube(10);
+}
+/*
+void processHits(GLint hits, GLuint buffer[])
+{
+	GLuint names, *ptr;
+	
+	printf("hits = %d\n", hits);
+	ptr = (GLuint *) buffer;
+	
+	for(int i = 0; i < hits; i++) {
+		
+		names = *ptr;
+		printf("number of names for hit = %d\n", names); 
+		ptr += 3;
+
+		for(int j = 0; j < names; j++) {
+			if(*ptr == 1) printf("You hit the RED box!");
+			else if(*ptr == 2) printf("You hit the BLUE box!");
+			ptr++;
+		}
+		printf("\n\n");
+	}
+}
+
+void mouseClick(int button, int state, int x, int y)
+{
+	//GLuint selectBuffer[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+	
+	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+	
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	
+	//glSelectBuffer(BUFSIZE, selectBuffer);
+	(void) glRenderMode(GL_SELECT);
+	
+	glInitNames();
+	glPushName(0);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
+	
+	//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
+	drawSquares(GL_SELECT);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glFlush();
+	
+	hits = glRenderMode(GL_RENDER);
+	//if(hits > 0) processHits(hits, selectBuffer);
+}*/
+
+// End of menus and picking functions... (JG)
+
+
 void doNextFrame(int value)
 {
 	glutPostRedisplay();
@@ -123,6 +208,7 @@ void display(void)
 
 	env->update();
 
+	drawSquares(GL_RENDER);///////////////////////////////
 	glutSwapBuffers();
 }
 
@@ -184,7 +270,7 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
-	FPS = 60;
+	FPS = 0;
 	MSPF = 17;
 
 	srand(time(NULL));
@@ -193,7 +279,7 @@ int main(int argc, char **argv)
 	env->initLeaves();
 
 	Asteroid *next;
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 2000; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
 		Vec3 vel(rr(0.01,-0.01), rr(0.01,-0.01), rr(0.01,-0.01));
