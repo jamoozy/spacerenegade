@@ -44,7 +44,7 @@ void Asteroid::draw()
 	glTranslated(position.x(), position.y(), position.z());
 	glRotated(angle.x(),  1.0,0.0,0.0);
 	glRotated(angle.y(),  0.0,1.0,0.0);
-	glutWireSphere(5,4,2);
+	glutSolidSphere(5,4,2);
 
 	glPopMatrix();
 }
