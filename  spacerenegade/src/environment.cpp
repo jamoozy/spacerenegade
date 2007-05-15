@@ -49,7 +49,7 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 	// allows for (somewhat) fast calculation of index when the time
 	// comes.  For a concrete example, see the getIndex() method.
 
-	if (generation < pow(2, (double)(OctTree::DEPTH)))
+	if (generation < pow(2, (OctTree::DEPTH)))
 	{
 		int nextGen = generation + generation;
 		double inc = OctTree::BOUND / nextGen;
