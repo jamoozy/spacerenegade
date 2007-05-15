@@ -151,7 +151,7 @@ void adjustCamera()
 
 	if (Camera::getCamera()->mode() == CAMERA_MODE_LOOK)
 	{
-		Camera::getCamera()->turnLR(Mouse::getMouse()->getDiffX());
+		Camera::getCamera()->turnLR(-Mouse::getMouse()->getDiffX());
 		Camera::getCamera()->turnUD(Mouse::getMouse()->getDiffY());
 		Mouse::getMouse()->clearDiffs();
 	}
