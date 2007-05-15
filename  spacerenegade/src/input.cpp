@@ -221,6 +221,44 @@ void readSpecialKeysUp(int key, int x, int y)
 	}
 }
 
+/*
+void drawSquares(GLenum mode)
+{
+	if(mode == GL_SELECT)
+		glLoadName(1);
+	glColor3f(1.0, 0.0, 0.0);
+	glRectf(-8, 11.0, -1.0, 0.5);
+	
+	if(mode == GL_SELECT)
+		glLoadName(2);
+	glColor3f(0.0, 1.0, 1.0);
+	glRectf(0.0, 0.0, 10.0, 5.);
+}
+*//////
+void processHits(GLint hits, GLuint buffer[])
+{
+	GLuint names, *ptr;
+	
+	printf("hits = %d\n", hits);
+	ptr = (GLuint *) buffer;
+	
+	for(int i = 0; i < hits; i++) {
+		
+		names = *ptr;
+		printf("number of names for hit = %d\n", names); 
+		ptr += 3;
+
+		for(int j = 0; j < names; j++) {
+			if(*ptr == 1) printf("You hit the RED box!");
+			else if(*ptr == 2) printf("You hit the BLUE box!");
+			ptr++;
+		}
+		printf("\n\n");
+	}
+}
+
+#define BUFSIZE 512////////////////
+
 // Right now all this does is go into look-around mode
 // when any button is held down.
 void mouseButtHandler(int button, int state, int x, int y)
@@ -236,6 +274,39 @@ void mouseButtHandler(int button, int state, int x, int y)
 		Mouse::getMouse()->setLastMousePos(x, y);
 		Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
 	}
+
+	//(JG)
+	GLuint selectBuffer[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+	
+	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+	
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	
+	glSelectBuffer(BUFSIZE, selectBuffer);
+	(void) glRenderMode(GL_SELECT);
+	
+	glInitNames();
+	glPushName(0);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
+	
+	//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
+	//drawSquares(GL_SELECT);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glFlush();
+	
+	hits = glRenderMode(GL_RENDER);
+	if(hits > 0) processHits(hits, selectBuffer);
+	// /(JG)
 }
 
 void mouseMoveHandler(int x, int y)
