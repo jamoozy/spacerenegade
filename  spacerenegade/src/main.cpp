@@ -1,4 +1,3 @@
-#include <iostream>
 #include <ctime>
 #include <cstdio>
 #include <cstdlib>
@@ -17,6 +16,8 @@
 
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
+#define LIMIT_FPS 1
+
 static int FPS;
 static int MSPF;
 
@@ -139,7 +140,7 @@ void initDisplay()
 	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
-	pD.farPlane    = 500.0;
+	pD.farPlane    = 2000.0;
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
@@ -173,6 +174,11 @@ void initDisplay()
 //##########################################
 // Main function
 
+double rr(double max, double min)
+{
+	return (rand() * (max - min)) / RAND_MAX + min;
+}
+
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -180,28 +186,37 @@ int main(int argc, char **argv)
 	FPS = 60;
 	MSPF = 17;
 
+	srand(time(NULL));
+
 	env = new OctTree();
 	env->initLeaves();
 
-	Asteroid *asteroids[6];
-	asteroids[0] = new Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
-	env->add(asteroids[0]);
-	asteroids[1] = new Asteroid( 0, 0,-41 ,  0.00,0.00,-0.00);
-	env->add(asteroids[1]);
-	asteroids[2] = new Asteroid( 0,-9,-50 ,  0.00,0.00,-0.00);
-	env->add(asteroids[2]);
-	asteroids[3] = new Asteroid( 0, 9,-50 ,  0.00,0.00,-0.00);
-	env->add(asteroids[3]);
-	asteroids[4] = new Asteroid(-9, 0,-50 ,  0.00,0.00,-0.00);
-	env->add(asteroids[4]);
-	asteroids[5] = new Asteroid( 9, 0,-50 ,  0.00,0.00,-0.00);
-	env->add(asteroids[5]);
+	Asteroid *next;
+	for (int i = 0; i < 50; i++)
+	{
+		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
+		Vec3 vel(rr(0.01,-0.01), rr(0.01,-0.01), rr(0.01,-0.01));
+		next = new Asteroid(pos, vel);
+		env->add(next);
+	}
+
+//	Asteroid *asteroids[6];
+//	asteroids[0] = new Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[0]);
+//	asteroids[1] = new Asteroid( 0, 0,-41 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[1]);
+//	asteroids[2] = new Asteroid( 0,-9,-50 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[2]);
+//	asteroids[3] = new Asteroid( 0, 9,-50 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[3]);
+//	asteroids[4] = new Asteroid(-9, 0,-50 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[4]);
+//	asteroids[5] = new Asteroid( 9, 0,-50 ,  0.00,0.00,-0.00);
+//	env->add(asteroids[5]);
 
 	playerShip = new Ship();
-	playerShip->setAt(0,0,-30);
+	playerShip->setAt(0,0,0);
 	env->add(playerShip);
-
-	srand(time(NULL));
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 
@@ -217,7 +232,12 @@ int main(int argc, char **argv)
 		#endif
 	#endif
 
-	glutTimerFunc(MSPF, doNextFrame, 0);
+	#if (LIMIT_FPS)
+		glutTimerFunc(MSPF, doNextFrame, 0);
+		glutIdleFunc(NULL);
+	#else
+		glutIdleFunc(display);
+	#endif
 	glutDisplayFunc(display);
 	glutKeyboardFunc(readKeyboard);
 	glutKeyboardUpFunc(readKeyboardUp);
@@ -226,7 +246,6 @@ int main(int argc, char **argv)
 	glutMouseFunc(mouseButtHandler);
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
-	glutIdleFunc(NULL);
 
 	initDisplay();
 
