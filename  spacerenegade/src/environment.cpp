@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cmath>
 #include "environment.h"
 #include "vec3.h"
@@ -262,21 +263,41 @@ Leaf::~Leaf()
 
 bool Leaf::isResident(Object *o) const
 {
-	for (unsigned int i = 0; i < data.size(); i++)
-		if (data[i] == o)
-			return true;
+	return (this == o->getResidence());
 
-	return false;
+//	for (unsigned int i = 0; i < data.size(); i++)
+//		if (data[i] == o)
+//			return true;
+//
+//	return false;
 }
 
 // Update all of the members of this leaf node.
 void Leaf::update()
 {
+	using std::cout;
+	using std::endl;
+
+//	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
 		data[i]->draw();
-		data[i]->checkResidence();
+		if (data[i]->checkResidence())
+		{
+			// Check all the dudes in this node.
+			for (unsigned int j = i+1; j < data.size(); j++)
+				if (data[i]->collidesWith(data[j]))
+					std::cout << "local collision!" << std::endl;
+			
+			// Check all the dudes in the neighboring nodes.
+			for (int j = 0; j < 13; j++)
+				if (neighbors[j] != NULL)
+					for (unsigned int k = 0; k < neighbors[j]->data.size(); k++)
+						if (data[i]->collidesWith(neighbors[j]->data[k]))
+							std::cout << "neighbor collision!" << std::endl;
+		}
 	}
+//	cout << "leaving Leaf::update()" << endl;
 }
 
 // Add the given object to this Leaf.  If it's already
@@ -305,7 +326,7 @@ void Leaf::remove(Object *o)
 // ---------------------------- OctTree Object ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-const int OctTree::DEPTH = 4;
+const int OctTree::DEPTH = 3;
 
 const double OctTree::BOUND = 1000;
 
