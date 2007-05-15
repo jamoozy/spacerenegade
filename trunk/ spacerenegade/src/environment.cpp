@@ -317,7 +317,10 @@ void Leaf::remove(Object *o)
 {
 	for (unsigned int i = 0; i < data.size(); i++)
 		if (data[i] == o)
+		{
+			data[i]->setResidence(NULL);
 			data.erase(data.begin()+i);
+		}
 }
 
 
