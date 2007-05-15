@@ -32,6 +32,11 @@
 static int FPS;
 static int MSPF;
 
+
+enum { START_SCREEN, TACTICAL };
+int screenState;
+
+
 #if (DEBUG_MODE)
 	int window;
 #endif
@@ -179,6 +184,14 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
+void initTactical();
+
+void displayStartScreen()
+{
+	screenState = TACTICAL;
+	initTactical();
+}
+
 void adjustGlobalLighting()
 {
 	GLfloat direction[] = {1.0f,1.0f,1.0f,0.0f};
@@ -191,7 +204,8 @@ void adjustGlobalLighting()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, color);
 }
 
-void display(void)
+
+void displayTactical(void)
 {
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
@@ -224,11 +238,39 @@ void display(void)
 	glutSwapBuffers();
 }
 
+void display()
+{
+	if (screenState == START_SCREEN)
+	{
+		displayStartScreen();
+	}
+	else if (screenState == TACTICAL)
+	{
+		displayTactical();
+	}
+}
 
 //##########################################
 // Init display settings
 
-void initDisplay()
+void initStartScreen()
+{
+	// Perspective projection parameters
+	pD.fieldOfView = 45.0;
+	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
+	pD.nearPlane   = 0.1;
+	pD.farPlane    = 200.0;
+
+	// setup context
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+
+	// set basic matrix mode
+	glMatrixMode(GL_MODELVIEW);
+}
+
+void initTactical()
 {
 	#if (PRINT_FPS)
 		last_time = 0;
@@ -324,7 +366,8 @@ int main(int argc, char **argv)
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
 
-	initDisplay();
+	screenState = START_SCREEN;
+	initStartScreen();
 
 	glutMainLoop();
 
