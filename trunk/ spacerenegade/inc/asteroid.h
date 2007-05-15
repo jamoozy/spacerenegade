@@ -14,6 +14,7 @@ public:
 	Asteroid();
 	Asteroid(double px, double py, double pz, double vx, double vy, double vz);
 	Asteroid(const Vec3& pos, const Vec3& v);
+
 	void draw();
 };
 
