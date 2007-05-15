@@ -27,7 +27,7 @@
 
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
-#define LIMIT_FPS 0
+#define LIMIT_FPS 1
 
 static int FPS;
 static int MSPF;
@@ -179,6 +179,18 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
+void adjustGlobalLighting()
+{
+	GLfloat direction[] = {1.0f,1.0f,1.0f,0.0f};
+	GLfloat color[] = {1.0f,1.0f,1.0f};
+
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color);
+	glLightfv(GL_LIGHT0, GL_POSITION, direction);
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  color);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  color);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+}
+
 void display(void)
 {
 	#if (DEBUG_MODE)
@@ -186,11 +198,12 @@ void display(void)
 	#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	adjustCamera();
+
+	adjustGlobalLighting();
 
 	handleInput();
 
@@ -198,7 +211,6 @@ void display(void)
 		if (last_time != time(NULL))
 		{
 			std::cout << ctime(&last_time) << "fps: " << frames_this_second << std::endl;
-//			int difference = frames_this_second - FPS;
 			last_time = time(NULL);
 			frames_this_second = 0;
 		}
@@ -232,7 +244,6 @@ void initDisplay()
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-//	glTranslated(0,0,0);
 	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
 	// set basic matrix mode
@@ -245,17 +256,10 @@ void initDisplay()
 	glClearIndex(0);
 	glClearDepth(1);
 
-	//glEnable(GL_LIGHTING);
-	//glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
-	//GLfloat direction[] = {0.0f,-1.0f,0.0f,0.0f};
-	//GLfloat color[] = {0.0f,0.0f,1.0f};
-
-	//glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color);
-	//glLightfv(GL_LIGHT0, GL_POSITION, direction);
-	//glLightfv(GL_LIGHT0, GL_AMBIENT,  color);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE,  color);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+	adjustGlobalLighting();
 }
 
 //##########################################
@@ -279,27 +283,13 @@ int main(int argc, char **argv)
 	env->initLeaves();
 
 	Asteroid *next;
-	for (int i = 0; i < 2000; i++)
+	for (int i = 0; i < 500; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
 		Vec3 vel(rr(0.01,-0.01), rr(0.01,-0.01), rr(0.01,-0.01));
 		next = new Asteroid(pos, vel);
 		env->add(next);
 	}
-
-//	Asteroid *asteroids[6];
-//	asteroids[0] = new Asteroid( 0, 0,-59 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[0]);
-//	asteroids[1] = new Asteroid( 0, 0,-41 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[1]);
-//	asteroids[2] = new Asteroid( 0,-9,-50 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[2]);
-//	asteroids[3] = new Asteroid( 0, 9,-50 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[3]);
-//	asteroids[4] = new Asteroid(-9, 0,-50 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[4]);
-//	asteroids[5] = new Asteroid( 9, 0,-50 ,  0.00,0.00,-0.00);
-//	env->add(asteroids[5]);
 
 	playerShip = new Ship();
 	playerShip->setAt(0,0,0);
