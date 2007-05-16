@@ -159,8 +159,7 @@ Model_3DS::Model_3DS()
 	rot.z = 0.0f;
 
 	// Set up the path
-	path = new char[80];
-	sprintf(path, "");
+	path = NULL;
 
 	// Zero out our counters for MFC
 	numObjects = 0;
@@ -172,7 +171,7 @@ Model_3DS::Model_3DS()
 
 Model_3DS::~Model_3DS()
 {
-
+	if (path) delete [] path;
 }
 
 void Model_3DS::Load(char *name)
@@ -187,28 +186,37 @@ void Model_3DS::Load(char *name)
 	// Find the path
 	if (strstr(name, "/") || strstr(name, "\\"))
 	{
-		// Holds the name of the model minus the path
-		char *temp;
+//		// Holds the name of the model minus the path
+//		char *temp;
+//
+//		// Find the name without the path
+//		if (strstr(name, "/"))
+//			temp = strrchr(name, '/');
+//		else
+//			temp = strrchr(name, '\\');
 
-		// Find the name without the path
-		if (strstr(name, "/"))
-			temp = strrchr(name, '/');
-		else
-			temp = strrchr(name, '\\');
-
-		// Allocate space for the path
-		path = new char[strlen(name)-strlen(temp)+1];
-
-		// Get a pointer to the end of the path and name
-		char *src = name + strlen(name) - 1;
+		// Get a "pointer" to the end of the path and name
+		int ptr = 0;
+		while (name[ptr] != '\0') ptr++;
 
 		// Back up until a \ or the start
-		while (src != path && !((*(src-1)) == '\\' || (*(src-1)) == '/'))
-			src--;
+		#ifdef WIN32
+			while (ptr != 0 && name[ptr] != '\\') ptr--;
+		#else
+			while (ptr != 0 && name[ptr] != '/') ptr--;
+		#endif
+
+		// Allocate space for the path
+		if (path) delete [] path;
+		path = new char[ptr+1];
 
 		// Copy the path into path
-		memcpy (path, name, src-name);
-		path[src-name] = 0;
+		for (int i = 0; i < ptr; i++)
+			path[i] = name[i];
+		path[ptr] = '\0';
+
+//		memcpy (path, name, src-name);
+//		path[src-name] = 0;
 	}
 
 	// Load the file
@@ -315,10 +323,10 @@ void Model_3DS::Draw()
 			// Loop through the faces as sorted by material and draw them
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
-#ifdef WIN32
+//#ifdef WIN32
 				// Use the material's texture
 				Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
-#endif
+//#endif
 
 				glPushMatrix();
 
@@ -770,7 +778,11 @@ void Model_3DS::MapNameChunkProcessor(long length, long findex, int matindex)
 
 	// Load the name and indicate that the material has a texture
 	char fullname[80];
-	sprintf(fullname, "%s%s", path, name);
+	#ifdef WIN32
+		sprintf(fullname, "%s%s%s", path, "\\", name);
+	#else
+		sprintf(fullname, "%s%s%s", path, "/", name);
+	#endif
 #ifdef WIN32
 	Materials[matindex].tex.Load(fullname);
 #endif
