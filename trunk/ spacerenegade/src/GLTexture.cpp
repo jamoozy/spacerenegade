@@ -37,7 +37,6 @@
 #ifdef WIN32
 
 #include "GLTexture.h"
-
 #include "GL/gl.h"   // Header File For The OpenGL32 Library
 #include "GL/glu.h"  // Header File For The GLu32 Library
 #include <cstdio>
@@ -86,18 +85,6 @@ void GLTexture::Load(char *name)
 		LoadTGA(texturename);
 }
 
-void GLTexture::LoadFromResource(char *name)
-{
-	// make the texture name all lower case
-	texturename = strlwr(strdup(name));
-
-	// check the file extension to see what type of texture
-	if(strstr(texturename, ".bmp"))
-		LoadBMPResource(name);
-	if(strstr(texturename, ".tga"))	
-		LoadTGAResource(name);
-}
-
 void GLTexture::Use()
 {
 	glEnable(GL_TEXTURE_2D);								// Enable texture mapping
@@ -107,20 +94,20 @@ void GLTexture::Use()
 void GLTexture::LoadBMP(char *name)
 {
 	// Create a place to store the texture
-	glbmp_t *TextureImage[1];
+	glbmp_t *textureImage = (glbmp_t*)malloc(sizeof(glbmp_t));
 
 	// Set the pointer to NULL
-	memset(TextureImage,0,sizeof(void *)*1);
+//	memset(TextureImage,0,sizeof(void *)*1);
 
 	// Load the bitmap and assign our pointer to it
-	if(!glbmp_LoadBitmap(name, 0, TextureImage[0])) {
+	if(!glbmp_LoadBitmap(name, 0, textureImage)) {
 		fprintf(stderr, "Could not load texture %s\n", name);
 		return;
 	}
 
 	// Just in case we want to use the width and height later
-	width = TextureImage[0]->width;
-	height = TextureImage[0]->height;
+	width = textureImage->width;
+	height = textureImage->height;
 
 	// Generate the OpenGL texture id
 	glGenTextures(1, &texture[0]);
@@ -133,15 +120,15 @@ void GLTexture::LoadBMP(char *name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	// Generate the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->width, TextureImage[0]->height, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->rgb_data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, textureImage->width, textureImage->height, GL_RGB, GL_UNSIGNED_BYTE, textureImage->rgb_data);
 
 	// Cleanup
-	if (TextureImage[0])
+	if (textureImage)
 	{
-		if (TextureImage[0]->rgb_data)
-			free(TextureImage[0]->rgb_data);
+		if (textureImage->rgb_data)
+			free(textureImage->rgb_data);
 
-		free(TextureImage[0]);
+		free(textureImage);
 	}
 }
 
@@ -237,6 +224,7 @@ void GLTexture::LoadTGA(char *name)
 	free(imageData);
 }
 
+#ifdef WIN32
 
 void GLTexture::LoadBMPResource(char *name)
 {
@@ -387,6 +375,20 @@ void GLTexture::LoadTGAResource(char *name)
 	free(buffer);
 	free(top);
 }
+
+void GLTexture::LoadFromResource(char *name)
+{
+	// make the texture name all lower case
+	texturename = strlwr(strdup(name));
+
+	// check the file extension to see what type of texture
+	if(strstr(texturename, ".bmp"))
+		LoadBMPResource(name);
+	if(strstr(texturename, ".tga"))	
+		LoadTGAResource(name);
+}
+
+#endif // WIN32
 
 void GLTexture::BuildColorTexture(unsigned char r, unsigned char g, unsigned char b)
 {
