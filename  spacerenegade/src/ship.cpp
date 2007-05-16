@@ -18,9 +18,13 @@ Ship::Ship() : Object(),
 	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
 	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
 {
-	model.Load("art/felix.3DS"); // Load the model
-	for(int i = 0; i < model.numObjects; i++)
-		model.Objects[i].rot.y = 0.0f;
+	#ifdef WIN32
+		model.Load(".\\art\\felix.3DS"); // Load the model
+	#else
+		model.Load("./art/felix.3DS"); // Load the model
+	#endif
+
+//	model.rot.y = 0.0f;
 
 //	model.shownormals = false;
 
@@ -61,9 +65,9 @@ void Ship::draw()
 	// Drawing function
  	// You can also build a texture with a single color and use it
 	//GLTexture tex3;
-	//tex3.BuildColorTexture(255, 0, 0);	// Builds a solid red texture
-	//tex3.Use();				 // Binds the targa for use
-	model.Draw();			// Renders the model to the screen
+	//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
+	//tex3.Use();  // Binds the targa for use
+	model.Draw();  // Renders the model to the screen
 
 	glPopMatrix();
 }
