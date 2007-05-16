@@ -25,6 +25,9 @@
 #include <stdio.h>
 // /(JG)
 
+using std::cout;
+using std::endl;
+
 #define DEBUG_MODE 1
 #define PRINT_FPS 0
 #define LIMIT_FPS 1
@@ -195,13 +198,15 @@ void displayStartScreen()
 void adjustGlobalLighting()
 {
 	GLfloat direction[] = {1.0f,1.0f,1.0f,0.0f};
-	GLfloat color[] = {1.0f,1.0f,1.0f};
+	GLfloat ambient[] = {0.2f,0.2f,0.2f};
+	GLfloat diffuse[] = {0.3f,0.3f,0.3f};
+	GLfloat specular[] = {0.8f,1.0f,1.0f};
 
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 	glLightfv(GL_LIGHT0, GL_POSITION, direction);
-	glLightfv(GL_LIGHT0, GL_AMBIENT,  color);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE,  color);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+	glLightfv(GL_LIGHT0, GL_AMBIENT,  ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE,  diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 }
 
 
@@ -217,7 +222,7 @@ void displayTactical(void)
 
 	adjustCamera();
 
-	//adjustGlobalLighting();
+	adjustGlobalLighting();
 
 	handleInput();
 
@@ -298,10 +303,14 @@ void initTactical()
 	glClearIndex(0);
 	glClearDepth(1);
 
-//	glEnable(GL_LIGHTING);
-//	glEnable(GL_LIGHT0);
-//
-//	adjustGlobalLighting();
+	// Color-ability.
+	glEnable(GL_COLOR_MATERIAL);
+
+	// Lights.
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	adjustGlobalLighting();
 }
 
 //##########################################
@@ -325,7 +334,7 @@ int main(int argc, char **argv)
 	env->initLeaves();
 
 	Asteroid *next;
-	for (int i = 0; i < 500; i++)
+	for (int i = 0; i < 1000; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
