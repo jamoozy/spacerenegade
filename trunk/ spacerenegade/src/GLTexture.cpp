@@ -78,9 +78,14 @@ bool GLTexture::Load(char *name)
 
 	// check the file extension to see what type of texture
 	if(strstr(texturename, ".bmp"))	
-		LoadBMP(texturename);
+		return LoadBMP(texturename);
 	if(strstr(texturename, ".tga"))	
-		LoadTGA(texturename);
+		return LoadTGA(texturename);
+
+	// Unrecognized format.
+	fprintf(stderr, "Unrecognized file extension! %s\n", name);
+	fprintf(stderr, "Make sure it is a \'.bmp\' or \'.tga\' file.");
+	return false;
 }
 
 void GLTexture::Use()
@@ -240,14 +245,20 @@ bool GLTexture::LoadBMPResource(char *name)
 
 	// If you can't find it then return
 	if (hrsrc==0)
-		return;
+	{
+		fprintf(stderr, "Could not find resource! %s\n", name);
+		return false;
+	}
 
 	// Load the bitmap
 	HGLOBAL resource = LoadResource(0, hrsrc);
 	
 	// If you can't load it then return
 	if (resource==0)
-		return;
+	{
+		fprintf(stderr, "Could not load resource! %s\n", name);
+		return false;
+	}
 
 	// Load it into the buffer
 	void *buffer = LockResource(resource);
@@ -312,14 +323,20 @@ bool GLTexture::LoadTGAResource(char *name)
 
 	// If you can't find it then return
 	if (hrsrc==0)
-		return;
+	{
+		fprintf(stderr, "Could not find resource! %s\n", name);
+		return false;
+	}
 
 	// Load the targa
 	HGLOBAL resource = LoadResource(0, hrsrc);
 
 	// If you can't load it then return
 	if (resource==0)
-		return;
+	{
+		fprintf(stderr, "Could not load resource! %s\n", name);
+		return false;
+	}
 
 	// Load it into the buffer
 	void *buffer = LockResource(resource);
@@ -329,7 +346,10 @@ bool GLTexture::LoadTGAResource(char *name)
 
 	// Make sure it checks out against our comparison header
 	if (memcmp(TGAheader,top,sizeof(TGAheader)) != 0)
-		return;
+	{
+		fprintf(stderr, "Header is not of the correct format! %s\n", name);
+		return false;
+	}
 
 	// Determine the TGA width and height (highbyte*256+lowbyte)
 	width  = top->header[1] * 256 + top->header[0];
@@ -341,7 +361,8 @@ bool GLTexture::LoadTGAResource(char *name)
 	   (top->header[4] != 24 && top->header[4] != 32))		// Is it 24 or 32 bit?
 	{
 		// If anything didn't check out then close the file and return
-		return;
+		fprintf(stderr, "Resource not a valid 24 or 32 bit targa! %s\n", name);
+		return false;
 	}
 
 	bpp				= top->header[4];							// Grab the bits per pixel
@@ -394,11 +415,13 @@ bool GLTexture::LoadFromResource(char *name)
 
 	// check the file extension to see what type of texture
 	if(strstr(texturename, ".bmp"))
-		LoadBMPResource(name);
+		return LoadBMPResource(name);
 	if(strstr(texturename, ".tga"))	
-		LoadTGAResource(name);
+		return LoadTGAResource(name);
 
-	return true;
+	fprintf(stderr, "Unrecognized resource extension! %s\n", name);
+	fprintf(stderr, "Make sure it is a bitmap or targa resource.");
+	return false;
 }
 
 #endif // WIN32
