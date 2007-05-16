@@ -34,8 +34,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifdef WIN32
-
 #include "GLTexture.h"
 #include "GL/gl.h"   // Header File For The OpenGL32 Library
 #include "GL/glu.h"  // Header File For The GLu32 Library
@@ -418,4 +416,3 @@ void GLTexture::BuildColorTexture(unsigned char r, unsigned char g, unsigned cha
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, 2, 2, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
-#endif // WIN32

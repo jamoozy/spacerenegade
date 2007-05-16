@@ -41,7 +41,6 @@
 	#include <windows.h>  // Header File For Windows
 #endif
 
-#ifdef WIN32
 class GLTexture  
 {
 public:
@@ -64,5 +63,4 @@ public:
 	char *strlwr(char *str);
 };
 
-#endif // WIN32
 #endif // GLTEXTURE_H
