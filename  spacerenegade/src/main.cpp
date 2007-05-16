@@ -85,10 +85,7 @@ public:
 	void setNearPlane(float nearPlane){nearPlane = nearPlane;}
 	void setFarPlane(float farPlane){farPlane = farPlane;}
 	
-}
-
-
-
+};
 
 PerspectiveData *pD;
 /*
@@ -183,12 +180,12 @@ void resize(int w, int h)
 	glViewport(0,0, (GLsizei)w, (GLsizei)h);
 	width = w;
 	height = h;
-	pD.aspect = (float)w/(float)h;
+	pD->setAspect((float)w/(float)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	// This one gives nice frustum for 2D
-	glFrustum(-0.1 * pD.aspect, 0.1 * pD.aspect, -0.1, 0.1, 0.1, 20.0);
+	glFrustum(-0.1 * pD->getAspect(), 0.1 * pD->getAspect(), -0.1, 0.1, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -259,15 +256,16 @@ void initStartScreen()
 {
 	
 	// Perspective projection parameters
-	pD.fieldOfView = 45.0;
+	//pD = new PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1,200.0);
+	/*pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
 	pD.farPlane    = 200.0;
-
+	*/
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+	gluPerspective(pD->getFieldOfView(), pD->getAspect(), pD->getNearPlane(), pD->getFarPlane());
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -292,15 +290,15 @@ void initTactical()
 	#endif
 
 	// Perspective projection parameters
-	pD.fieldOfView = 45.0;
-	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
-	pD.nearPlane   = 0.1;
-	pD.farPlane    = 2000.0;
+	//pD.fieldOfView = 45.0;
+	//pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
+	//pD.nearPlane   = 0.1;
+	pD->setFarPlane(2000.0);
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(*pD.getFieldOfView(), *pD.getAspect(), *pD.getNearPlane(), *pD.getFarPlane());
+	gluPerspective(pD->getFieldOfView(), pD->getAspect(), pD->getNearPlane(), pD->getFarPlane());
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -339,6 +337,7 @@ int main(int argc, char **argv)
 
 	srand(time(NULL));
 
+	pD = new PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1, 200.0);
 	env = new OctTree();
 	env->initLeaves();
 
