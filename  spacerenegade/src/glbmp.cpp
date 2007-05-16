@@ -133,28 +133,28 @@ int glbmp_LoadBitmap(const char * bmp_file, int flags, glbmp_t * p_bmp_out)
    do
    {
       /* check for valid output struct */
-      if(!p_bmp_out)                               break;
+      if(!p_bmp_out) { fprintf(stderr, "bad format? %x\n", p_bmp_out); break; }
 
       /* zero it if it exists */
       memset(p_bmp_out, 0, sizeof(glbmp_t));
 
       /* check for existence of filename */
-      if(!bmp_file)                                break;
+      if(!bmp_file) { fprintf(stderr, "no bmp_file? %s\n", bmp_file); break; }
 
       /* attempt to open the file */
-      if(!(ctx.fp = fopen(bmp_file, "rb")))        break;
+      if(!(ctx.fp = fopen(bmp_file, "rb"))) { fprintf(stderr, "Could not open file? %s\n", bmp_file); break; }
 
       /* read and validate the bitmap header */
-      if(!_bmp_ReadHeader(&ctx))                   break;
+      if(!_bmp_ReadHeader(&ctx)) { fprintf(stderr, "Bad bmp header!\n"); break; }
 
       /* read and validate the bitmap info */
-      if(!_bmp_ReadInfo(&ctx, flags))              break;
+      if(!_bmp_ReadInfo(&ctx, flags)) { fprintf(stderr, "Bad bmp info!\n"); break; }
 
       /* get ready for decode */
-      if(!_bmp_InitDecode(&ctx))                   break;
+      if(!_bmp_InitDecode(&ctx)) { fprintf(stderr, "could not init decode!\n"); break; }
 
       /* read and convert bitmap data */
-      if(!_bmp_Decode(&ctx, flags))                break;
+      if(!_bmp_Decode(&ctx, flags)) { fprintf(stderr, "Could not convert bitmap data!\n"); break; }
 
       /* we're done, so fill p_bmp_out with info */
       p_bmp_out->width = (int)ctx.info.width;
@@ -297,7 +297,7 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
    do
    {
       /* read in actual info struct */
-      if(fread(&p_ctx->info, sizeof(_bmp_info), 1, p_ctx->fp) != 1)      break;
+      if(fread(&p_ctx->info, sizeof(_bmp_info), 1, p_ctx->fp) != 1) { fprintf(stderr, "Could not read bmp file!\n"); break; }
 
       /* swap bytes for other architectures */
 #ifdef _GLBMP_BYTESWAP
@@ -310,14 +310,14 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
 #endif
 
       /* make sure size is valid (power of 2 checking is later )*/
-      if(p_ctx->info.width <= 0 || p_ctx->info.height == 0)              break;
+      if(p_ctx->info.width <= 0 || p_ctx->info.height == 0) { fprintf(stderr, "Invalid bmp size!\n"); break; }
 
       /* validate compression scheme (none supported yet) */
-      if(p_ctx->info.compression > 0)                                    break;
+      if(p_ctx->info.compression > 0) { fprintf(stderr, "Invalid compression scheme!\n"); break; }
 
       /* validate bit depth */
       if(p_ctx->info.bits != 1 && p_ctx->info.bits != 4 &&
-         p_ctx->info.bits != 8 && p_ctx->info.bits != 24)                break;
+         p_ctx->info.bits != 8 && p_ctx->info.bits != 24) { fprintf(stderr, "Invalid bit depth\n"); break; }
 
       /* get number of scan lines */
       p_ctx->lines = ((p_ctx->info.height < 0) ?
@@ -337,8 +337,8 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
       if(!(flags & GLBMP_ANY_SIZE))
       {
          /* make sure width and height are both powers of two */
-         if(!_bmp_IsPowerOf2((int)p_ctx->info.width))                    break;
-         if(!_bmp_IsPowerOf2(p_ctx->lines))                              break;
+         if(!_bmp_IsPowerOf2((int)p_ctx->info.width)) { fprintf(stderr, "Width not a power of 2!\n"); break; }
+         if(!_bmp_IsPowerOf2(p_ctx->lines)) { fprintf(stderr, "Height not a power of 2!\n"); break; }
       }
 
       /* if it has a palette */
@@ -348,15 +348,15 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
 
          /* alloc space for palette */
          if(!(p_ctx->palette = (_bmp_palette_entry *)
-              malloc(colors * sizeof(_bmp_palette_entry))))              break;
+              malloc(colors * sizeof(_bmp_palette_entry)))) { fprintf(stderr, "Unable to allocate space for palette!\n"); break; }
 
          /* go to the palette in the file */
          if(fseek(p_ctx->fp,
-                  p_ctx->info.info_size - sizeof(_bmp_info), SEEK_CUR))  break;
+                  p_ctx->info.info_size - sizeof(_bmp_info), SEEK_CUR)) { fprintf(stderr, "Could not access palette!\n"); break; }
 
          /* read the palette */
          if(fread(p_ctx->palette, sizeof(_bmp_palette_entry),
-                  colors, p_ctx->fp) != colors)                          break;
+                  colors, p_ctx->fp) != colors) { fprintf(stderr, "Could not read the palette!\n"); break; }
       }
 
       success = 1;
