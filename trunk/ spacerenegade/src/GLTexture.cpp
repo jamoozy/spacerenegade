@@ -35,8 +35,8 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "GLTexture.h"
-#include "GL/gl.h"   // Header File For The OpenGL32 Library
-#include "GL/glu.h"  // Header File For The GLu32 Library
+#include "GL/gl.h"
+#include "GL/glu.h"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -94,9 +94,6 @@ bool GLTexture::LoadBMP(char *name)
 	// Create a place to store the texture
 	glbmp_t *textureImage = (glbmp_t*)malloc(sizeof(glbmp_t));
 
-	// Set the pointer to NULL
-//	memset(TextureImage,0,sizeof(void *)*1);
-
 	// Load the bitmap and assign our pointer to it
 	if(!glbmp_LoadBitmap(name, 0, textureImage))
 	{
@@ -119,7 +116,7 @@ bool GLTexture::LoadBMP(char *name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	// Generate the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, textureImage->width, textureImage->height, GL_RGB, GL_UNSIGNED_BYTE, textureImage->rgb_data);
+//	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, textureImage->width, textureImage->height, GL_RGB, GL_UNSIGNED_BYTE, textureImage->rgb_data);
 
 	// Cleanup
 	if (textureImage)
@@ -154,10 +151,14 @@ bool GLTexture::LoadTGA(char *name)
 	   fread(header,1,sizeof(header),file) != sizeof(header))				// If so then read the next 6 header bytes
 	{
 		if (file == NULL)									// If the file didn't exist then return
+		{
+			fprintf(stderr, "File does not exist! %s\n", name);
 			return false;
+		}
 		else
 		{
 			fclose(file);									// If something broke then close the file and return
+			fprintf(stderr, "Bad file format! %s\n", name);
 			return false;
 		}
 	}
@@ -171,7 +172,9 @@ bool GLTexture::LoadTGA(char *name)
 	   height	<=0	||										// Is the height less than or equal to zero
 	   (header[4] != 24 && header[4] != 32))				// Is it 24 or 32 bit?
 	{
+
 		fclose(file);										// If anything didn't check out then close the file and return
+		fprintf(stderr, "Bad image resolution or bit-count! %s\n", name);
 		return false;
 	}
 
@@ -190,6 +193,7 @@ bool GLTexture::LoadTGA(char *name)
 			free(imageData);								// If so, then release the image data
 
 		fclose(file);										// Close the file
+		fprintf(stderr, "%d Internal memory storage error! %s\n", __LINE__, name);
 		return false;
 	}
 
