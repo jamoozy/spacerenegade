@@ -221,20 +221,9 @@ void readSpecialKeysUp(int key, int x, int y)
 	}
 }
 
-/*
-void drawSquares(GLenum mode)
-{
-	if(mode == GL_SELECT)
-		glLoadName(1);
-	glColor3f(1.0, 0.0, 0.0);
-	glRectf(-8, 11.0, -1.0, 0.5);
-	
-	if(mode == GL_SELECT)
-		glLoadName(2);
-	glColor3f(0.0, 1.0, 1.0);
-	glRectf(0.0, 0.0, 10.0, 5.);
-}
-*//////
+extern void drawSquares(GLenum);
+
+
 void processHits(GLint hits, GLuint buffer[])
 {
 	GLuint names, *ptr;
@@ -258,9 +247,49 @@ void processHits(GLint hits, GLuint buffer[])
 }
 
 #define BUFSIZE 512////////////////
+//extern struct perspectiveData pD;
 
-// Right now all this does is go into look-around mode
-// when any button is held down.
+void mouseClick(int button, int state, int x, int y)
+{
+	GLuint selectBuffer[BUFSIZE];
+	GLint hits;
+	GLint viewport[4];
+	
+	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+		return;
+	
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	
+	glSelectBuffer(BUFSIZE, selectBuffer);
+	(void) glRenderMode(GL_SELECT);
+	
+	glInitNames();
+	glPushName(0);
+	
+	
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	
+	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
+
+	int width = 1024;
+	int height = 768;
+	float aspect = (float)width/(float)height;
+
+	glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
+	drawSquares(GL_SELECT);
+	//hits = glRenderMode(GL_RENDER);
+	
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glFlush();
+	
+	hits = glRenderMode(GL_RENDER);
+	printf("Names = %d\nArea =  %d\n", selectBuffer[0], selectBuffer[3]);
+	if(hits == 1) processHits(hits, selectBuffer);
+	//printf("hits = %d\n", hits);
+}
 void mouseButtHandler(int button, int state, int x, int y)
 {
 	// Things to do when the button is pushed.

@@ -35,6 +35,7 @@ using std::endl;
 static int FPS;
 static int MSPF;
 
+extern void mouseClick(int, int, int, int);
 
 enum { START_SCREEN, TACTICAL };
 int screenState;
@@ -50,12 +51,47 @@ OctTree *env;
 
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
+int width = 1024;
+int height = 768;
 
 #if (PRINT_FPS)
 time_t last_time;
 int frames_this_second;
 #endif
 
+class PerspectiveData
+{
+private:
+	float fieldOfView;
+	float aspect;
+	float nearPlane;
+	float farPlane;
+
+public:
+	//Constructors
+	PerspectiveData():fieldOfView(0), aspect(0), nearPlane(0), farPlane(0){}
+	PerspectiveData(float fieldOfView, float aspect, float nearPlane, float farPlane)
+		:fieldOfView(fieldOfView), aspect(aspect), nearPlane(nearPlane), farPlane(farPlane){}
+
+	//Getter Functions
+	float getFieldOfView(){return fieldOfView;}
+	float getAspect(){return aspect;}
+	float getNearPlane(){return nearPlane;}
+	float getFarPlane(){return farPlane;}
+
+	//Setter Functions
+	void setFieldOfView(float fieldOfView){fieldOfView = fieldOfView;}
+	void setAspect(float aspect){aspect = aspect;}
+	void setNearPlane(float nearPlane){nearPlane = nearPlane;}
+	void setFarPlane(float farPlane){farPlane = farPlane;}
+	
+}
+
+
+
+
+PerspectiveData *pD;
+/*
 struct perspectiveData 
 {
 	float fieldOfView;
@@ -63,6 +99,7 @@ struct perspectiveData
 	float nearPlane;
 	float farPlane;
 } pD;
+*/
 
 void cleanup()
 {
@@ -112,71 +149,15 @@ void drawSquares(GLenum mode)
 {
 	if(mode == GL_SELECT)
 		glLoadName(1);
-	glColor3f(1.0, 0.0, 0.0);
-	//glRectf(-8, 11.0, -1.0, 0.5);
+	glColor3f(0.0, 1.0, 0.0);
+	glRectf(-.50, -.50, .50, .50);
 	
 	if(mode == GL_SELECT)
 		glLoadName(2);
-	glColor3f(0.0, 1.0, 1.0);
-	//glRectf(0.0, 0.0, 10.0, 5.0);
+	glColor3f(0.0, 1.0, 0.0);
+	glRectf(.60, .60, 1.1, 1.1);
 	//glutSolidCube(10);
 }
-/*
-void processHits(GLint hits, GLuint buffer[])
-{
-	GLuint names, *ptr;
-	
-	printf("hits = %d\n", hits);
-	ptr = (GLuint *) buffer;
-	
-	for(int i = 0; i < hits; i++) {
-		
-		names = *ptr;
-		printf("number of names for hit = %d\n", names); 
-		ptr += 3;
-
-		for(int j = 0; j < names; j++) {
-			if(*ptr == 1) printf("You hit the RED box!");
-			else if(*ptr == 2) printf("You hit the BLUE box!");
-			ptr++;
-		}
-		printf("\n\n");
-	}
-}
-
-void mouseClick(int button, int state, int x, int y)
-{
-	//GLuint selectBuffer[BUFSIZE];
-	GLint hits;
-	GLint viewport[4];
-	
-	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
-		return;
-	
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	
-	//glSelectBuffer(BUFSIZE, selectBuffer);
-	(void) glRenderMode(GL_SELECT);
-	
-	glInitNames();
-	glPushName(0);
-	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	
-	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
-	
-	//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-	drawSquares(GL_SELECT);
-	
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glFlush();
-	
-	hits = glRenderMode(GL_RENDER);
-	//if(hits > 0) processHits(hits, selectBuffer);
-}*/
 
 // End of menus and picking functions... (JG)
 
@@ -191,10 +172,26 @@ void initTactical();
 
 void displayStartScreen()
 {
-	screenState = TACTICAL;
-	initTactical();
+	drawSquares(GL_RENDER);
+	glutSwapBuffers();
+	//screenState = TACTICAL;
+	//initTactical();
 }
 
+void resize(int w, int h)
+{
+	glViewport(0,0, (GLsizei)w, (GLsizei)h);
+	width = w;
+	height = h;
+	pD.aspect = (float)w/(float)h;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	
+	// This one gives nice frustum for 2D
+	glFrustum(-0.1 * pD.aspect, 0.1 * pD.aspect, -0.1, 0.1, 0.1, 20.0);
+	glMatrixMode(GL_MODELVIEW);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
 void adjustGlobalLighting()
 {
 	GLfloat direction[] = {1.0f,1.0f,1.0f,0.0f};
@@ -260,6 +257,7 @@ void display()
 
 void initStartScreen()
 {
+	
 	// Perspective projection parameters
 	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
@@ -273,6 +271,17 @@ void initStartScreen()
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
+	
+	if(Keyboard::getKeyboard()->isDown(SR_KEY_S)){
+		screenState = TACTICAL;
+		initTactical();
+	}//if
+	else{
+		//glMatrixMode(GL_PROJECTION);
+		glTranslatef( 0,0,-5);
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+		//gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	}//else
 }
 
 void initTactical()
@@ -291,7 +300,7 @@ void initTactical()
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+	gluPerspective(*pD.getFieldOfView(), *pD.getAspect(), *pD.getNearPlane(), *pD.getFarPlane());
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -346,10 +355,11 @@ int main(int argc, char **argv)
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
 	#if (DEBUG_MODE)
 		glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT); 
+		glutInitWindowPosition(0, 0);
 		window = glutCreateWindow("Space Renegade"); 
 	#else
 		glutEnterGameMode();
@@ -365,20 +375,33 @@ int main(int argc, char **argv)
 		glutIdleFunc(NULL);
 	#else
 		glutIdleFunc(display);
-	#endif
-	glutDisplayFunc(display);
-	glutKeyboardFunc(readKeyboard);
-	glutKeyboardUpFunc(readKeyboardUp);
-	glutSpecialFunc(readSpecialKeys);
-	glutSpecialUpFunc(readSpecialKeysUp);
-	glutMouseFunc(mouseButtHandler);
-	glutMotionFunc(mouseMoveHandler);
-	glutPassiveMotionFunc(mouseMoveHandler);
-
+	#endif	
+	
 	screenState = START_SCREEN;
 	initStartScreen();
 
-	glutMainLoop();
+    glutDisplayFunc(display); 
+    glutReshapeFunc(resize);
+	//glutIdleFunc(idle);
+	
+	glutMouseFunc(mouseClick);
+	
+    glutMainLoop();
+	
+    //return 0;*/
+	///////glutDisplayFunc(display);
+	//glutKeyboardFunc(readKeyboard);
+	//glutKeyboardUpFunc(readKeyboardUp);
+	//glutSpecialFunc(readSpecialKeys);
+	//glutSpecialUpFunc(readSpecialKeysUp);
+	////////glutMouseFunc(mouseButtHandler);
+	//glutMotionFunc(mouseMoveHandler);
+	//glutPassiveMotionFunc(mouseMoveHandler);
+
+	//screenState = START_SCREEN;
+	//initStartScreen();
+
+	///glutMainLoop();
 
 	return 0;
 }
