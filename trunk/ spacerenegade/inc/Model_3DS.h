@@ -157,7 +157,7 @@ class Model_3DS
 		float scale;			// The size you want the model scaled to
 		bool lit;				// True: the model is lit
 		bool visible;			// True: the model gets rendered
-		int Load(char *name);	// Loads a model, returns 1 for an error;
+		bool Load(char *name);	// Loads a model, returns false for an error
 		void Draw();			// Draws the model
 		FILE *bin3ds;			// The binary 3ds file
 		Model_3DS();			// Constructor
