@@ -174,7 +174,7 @@ Model_3DS::~Model_3DS()
 	if (path) delete [] path;
 }
 
-int Model_3DS::Load(char *name)
+bool Model_3DS::Load(char *name)
 {
 	// holds the main chunk header
 	ChunkHeader main;
@@ -225,8 +225,8 @@ int Model_3DS::Load(char *name)
 	// Make sure the file still exists.
 	if (!bin3ds)
 	{
-		fprintf(stderr, "File does not exist! %s\n", name);
-		return 1;
+		fprintf(stderr, "File not found! %s\n", name);
+		return false;
 	}
 
 	// Make sure we are at the beginning
@@ -279,19 +279,20 @@ int Model_3DS::Load(char *name)
 	}
 
 	// Let's build simple colored textures for the materials w/o a texture
-	for (int j = 0; j < numMaterials; j++)
-	{
-		if (Materials[j].textured == false)
-		{
-			unsigned char r = Materials[j].color.r;
-			unsigned char g = Materials[j].color.g;
-			unsigned char b = Materials[j].color.b;
-			Materials[j].tex.BuildColorTexture(r, g, b);
-			Materials[j].textured = true;
-		}
-	}
+//	for (int j = 0; j < numMaterials; j++)
+//	{
+//		if (Materials[j].textured == false)
+//		{
+//			unsigned char r = Materials[j].color.r;
+//			unsigned char g = Materials[j].color.g;
+//			unsigned char b = Materials[j].color.b;
+//			Materials[j].tex.BuildColorTexture(r, g, b);
+//			Materials[j].textured = true;
+//		}
+//	}
+	// Let's not ....
 
-	return 0;
+	return true;
 }
 
 void Model_3DS::Draw()
@@ -331,7 +332,13 @@ void Model_3DS::Draw()
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
 				// Use the material's texture
-				Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
+				if (Materials[Objects[i].MatFaces[j].MatIndex].textured)
+					Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
+				else
+					glColor4ub(Materials[Objects[i].MatFaces[j].MatIndex].color.r,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.g,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.b,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.a);
 
 				glPushMatrix();
 
@@ -789,8 +796,7 @@ void Model_3DS::MapNameChunkProcessor(long length, long findex, int matindex)
 		sprintf(fullname, "%s%s%s", path, "/", name);
 	#endif
 
-	Materials[matindex].tex.Load(fullname);
-	Materials[matindex].textured = true;
+	Materials[matindex].textured = Materials[matindex].tex.Load(fullname);
 
 	// move the file pointer back to where we got it so
 	// that the ProcessChunk() which we interrupted will read
