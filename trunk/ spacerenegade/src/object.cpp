@@ -62,21 +62,24 @@ bool Object::checkResidence()
 	return true;
 }
 
-// Sets
+// Sets the leaf that this object *thinks* it's in.
 void Object::setResidence(Leaf *l)
 {
 	leaf = l;
 }
 
+// Asks the object "Whick leaf node do you think you're in?"
 Leaf *Object::getResidence()
 {
 	return leaf;
 }
 
+// Determines if the passed object collides with this one.
 bool Object::collidesWith(Object *o)
 {
 	Vec3 diff(o->position - position);
 	double distance2 = diff * diff;
-	return (distance2 < o->radius2 + radius2);
+	double sum = o->radius + radius;
+	return (distance2 < sum * sum);
 }
 
