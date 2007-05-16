@@ -11,6 +11,7 @@ class Ship : public Object
 private:
 	Vec3 direction;
 	Model_3DS model; // 3D Model of the ship
+	bool modelLoaded;
 
 	// "Why store both degrees AND radians?" you may ask.  Because
 	// cmath works in radians and OpenGL works in degrees.

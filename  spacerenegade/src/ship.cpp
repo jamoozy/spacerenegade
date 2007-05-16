@@ -16,12 +16,12 @@
 // Makes a new, boring ship that just sits there.
 Ship::Ship() : Object(),
 	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
-	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
+	roa(0.005), rod(0.001), ros(0.95), rot(0.02), modelLoaded(false)
 {
 	#ifdef WIN32
-		model.Load(".\\art\\felix.3DS"); // Load the model
+		modelLoaded = model.Load(".\\art\\personalship.3DS"); // Load the model
 	#else
-		model.Load("./art/felix.3DS"); // Load the model
+		modelLoaded = model.Load("./art/personalship.3DS"); // Load the model
 	#endif
 
 //	model.rot.y = 0.0f;
@@ -57,17 +57,21 @@ void Ship::draw()
 	glRotated(degpyr.x(),  1,0,0);
 	glRotated(degpyr.z(),  0,0,1);
 
-	#ifndef WIN32
+	if (modelLoaded)
+	{
+		// Drawing function
+		// You can also build a texture with a single color and use it
+		//GLTexture tex3;
+		//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
+		//tex3.Use();  // Binds the targa for use
+		model.Draw();  // Renders the model to the screen
+	}
+	else
+	{
 		// Set color to purple.
 		glColor3f(.7,0,.8);
-	#endif
-
-	// Drawing function
- 	// You can also build a texture with a single color and use it
-	//GLTexture tex3;
-	//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
-	//tex3.Use();  // Binds the targa for use
-	model.Draw();  // Renders the model to the screen
+		glutWireCone(2,4,5,1);
+	}
 
 	glPopMatrix();
 }
