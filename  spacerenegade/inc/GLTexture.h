@@ -51,9 +51,11 @@ public:
 	int height;										// Texture's height
 	void Use();										// Binds the texture for use
 	void BuildColorTexture(unsigned char r, unsigned char g, unsigned char b);	// Sometimes we want a texture of uniform color
+#ifdef WIN32
 	void LoadTGAResource(char *name);				// Load a targa from the resources
 	void LoadBMPResource(char *name);				// Load a bitmap from the resources
 	void LoadFromResource(char *name);				// Load the texture from a resource
+#endif
 	void LoadTGA(char *name);						// Loads a targa file
 	void LoadBMP(char *name);						// Loads a bitmap file
 	void Load(char *name);							// Load the texture
