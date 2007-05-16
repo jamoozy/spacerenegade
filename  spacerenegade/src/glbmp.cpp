@@ -133,28 +133,28 @@ int glbmp_LoadBitmap(const char * bmp_file, int flags, glbmp_t * p_bmp_out)
    do
    {
       /* check for valid output struct */
-      if(!p_bmp_out) { fprintf(stderr, "bad format? %x\n", p_bmp_out); break; }
+      if(!p_bmp_out) { fprintf(stderr, "Pointer to glbmp_t structure not initialized! %x\n", p_bmp_out); break; }
 
       /* zero it if it exists */
       memset(p_bmp_out, 0, sizeof(glbmp_t));
 
       /* check for existence of filename */
-      if(!bmp_file) { fprintf(stderr, "no bmp_file? %s\n", bmp_file); break; }
+      if(!bmp_file) { fprintf(stderr, "Bitmap file not found! %s\n", bmp_file); break; }
 
       /* attempt to open the file */
-      if(!(ctx.fp = fopen(bmp_file, "rb"))) { fprintf(stderr, "Could not open file? %s\n", bmp_file); break; }
+      if(!(ctx.fp = fopen(bmp_file, "rb"))) { fprintf(stderr, "Could not open file! %s\n", bmp_file); break; }
 
       /* read and validate the bitmap header */
-      if(!_bmp_ReadHeader(&ctx)) { fprintf(stderr, "Bad bmp header!\n"); break; }
+      if(!_bmp_ReadHeader(&ctx)) { fprintf(stderr, "Bad bitmap header! %s\n", bmp_file); break; }
 
       /* read and validate the bitmap info */
-      if(!_bmp_ReadInfo(&ctx, flags)) { fprintf(stderr, "Bad bmp info!\n"); break; }
+      if(!_bmp_ReadInfo(&ctx, flags)) { fprintf(stderr, "Bad bitmap info! %s\n", bmp_file); break; }
 
       /* get ready for decode */
-      if(!_bmp_InitDecode(&ctx)) { fprintf(stderr, "could not init decode!\n"); break; }
+      if(!_bmp_InitDecode(&ctx)) { fprintf(stderr, "Could not initialize decoder! %s\n", bmp_file); break; }
 
       /* read and convert bitmap data */
-      if(!_bmp_Decode(&ctx, flags)) { fprintf(stderr, "Could not convert bitmap data!\n"); break; }
+      if(!_bmp_Decode(&ctx, flags)) { fprintf(stderr, "Could not convert bitmap data! %s\n", bmp_file); break; }
 
       /* we're done, so fill p_bmp_out with info */
       p_bmp_out->width = (int)ctx.info.width;
@@ -297,7 +297,7 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
    do
    {
       /* read in actual info struct */
-      if(fread(&p_ctx->info, sizeof(_bmp_info), 1, p_ctx->fp) != 1) { fprintf(stderr, "Could not read bmp file!\n"); break; }
+      if(fread(&p_ctx->info, sizeof(_bmp_info), 1, p_ctx->fp) != 1) { fprintf(stderr, "Could not read bitmap file!\n"); break; }
 
       /* swap bytes for other architectures */
 #ifdef _GLBMP_BYTESWAP
@@ -310,7 +310,7 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
 #endif
 
       /* make sure size is valid (power of 2 checking is later )*/
-      if(p_ctx->info.width <= 0 || p_ctx->info.height == 0) { fprintf(stderr, "Invalid bmp size!\n"); break; }
+      if(p_ctx->info.width <= 0 || p_ctx->info.height == 0) { fprintf(stderr, "Invalid bitmap size!\n"); break; }
 
       /* validate compression scheme (none supported yet) */
       if(p_ctx->info.compression > 0) { fprintf(stderr, "Invalid compression scheme!\n"); break; }
