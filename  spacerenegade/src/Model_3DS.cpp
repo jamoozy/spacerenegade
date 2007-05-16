@@ -174,7 +174,7 @@ Model_3DS::~Model_3DS()
 	if (path) delete [] path;
 }
 
-void Model_3DS::Load(char *name)
+int Model_3DS::Load(char *name)
 {
 	// holds the main chunk header
 	ChunkHeader main;
@@ -221,6 +221,13 @@ void Model_3DS::Load(char *name)
 
 	// Load the file
 	bin3ds = fopen(name,"rb");
+
+	// Make sure the file still exists.
+	if (!bin3ds)
+	{
+		fprintf(stderr, "File does not exist! %s\n", name);
+		return 1;
+	}
 
 	// Make sure we are at the beginning
 	fseek(bin3ds, 0, SEEK_SET);
@@ -271,20 +278,20 @@ void Model_3DS::Load(char *name)
 		}
 	}
 
-	#ifdef WIN32
-		// Let's build simple colored textures for the materials w/o a texture
-		for (int j = 0; j < numMaterials; j++)
+	// Let's build simple colored textures for the materials w/o a texture
+	for (int j = 0; j < numMaterials; j++)
+	{
+		if (Materials[j].textured == false)
 		{
-			if (Materials[j].textured == false)
-			{
-				unsigned char r = Materials[j].color.r;
-				unsigned char g = Materials[j].color.g;
-				unsigned char b = Materials[j].color.b;
-				Materials[j].tex.BuildColorTexture(r, g, b);
-				Materials[j].textured = true;
-			}
+			unsigned char r = Materials[j].color.r;
+			unsigned char g = Materials[j].color.g;
+			unsigned char b = Materials[j].color.b;
+			Materials[j].tex.BuildColorTexture(r, g, b);
+			Materials[j].textured = true;
 		}
-	#endif
+	}
+
+	return 0;
 }
 
 void Model_3DS::Draw()
@@ -323,10 +330,8 @@ void Model_3DS::Draw()
 			// Loop through the faces as sorted by material and draw them
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
-//#ifdef WIN32
 				// Use the material's texture
 				Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
-//#endif
 
 				glPushMatrix();
 
@@ -783,9 +788,8 @@ void Model_3DS::MapNameChunkProcessor(long length, long findex, int matindex)
 	#else
 		sprintf(fullname, "%s%s%s", path, "/", name);
 	#endif
-#ifdef WIN32
+
 	Materials[matindex].tex.Load(fullname);
-#endif
 	Materials[matindex].textured = true;
 
 	// move the file pointer back to where we got it so
