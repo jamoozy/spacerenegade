@@ -217,7 +217,7 @@ void displayTactical(void)
 
 	adjustCamera();
 
-	adjustGlobalLighting();
+	//adjustGlobalLighting();
 
 	handleInput();
 
@@ -298,10 +298,10 @@ void initTactical()
 	glClearIndex(0);
 	glClearDepth(1);
 
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
-	adjustGlobalLighting();
+//	glEnable(GL_LIGHTING);
+//	glEnable(GL_LIGHT0);
+//
+//	adjustGlobalLighting();
 }
 
 //##########################################
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
 	for (int i = 0; i < 500; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
-		Vec3 vel(rr(0.01,-0.01), rr(0.01,-0.01), rr(0.01,-0.01));
+		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
 		next = new Asteroid(pos, vel);
 		env->add(next);
 	}
