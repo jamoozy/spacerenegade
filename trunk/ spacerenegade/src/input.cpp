@@ -1,9 +1,12 @@
 #include <GL/glut.h>
 #include <iostream>
 #include "environment.h"
+#include "globals.h"
 #include "camera.h"
 #include "input.h"
 #include "ship.h"
+
+extern int screenState;
 
 Keyboard *Keyboard::keyboard = NULL;
 
@@ -221,7 +224,6 @@ void readSpecialKeysUp(int key, int x, int y)
 	}
 }
 
-extern void drawSquares(GLenum);
 
 
 void processHits(GLint hits, GLuint buffer[])
@@ -237,9 +239,9 @@ void processHits(GLint hits, GLuint buffer[])
 		printf("number of names for hit = %d\n", names); 
 		ptr += 3;
 
-		for(int j = 0; j < names; j++) {
-			if(*ptr == 1) printf("You hit the RED box!");
-			else if(*ptr == 2) printf("You hit the BLUE box!");
+		for(GLuint j = 0; j < names; j++) {
+			if(*ptr == 1) { printf("You hit the RED box!"); initTactical(); screenState = TACTICAL; }
+			else if(*ptr == 2) { printf("You hit the BLUE box!"); cleanup(); }
 			ptr++;
 		}
 		printf("\n\n");
@@ -290,52 +292,60 @@ void mouseClick(int button, int state, int x, int y)
 	if(hits == 1) processHits(hits, selectBuffer);
 	//printf("hits = %d\n", hits);
 }
+
 void mouseButtHandler(int button, int state, int x, int y)
 {
-	// Things to do when the button is pushed.
-	if (state == GLUT_UP)
+	if (screenState == TACTICAL)
 	{
-		Camera::getCamera()->setMode(CAMERA_MODE_FOLLOW);
+		// Things to do when the button is pushed.
+		if (state == GLUT_UP)
+		{
+			Camera::getCamera()->setMode(CAMERA_MODE_FOLLOW);
+		}
+		// Things to do when the button is released.
+		else // state == GLUT_DOWN
+		{
+			Mouse::getMouse()->setLastMousePos(x, y);
+			Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
+		}
 	}
-	// Things to do when the button is released.
-	else // state == GLUT_DOWN
+	else if (screenState == START_SCREEN)
 	{
-		Mouse::getMouse()->setLastMousePos(x, y);
-		Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
+		mouseClick(button,state,x,y);
+	
+//		//(JG)
+//		GLuint selectBuffer[BUFSIZE];
+//		GLint hits;
+//		GLint viewport[4];
+//		
+//		if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
+//			return;
+//		
+//		glGetIntegerv(GL_VIEWPORT, viewport);
+//		
+//		glSelectBuffer(BUFSIZE, selectBuffer);
+//		(void) glRenderMode(GL_SELECT);
+//		
+//		glInitNames();
+//		glPushName(0);
+//		
+//		glMatrixMode(GL_PROJECTION);
+//		glPushMatrix();
+//		glLoadIdentity();
+//		
+//		gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
+//		
+//		//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
+//		//drawSquares(GL_SELECT);
+//		
+//		glMatrixMode(GL_PROJECTION);
+//		glPopMatrix();
+//		glFlush();
+//		
+//		hits = glRenderMode(GL_RENDER);
+//		if(hits > 0) processHits(hits, selectBuffer);
+//		// /(JG)
 	}
-
-	//(JG)
-	GLuint selectBuffer[BUFSIZE];
-	GLint hits;
-	GLint viewport[4];
-	
-	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
-		return;
-	
-	glGetIntegerv(GL_VIEWPORT, viewport);
-	
-	glSelectBuffer(BUFSIZE, selectBuffer);
-	(void) glRenderMode(GL_SELECT);
-	
-	glInitNames();
-	glPushName(0);
-	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	
-	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
-	
-	//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-	//drawSquares(GL_SELECT);
-	
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glFlush();
-	
-	hits = glRenderMode(GL_RENDER);
-	if(hits > 0) processHits(hits, selectBuffer);
-	// /(JG)
 }
 
 void mouseMoveHandler(int x, int y)
