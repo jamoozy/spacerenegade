@@ -188,7 +188,9 @@ void drawHUD()
 
 	// Disable the lighting and draw the HUD here.
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
-	glColor4d(0,0,1,0.1);
+	glColor4d(0,0,1,0.2);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glRecti(0,0 , 10,10);
 	glRecti(10,10 , 20,20);
 	glRecti(10,-10 , 20,0);
@@ -214,8 +216,6 @@ void displayTactical(void)
 	#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawHUD();
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -237,6 +237,8 @@ void displayTactical(void)
 	#endif
 
 	env->update();
+
+	drawHUD();
 
 	glutSwapBuffers();
 }
