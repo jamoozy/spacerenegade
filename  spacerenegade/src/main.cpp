@@ -30,8 +30,8 @@ using std::cout;
 using std::endl;
 
 #define DEBUG_MODE 1
-#define PRINT_FPS 0
-#define LIMIT_FPS 1
+#define PRINT_FPS 1
+#define LIMIT_FPS 0
 
 static int FPS;
 static int MSPF;
@@ -186,11 +186,14 @@ void drawHUD()
 	glLoadIdentity();
 	glTranslated(0,0,-50);
 
-	// Disable the lighting and draw the HUD here.
-	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
-	glColor4d(0,0,1,0.2);
+	// Enable transparency, disable the lighting and deptch checking,
+	// and draw the HUD here.
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
+
+	glColor4d(0,0,1,0.2);
+
 	glRecti(0,0 , 10,10);
 	glRecti(10,10 , 20,20);
 	glRecti(10,-10 , 20,0);
@@ -205,8 +208,10 @@ void drawHUD()
 	glLoadIdentity();
 	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
-	// Turn the lighting back on.
+	// Set parameters back to tactical.
 	glEnable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 }
 
 void displayTactical(void)
@@ -295,6 +300,10 @@ void initTactical()
 	hudpd.aspect = (float)width/height;
 	hudpd.nearPlane = 49.9;
 	hudpd.farPlane = 50.1;
+
+	// Puts the blending function in a way that makes for nice
+	// HUD and menu transparency.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
