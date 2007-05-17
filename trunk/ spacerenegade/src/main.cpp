@@ -87,7 +87,7 @@ public:
 	
 };
 
-PerspectiveData *pD;
+PerspectiveData pD;
 /*
 struct perspectiveData 
 {
@@ -180,12 +180,12 @@ void resize(int w, int h)
 	glViewport(0,0, (GLsizei)w, (GLsizei)h);
 	width = w;
 	height = h;
-	pD->setAspect((float)w/(float)h);
+	pD.setAspect((float)w/(float)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	// This one gives nice frustum for 2D
-	glFrustum(-0.1 * pD->getAspect(), 0.1 * pD->getAspect(), -0.1, 0.1, 0.1, 20.0);
+	glFrustum(-0.1 * pD.getAspect(), 0.1 * pD.getAspect(), -0.1, 0.1, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -265,7 +265,7 @@ void initStartScreen()
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD->getFieldOfView(), pD->getAspect(), pD->getNearPlane(), pD->getFarPlane());
+	gluPerspective(pD.getFieldOfView(), pD.getAspect(), pD.getNearPlane(), pD.getFarPlane());
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -293,12 +293,12 @@ void initTactical()
 	//pD.fieldOfView = 45.0;
 	//pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	//pD.nearPlane   = 0.1;
-	pD->setFarPlane(2000.0);
+	pD.setFarPlane(2000.0);
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD->getFieldOfView(), pD->getAspect(), pD->getNearPlane(), pD->getFarPlane());
+	gluPerspective(pD.getFieldOfView(), pD.getAspect(), pD.getNearPlane(), pD.getFarPlane());
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -337,7 +337,7 @@ int main(int argc, char **argv)
 
 	srand(time(NULL));
 
-	pD = new PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1, 200.0);
+	pD = PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1, 200.0);
 	env = new OctTree();
 	env->initLeaves();
 
@@ -379,28 +379,20 @@ int main(int argc, char **argv)
 	screenState = START_SCREEN;
 	initStartScreen();
 
-    glutDisplayFunc(display); 
+	glutDisplayFunc(display);
     glutReshapeFunc(resize);
-	//glutIdleFunc(idle);
+	glutKeyboardFunc(readKeyboard);
+	glutKeyboardUpFunc(readKeyboardUp);
+	glutSpecialFunc(readSpecialKeys);
+	glutSpecialUpFunc(readSpecialKeysUp);
+	glutMouseFunc(mouseButtHandler);
+	glutMotionFunc(mouseMoveHandler);
+	glutPassiveMotionFunc(mouseMoveHandler);
 	
 	glutMouseFunc(mouseClick);
 	
     glutMainLoop();
 	
-    //return 0;*/
-	///////glutDisplayFunc(display);
-	//glutKeyboardFunc(readKeyboard);
-	//glutKeyboardUpFunc(readKeyboardUp);
-	//glutSpecialFunc(readSpecialKeys);
-	//glutSpecialUpFunc(readSpecialKeysUp);
-	////////glutMouseFunc(mouseButtHandler);
-	//glutMotionFunc(mouseMoveHandler);
-	//glutPassiveMotionFunc(mouseMoveHandler);
-
-	//screenState = START_SCREEN;
-	//initStartScreen();
-
-	///glutMainLoop();
 
 	return 0;
 }
