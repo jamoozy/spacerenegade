@@ -19,24 +19,13 @@ Ship::Ship() : Object(),
 	roa(0.005), rod(0.001), ros(0.95), rot(0.02), modelLoaded(false)
 {
 	#ifdef WIN32
-		modelLoaded = model.Load(".\\art\\personalship.3DS"); // Load the model
+		char modelName[] = ".\\art\\personalship.3DS";
 	#else
-		modelLoaded = model.Load("./art/personalship.3DS"); // Load the model
+		char modelName[] = "./art/personalship.3DS"; 
 	#endif
 
-//	model.rot.y = 0.0f;
-
-//	model.shownormals = false;
-
-//	if (!file)
-//	{
-//		std::cerr << "***ERROR*** Loading 3DS file failed." << std::endl;
-//		exit(1);
-//	}
-//	else
-//	{
-//		std::cout << "3DS file loaded successfully!" << std::endl;
-//	}
+	modelLoaded = model.Load(modelName); // Load the model
+	if (!modelLoaded) std::cerr << "Could not load model! " << modelName << std::endl;
 }
 
 // Deconstructor: file is a pointer, so delete it
