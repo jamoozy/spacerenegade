@@ -1,11 +1,20 @@
-//#ifndef GLOBALS_H
-//#define GLOBALS_H
-//
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
 //#include "asteroid.h"
 //#include "ship.h"
 //
-//Asteroid *asteroids;
 //Ship *playerShip;
-//
-//#endif
+
+
+enum { START_SCREEN, TACTICAL };
+void cleanup();
+void drawSquares(GLenum);
+void mouseClick(int, int, int, int);
+void initTactical();
+
+#endif
+
+
+
 
