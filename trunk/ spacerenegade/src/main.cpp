@@ -64,7 +64,7 @@ struct perspectiveData
 	float aspect;
 	float nearPlane;
 	float farPlane;
-} pD;
+} pD, hudpd;
 
 void cleanup()
 {
@@ -173,12 +173,48 @@ void adjustGlobalLighting()
 }
 
 
+void drawHUD()
+{
+	// Change the perspective so we're looking at just a boring old plane.
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
+
+	// Change the matrix to modelview and translate all things to the
+	// one and only one plane we can look at.
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(0,0,-50);
+
+	// Disable the lighting and draw the HUD here.
+	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
+	glColor4d(0,0,1,0.1);
+	glRecti(0,0 , 10,10);
+	glRecti(10,10 , 20,20);
+	glRecti(10,-10 , 20,0);
+	glRecti(-10,10 , 0,20);
+	glRecti(0,0 , -10,-10);
+	glRecti(-10,-10 , -20,-20);
+	glRecti(-10,10 , -20,0);
+	glRecti(10,-10 , 0,-20);
+
+	// Shift things back into the "normal" camera that lets us look.
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+
+	// Turn the lighting back on.
+	glEnable(GL_LIGHTING);
+}
+
 void displayTactical(void)
 {
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
 	#endif
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	drawHUD();
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -252,6 +288,11 @@ void initTactical()
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
 	pD.farPlane    = 2000.0;
+
+	hudpd.fieldOfView = 45.0;
+	hudpd.aspect = (float)width/height;
+	hudpd.nearPlane = 49.9;
+	hudpd.farPlane = 50.1;
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
