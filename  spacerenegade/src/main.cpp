@@ -11,9 +11,10 @@
 #include "input.h"
 #include "camera.h"
 #include "asteroid.h"
-//#include "globals.h"
+#include "globals.h"
 #include "ship.h"
 #include "environment.h"
+
 
 // (JG)
 #ifdef __APPLE__
@@ -35,9 +36,7 @@ using std::endl;
 static int FPS;
 static int MSPF;
 
-extern void mouseClick(int, int, int, int);
 
-enum { START_SCREEN, TACTICAL };
 int screenState;
 
 
@@ -59,36 +58,6 @@ time_t last_time;
 int frames_this_second;
 #endif
 
-class PerspectiveData
-{
-private:
-	float fieldOfView;
-	float aspect;
-	float nearPlane;
-	float farPlane;
-
-public:
-	//Constructors
-	PerspectiveData():fieldOfView(0), aspect(0), nearPlane(0), farPlane(0){}
-	PerspectiveData(float fieldOfView, float aspect, float nearPlane, float farPlane)
-		:fieldOfView(fieldOfView), aspect(aspect), nearPlane(nearPlane), farPlane(farPlane){}
-
-	//Getter Functions
-	float getFieldOfView(){return fieldOfView;}
-	float getAspect(){return aspect;}
-	float getNearPlane(){return nearPlane;}
-	float getFarPlane(){return farPlane;}
-
-	//Setter Functions
-	void setFieldOfView(float fieldOfView){fieldOfView = fieldOfView;}
-	void setAspect(float aspect){aspect = aspect;}
-	void setNearPlane(float nearPlane){nearPlane = nearPlane;}
-	void setFarPlane(float farPlane){farPlane = farPlane;}
-	
-};
-
-PerspectiveData pD;
-/*
 struct perspectiveData 
 {
 	float fieldOfView;
@@ -96,7 +65,6 @@ struct perspectiveData
 	float nearPlane;
 	float farPlane;
 } pD;
-*/
 
 void cleanup()
 {
@@ -180,15 +148,16 @@ void resize(int w, int h)
 	glViewport(0,0, (GLsizei)w, (GLsizei)h);
 	width = w;
 	height = h;
-	pD.setAspect((float)w/(float)h);
+	pD.aspect = (float)w / (float)h;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
 	// This one gives nice frustum for 2D
-	glFrustum(-0.1 * pD.getAspect(), 0.1 * pD.getAspect(), -0.1, 0.1, 0.1, 20.0);
+	glFrustum(-0.1 * pD.aspect, 0.1 * pD.aspect, -0.1, 0.1, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
+
 void adjustGlobalLighting()
 {
 	GLfloat direction[] = {1.0f,1.0f,1.0f,0.0f};
@@ -233,7 +202,6 @@ void displayTactical(void)
 
 	env->update();
 
-	drawSquares(GL_RENDER);///////////////////////////////
 	glutSwapBuffers();
 }
 
@@ -255,31 +223,21 @@ void display()
 void initStartScreen()
 {
 	
-	// Perspective projection parameters
-	//pD = new PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1,200.0);
-	/*pD.fieldOfView = 45.0;
+	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
 	pD.farPlane    = 200.0;
-	*/
+
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD.getFieldOfView(), pD.getAspect(), pD.getNearPlane(), pD.getFarPlane());
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
-	
-	if(Keyboard::getKeyboard()->isDown(SR_KEY_S)){
-		screenState = TACTICAL;
-		initTactical();
-	}//if
-	else{
-		//glMatrixMode(GL_PROJECTION);
-		glTranslatef( 0,0,-5);
-		glClearColor(0.0, 0.0, 0.0, 0.0);
-		//gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	}//else
+
+	glTranslatef( 0,0,-5);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
 void initTactical()
@@ -290,15 +248,15 @@ void initTactical()
 	#endif
 
 	// Perspective projection parameters
-	//pD.fieldOfView = 45.0;
-	//pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
-	//pD.nearPlane   = 0.1;
-	pD.setFarPlane(2000.0);
+	pD.fieldOfView = 45.0;
+	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
+	pD.nearPlane   = 0.1;
+	pD.farPlane    = 2000.0;
 
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD.getFieldOfView(), pD.getAspect(), pD.getNearPlane(), pD.getFarPlane());
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -337,7 +295,6 @@ int main(int argc, char **argv)
 
 	srand(time(NULL));
 
-	pD = PerspectiveData(45.0, (float)IMAGE_WIDTH/IMAGE_HEIGHT, 0.1, 200.0);
 	env = new OctTree();
 	env->initLeaves();
 
@@ -380,7 +337,7 @@ int main(int argc, char **argv)
 	initStartScreen();
 
 	glutDisplayFunc(display);
-    glutReshapeFunc(resize);
+	glutReshapeFunc(resize);
 	glutKeyboardFunc(readKeyboard);
 	glutKeyboardUpFunc(readKeyboardUp);
 	glutSpecialFunc(readSpecialKeys);
@@ -389,9 +346,7 @@ int main(int argc, char **argv)
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
 	
-	glutMouseFunc(mouseClick);
-	
-    glutMainLoop();
+	glutMainLoop();
 	
 
 	return 0;
