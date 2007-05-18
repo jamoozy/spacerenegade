@@ -14,15 +14,19 @@ static GLfloat FONTCOEF = 0.013033; // The ratio between glRectf(..) and DrawTex
 static GLfloat FONTWIDTH = 9; // We're using GLUT_BITMAP_9_BY_15
 static GLfloat FONTHEIGHT = 15; // We're using GLUT_BITMAP_9_BY_15
 
-Button::Button()
-:buffer(0), xPos(0), yPos(0)
+Button::Button() :
+	buffer(0),
+	xPos(0),
+	yPos(0),
+	id(-1),
+	buttonPressed(NULL)
 {
 	RGB[0] = 0;
 	RGB[1] = 0;
 	RGB[2] = 0;
 }
-Button::Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue)
-:title(title), buffer(buffer), xPos(xPos), yPos(yPos)
+Button::Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue, int id, void (*buttonPressed)()) :
+	title(title), buffer(buffer), xPos(xPos), yPos(yPos), id(id), buttonPressed(buttonPressed)
 {
 	RGB[0] = red;
 	RGB[1] = green;

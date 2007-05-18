@@ -14,11 +14,14 @@ private:
 	GLfloat xPos;
 	GLfloat yPos;
 	GLfloat RGB[3];
+	int id;         // The ID number (for picking purposes).
 
 public:
 	Button();
-	Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos,
-			GLfloat red, GLfloat green, GLfloat blue);
+	Button(string title, GLfloat buffer,
+	       GLfloat xPos, GLfloat yPos,
+	       GLfloat red, GLfloat green, GLfloat blue,
+	       int id, void (*buttonPressed)());
 	virtual ~Button();
 
 	void Place();
@@ -28,15 +31,15 @@ public:
 	string getTitle(){return title;}
 	GLfloat getXPos(){return xPos;}
 	GLfloat getYPos(){return yPos;}
+	int getID() { return id; }
 
+	void (*buttonPressed)(); // Function to call when button is pressed.
 	void setBuffer(GLfloat buffer){buffer = buffer;}
 	void setTitle(string title){title = title;}
 	void setXPos(GLfloat xPos){xPos = xPos;}
 	void setYPos(GLfloat yPos){yPos = yPos;}
 	void setRGB(GLfloat red, GLfloat green,	GLfloat blue){RGB[0] = red;RGB[1] = green;RGB[2] = blue;}
-
-	
-
 };
 
 #endif
+
