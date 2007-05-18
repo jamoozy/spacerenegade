@@ -148,8 +148,8 @@ void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(r,g,b);
-	x = (int)round(x + (.5 * screen_width));
-	y = (int)round(y + (.5 * screen_height));
+	x = (int)floor(x + (.5 * screen_width));
+	y = (int)floor(y + (.5 * screen_height));
 	glRasterPos2i(x, y);
 	for(p = s, lines = 0; *p; p++) {
 		if (*p == '\n') {
