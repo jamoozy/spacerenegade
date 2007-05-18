@@ -25,6 +25,7 @@ public:
 	virtual void draw();
 	virtual void setAt(const Vec3& pos);
 	virtual void setAt(double x, double y, double z);
+	virtual Vec3 getVel();      // Get current velocity.
 	virtual Vec3 getPos();      // Get current position.
 	virtual Vec3 getNextPos();  // Get position at next frame (assumes constant velocity).
 
