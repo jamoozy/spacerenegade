@@ -286,15 +286,17 @@ void Leaf::update()
 		{
 			// Check all the dudes in this node.
 			for (unsigned int j = i+1; j < data.size(); j++)
-				if (data[i]->collidesWith(data[j]))
-					std::cout << "local collision!" << std::endl;
+				if (data[i]->collidesWith(data[j]));
+					//std::cout << "local : " << data[i]->getPos().str() << std::endl
+					//		  << "        " << data[j]->getPos().str() << std::endl;
 			
 			// Check all the dudes in the neighboring nodes.
 			for (int j = 0; j < 13; j++)
 				if (neighbors[j] != NULL)
 					for (unsigned int k = 0; k < neighbors[j]->data.size(); k++)
-						if (data[i]->collidesWith(neighbors[j]->data[k]))
-							std::cout << "neighbor collision!" << std::endl;
+						if (data[i]->collidesWith(neighbors[j]->data[k]));
+							//std::cout << "remote: " << data[i]->getPos().str() << std::endl
+							//          << "        " << neighbors[j]->data[k]->getPos().str() << std::endl;
 		}
 	}
 //	cout << "leaving Leaf::update()" << endl;
