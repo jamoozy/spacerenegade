@@ -9,25 +9,25 @@ using std::string;
 class Button
 {
 private:
-	char* title;
+	string title;
 	GLfloat buffer; // how much space around button (.1 looks pretty good)
 	GLfloat xPos;
 	GLfloat yPos;
-	GLfloat* RGB;
+	GLfloat RGB[3];
 
 public:
 	Button();
-	Button(char title[], GLfloat buffer, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue);
+	Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos,
+			GLfloat red, GLfloat green, GLfloat blue);
+	virtual ~Button();
 
 	void Place();
-	void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b);
+	void DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b);
 
 	GLfloat getBuffer(){return buffer;}
 	string getTitle(){return title;}
 	GLfloat getXPos(){return xPos;}
 	GLfloat getYPos(){return yPos;}
-	
-
 
 	void setBuffer(GLfloat buffer){buffer = buffer;}
 	void setTitle(string title){title = title;}
