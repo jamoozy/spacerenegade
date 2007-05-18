@@ -51,8 +51,8 @@ OctTree *env;
 
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
-int width = 1024;
-int height = 768;
+int screen_width = 1024;
+int screen_height = 768;
 
 #if (PRINT_FPS)
 time_t last_time;
@@ -149,38 +149,41 @@ DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(r,g,b);
+	x = x + (.5 * screen_width);
+	y = y + (.5 * screen_height);
 	glRasterPos2i(x, y);
 	for(p = s, lines = 0; *p; p++) {
 		if (*p == '\n') {
 			lines++;
 			glRasterPos2i(x, y-(lines*18));
 		}
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *p);
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *p);
 	}
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+
 }
 
 void displayStartScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
-	//DrawText(10, 100, "NOOOOOOOOOOO\nTHEY BE TAKIN MAH BUKKET",1.0,1.0,0.0);
-	Button *b = new Button("test title", 2, 2, 0, 2, .6, .8, .2);
+
+	Button *b = new Button("TEST TITLE", .1, 150, 150, .6, .8, .2);
 	b->Place();
 
 	glFlush();
 
-	drawSquares(GL_RENDER);
+	//drawSquares(GL_RENDER);
 	glutSwapBuffers();
 }
 
 void resize(int w, int h)
 {
 	glViewport(0,0, (GLsizei)w, (GLsizei)h);
-	width = w;
-	height = h;
+	screen_width = w;
+	screen_height = h;
 	pD.aspect = (float)w / (float)h;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -333,7 +336,7 @@ void initTactical()
 	pD.farPlane    = 2000.0;
 
 	hudpd.fieldOfView = 45.0;
-	hudpd.aspect = (float)width/height;
+	hudpd.aspect = (float)screen_width/screen_height;
 	hudpd.nearPlane = 49.9;
 	hudpd.farPlane = 50.1;
 
@@ -439,3 +442,33 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+	/*GLfloat kolor = 0.0;
+	GLfloat vidth = -6.0;
+	GLfloat fontWidthCoef = 0.013033;
+	GLfloat fontWidth = 9;
+	int thing;
+	for(thing = 0; thing < 150; thing++) {
+
+		glColor3f(kolor, 0.5, 0.5);
+		kolor += .2;
+		if (kolor > .8)
+			kolor = .2;
+
+		glRectf(vidth, 0, vidth + (fontWidth * fontWidthCoef), 1);
+		vidth = vidth + (fontWidth * fontWidthCoef);
+	}*/
+
+	//DrawText(-500, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ",1.0, 0.5, 0.0);
+	
+	// The above tested the font width pixel coefficient thingy, it was placed in DisplayStartScreen.
+	// It's probably OK to delete, but I'll let it hang around for a day or two. -James
