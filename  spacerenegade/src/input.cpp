@@ -240,8 +240,14 @@ void processHits(GLint hits, GLuint buffer[])
 		ptr += 3;
 
 		for(GLuint j = 0; j < names; j++) {
-			if(*ptr == 1) { printf("You hit the RED box!"); initTactical(); screenState = TACTICAL; }
-			else if(*ptr == 2) { printf("You hit the BLUE box!"); cleanup(); }
+			if(*ptr == 1) { 
+				printf("You hit the RED box!");
+				initTactical(); 
+			}
+			else if(*ptr == 2) { 
+				printf("You hit the BLUE box!"); 
+				cleanup(); 
+			}
 			ptr++;
 		}
 		printf("\n\n");
