@@ -13,6 +13,9 @@ private:
 	Model_3DS model; // 3D Model of the ship
 	bool modelLoaded;
 
+	//bool lightRnotL;
+	//int lightTime;
+
 	// "Why store both degrees AND radians?" you may ask.  Because
 	// cmath works in radians and OpenGL works in degrees.
 	Vec3 degpyr; // Pitch/Yaw/Roll are x/y/z resp. in degrees

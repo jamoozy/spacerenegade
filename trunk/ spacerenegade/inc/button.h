@@ -9,7 +9,7 @@ using std::string;
 class Button
 {
 private:
-	string title;
+	char* title;
 	GLfloat length;
 	GLfloat width;
 	GLfloat xPos;
@@ -18,9 +18,10 @@ private:
 
 public:
 	Button();
-	Button(string title, GLfloat length, GLfloat width, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue);
+	Button(char title[], GLfloat length, GLfloat width, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue);
 
 	void Place();
+	void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b);
 
 	GLfloat getLength(){return length;}
 	GLfloat getWidth(){return width;}
