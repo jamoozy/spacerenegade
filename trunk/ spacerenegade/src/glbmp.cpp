@@ -133,7 +133,7 @@ int glbmp_LoadBitmap(const char * bmp_file, int flags, glbmp_t * p_bmp_out)
    do
    {
       /* check for valid output struct */
-      if(!p_bmp_out) { fprintf(stderr, "Pointer to glbmp_t structure not initialized! %x\n", p_bmp_out); break; }
+      if(!p_bmp_out) { fprintf(stderr, "Pointer to glbmp_t structure not initialized! %x\n", (unsigned int)p_bmp_out); break; }
 
       /* zero it if it exists */
       memset(p_bmp_out, 0, sizeof(glbmp_t));
@@ -344,7 +344,7 @@ static int _bmp_ReadInfo(_bmp_read_context * p_ctx, int flags)
       /* if it has a palette */
       if(p_ctx->info.bits <= 8)
       {
-         int colors = 1 << p_ctx->info.bits; /* how many colors */
+         unsigned int colors = 1 << p_ctx->info.bits; /* how many colors */
 
          /* alloc space for palette */
          if(!(p_ctx->palette = (_bmp_palette_entry *)
