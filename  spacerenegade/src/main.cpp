@@ -169,7 +169,7 @@ void displayStartScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
 
-	Button b("TEST TITLE", .1, 150, 150, .6, .8, .2);
+	Button b("Start Button?", .1, 150, 150, .6, .8, .2, 1, initTactical);
 	b.Place();
 
 	glFlush();
@@ -422,7 +422,6 @@ int main(int argc, char **argv)
 	#else
 		glutIdleFunc(display);
 	#endif	
-	
 	
 	initStartScreen();
 
