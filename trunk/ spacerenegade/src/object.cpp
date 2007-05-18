@@ -35,6 +35,12 @@ void Object::setAt(double x, double y, double z)
 	position = Vec3(x,y,z);
 }
 
+// Get the velocity of this object.
+Vec3 Object::getVel()
+{
+	return velocity;
+}
+
 // Get the position of this object.
 Vec3 Object::getPos()
 {

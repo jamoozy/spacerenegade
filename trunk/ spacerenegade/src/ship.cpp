@@ -21,7 +21,7 @@ Ship::Ship() : Object(),
 	#ifdef WIN32
 		char modelName[] = ".\\art\\personalship.3DS";
 	#else
-		char modelName[] = "./art/personalship.3DS"; 
+		char modelName[] = "./art/personalship.3DS";
 	#endif
 
 	modelLoaded = model.Load(modelName); // Load the model
@@ -86,6 +86,11 @@ void Ship::draw()
 	}
 
 	glPopMatrix();
+}
+
+Vec3 Ship::getDir()
+{
+	return direction;
 }
 
 void Ship::recompdir()

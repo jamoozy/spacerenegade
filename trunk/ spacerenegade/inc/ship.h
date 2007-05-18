@@ -32,6 +32,7 @@ private:
 public:
 	Ship();
 	virtual ~Ship();
+	Vec3 getDir();
 	void draw();
 	void accelerate();
 	void decelerate();
