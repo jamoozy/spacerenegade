@@ -14,6 +14,7 @@
 #include "globals.h"
 #include "ship.h"
 #include "environment.h"
+#include "button.h"
 
 
 // (JG)
@@ -133,8 +134,44 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
+void
+DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
+{
+    int lines;
+	char* p;
+
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0.0, glutGet(GLUT_WINDOW_WIDTH), 
+			0.0, glutGet(GLUT_WINDOW_HEIGHT), -1.0, 1.0);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(r,g,b);
+	glRasterPos2i(x, y);
+	for(p = s, lines = 0; *p; p++) {
+		if (*p == '\n') {
+			lines++;
+			glRasterPos2i(x, y-(lines*18));
+		}
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *p);
+	}
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+}
+
 void displayStartScreen()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
+	//DrawText(10, 100, "NOOOOOOOOOOO\nTHEY BE TAKIN MAH BUKKET",1.0,1.0,0.0);
+	Button *b = new Button("test title", 2, 2, 0, 2, .6, .8, .2);
+	b->Place();
+
+	glFlush();
+
 	drawSquares(GL_RENDER);
 	glutSwapBuffers();
 }
@@ -350,7 +387,7 @@ int main(int argc, char **argv)
 	env->initLeaves();
 
 	Asteroid *next;
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));

@@ -15,7 +15,7 @@
 
 // Makes a new, boring ship that just sits there.
 Ship::Ship() : Object(),
-	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
+	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
 	roa(0.005), rod(0.001), ros(0.95), rot(0.02), modelLoaded(false)
 {
 	#ifdef WIN32
@@ -42,18 +42,41 @@ void Ship::draw()
 	glTranslated(position.x(), position.y(), position.z());
 	
 	// direction rotation
+	glRotated(degpyr.z(),  0,0,1);
 	glRotated(degpyr.y(),  0,1,0);
 	glRotated(degpyr.x(),  1,0,0);
-	glRotated(degpyr.z(),  0,0,1);
 
 	if (modelLoaded)
 	{
+		glColor3d(1,1,1);
 		// Drawing function
 		// You can also build a texture with a single color and use it
 		//GLTexture tex3;
 		//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
 		//tex3.Use();  // Binds the targa for use
 		model.Draw();  // Renders the model to the screen
+
+		//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
+		//GLfloat pos[3] = {3.0f,1.0f,-1.5f};
+
+		//if (lightRnotL)
+		//{
+		//	lightColor[2] = 1.0f;
+		//	pos[0] = -3.0f;
+		//}
+		//else
+		//{
+		//	lightColor[0] = 1.0f;
+		//}
+		//if (lightTime++ > 40) { lightRnotL = !lightRnotL; lightTime = 0; }
+
+		//glColor3fv(lightColor);
+		//glLightfv(GL_LIGHT1, GL_POSITION, pos);
+		//glLightfv(GL_LIGHT1, GL_AMBIENT,  lightColor);
+		//glLightfv(GL_LIGHT1, GL_DIFFUSE,  lightColor);
+		//glLightfv(GL_LIGHT1, GL_SPECULAR, lightColor);
+		//glTranslatef(pos[0],pos[1],pos[2]);
+		//glutSolidCube(0.2);
 	}
 	else
 	{
