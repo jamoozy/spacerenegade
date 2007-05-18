@@ -45,7 +45,7 @@ void Button::Place()
 			(yPos * FONTCOEF) - buffer, 
 			(xPos * FONTCOEF) + buffer + (numOfLetters * FONTWIDTH * FONTCOEF), 
 			(yPos * FONTCOEF) + buffer + (FONTHEIGHT * FONTCOEF));
-	DrawText((int)round(xPos), (int)round(yPos), title, 1.0, 1.0, 1.0);
+	DrawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
 }
 
 void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
@@ -59,8 +59,8 @@ void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat 
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(r,g,b);
-	x = (int)round(x + (.5 * screen_width));
-	y = (int)round(y + (.5 * screen_height));
+	x = (int)floor(x + (.5 * screen_width));
+	y = (int)floor(y + (.5 * screen_height));
 	glRasterPos2i(x, y);
 	for(unsigned int i = 0, lines = 0; i < s.size(); i++) {
 		if (s.at(i) == '\n') {
