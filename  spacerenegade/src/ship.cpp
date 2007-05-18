@@ -15,8 +15,8 @@
 
 // Makes a new, boring ship that just sits there.
 Ship::Ship() : Object(),
-	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
-	roa(0.005), rod(0.001), ros(0.95), rot(0.02), modelLoaded(false)
+	direction(0,0,1), modelLoaded(false), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
+	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
 {
 	#ifdef WIN32
 		char modelName[] = ".\\art\\personalship.3DS";

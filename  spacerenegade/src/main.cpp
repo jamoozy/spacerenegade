@@ -134,8 +134,7 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
-void
-DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
+void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
 {
     int lines;
 	char* p;
@@ -149,8 +148,8 @@ DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(r,g,b);
-	x = x + (.5 * screen_width);
-	y = y + (.5 * screen_height);
+	x = (int)round(x + (.5 * screen_width));
+	y = (int)round(y + (.5 * screen_height));
 	glRasterPos2i(x, y);
 	for(p = s, lines = 0; *p; p++) {
 		if (*p == '\n') {
@@ -170,8 +169,8 @@ void displayStartScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
 
-	Button *b = new Button("TEST TITLE", .1, 150, 150, .6, .8, .2);
-	b->Place();
+	Button b("TEST TITLE", .1, 150, 150, .6, .8, .2);
+	b.Place();
 
 	glFlush();
 
