@@ -133,14 +133,10 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
-void initTactical();
-
 void displayStartScreen()
 {
 	drawSquares(GL_RENDER);
 	glutSwapBuffers();
-	//screenState = TACTICAL;
-	//initTactical();
 }
 
 void resize(int w, int h)
@@ -265,6 +261,7 @@ void display()
 
 void initStartScreen()
 {
+	screenState = START_SCREEN;
 	
 	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
@@ -285,6 +282,8 @@ void initStartScreen()
 
 void initTactical()
 {
+	screenState = TACTICAL; 
+
 	#if (PRINT_FPS)
 		last_time = 0;
 		frames_this_second = FPS;
@@ -351,7 +350,7 @@ int main(int argc, char **argv)
 	env->initLeaves();
 
 	Asteroid *next;
-	for (int i = 0; i < 1000; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
@@ -385,7 +384,7 @@ int main(int argc, char **argv)
 		glutIdleFunc(display);
 	#endif	
 	
-	screenState = START_SCREEN;
+	
 	initStartScreen();
 
 	glutDisplayFunc(display);
