@@ -19,14 +19,14 @@ Button::Button() :
 	xPos(0),
 	yPos(0),
 	id(-1),
-	buttonPressed(NULL)
+	pressFunc(NULL)
 {
 	RGB[0] = 0;
 	RGB[1] = 0;
 	RGB[2] = 0;
 }
-Button::Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue, int id, void (*buttonPressed)()) :
-	title(title), buffer(buffer), xPos(xPos), yPos(yPos), id(id), buttonPressed(buttonPressed)
+Button::Button(string title, GLfloat buffer, GLfloat xPos, GLfloat yPos, GLfloat red, GLfloat green, GLfloat blue, GLuint id, void (*pressFunc)()) :
+	title(title), buffer(buffer), xPos(xPos), yPos(yPos), id(id), pressFunc(pressFunc)
 {
 	RGB[0] = red;
 	RGB[1] = green;
@@ -37,15 +37,34 @@ Button::~Button()
 {
 }
 
-void Button::Place()
+void Button::buttonPressed()
+{
+	if (pressFunc == NULL)
+		std::cout << title << " button not yet implemented!" << std::endl;
+	else
+		(*pressFunc)();
+}
+
+void Button::Place(GLenum mode)
 {
 	GLfloat numOfLetters = title.length();
 	glColor3f(RGB[0], RGB[1], RGB[2]);
-    glRectf((xPos * FONTCOEF) - buffer, 
-			(yPos * FONTCOEF) - buffer, 
-			(xPos * FONTCOEF) + buffer + (numOfLetters * FONTWIDTH * FONTCOEF), 
-			(yPos * FONTCOEF) + buffer + (FONTHEIGHT * FONTCOEF));
-	DrawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
+	if (mode == GL_SELECT)
+	{
+		glLoadName(id);
+		glRectf((xPos * FONTCOEF) - buffer, 
+				(yPos * FONTCOEF) - buffer, 
+				(xPos * FONTCOEF) + buffer + (numOfLetters * FONTWIDTH * FONTCOEF), 
+				(yPos * FONTCOEF) + buffer + (FONTHEIGHT * FONTCOEF));
+	}
+	else if (mode == GL_RENDER)
+	{
+		glRectf((xPos * FONTCOEF) - buffer, 
+				(yPos * FONTCOEF) - buffer, 
+				(xPos * FONTCOEF) + buffer + (numOfLetters * FONTWIDTH * FONTCOEF), 
+				(yPos * FONTCOEF) + buffer + (FONTHEIGHT * FONTCOEF));
+		DrawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
+	}
 }
 
 void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
