@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "input.h"
 #include "ship.h"
+#include "button.h"
 
 extern int screenState;
 
@@ -225,32 +226,42 @@ void readSpecialKeysUp(int key, int x, int y)
 }
 
 
+extern Button *buttons;
+extern int numButtons;
 
 void processHits(GLint hits, GLuint buffer[])
 {
-	GLuint names, *ptr;
+//	GLuint names, *ptr;
+//	
+//	printf("hits = %d\n", hits);
+//	ptr = (GLuint *) buffer;
 	
-	printf("hits = %d\n", hits);
-	ptr = (GLuint *) buffer;
-	
-	for(int i = 0; i < hits; i++) {
-		
-		names = *ptr;
-		printf("number of names for hit = %d\n", names); 
-		ptr += 3;
-
-		for(GLuint j = 0; j < names; j++) {
-			if(*ptr == 1) { 
-				printf("You hit the RED box!");
-				initTactical(); 
+	for(int i = 0; i < hits; i++)
+	{
+		for (int j = 0; j < numButtons; j++)
+		{
+			if (buffer[i*4 + 3] == buttons[j].getID())
+			{
+				buttons[j].buttonPressed();
 			}
-			else if(*ptr == 2) { 
-				printf("You hit the BLUE box!"); 
-				cleanup(); 
-			}
-			ptr++;
 		}
-		printf("\n\n");
+		
+//		names = *ptr;
+//		printf("number of names for hit = %d\n", names); 
+//		ptr += 3;
+//
+//		for(GLuint j = 0; j < names; j++) {
+//			if(*ptr == 1) { 
+//				printf("You hit the RED box!");
+//				initTactical(); 
+//			}
+//			else if(*ptr == 2) { 
+//				printf("You hit the BLUE box!"); 
+//				cleanup(); 
+//			}
+//			ptr++;
+//		}
+//		printf("\n\n");
 	}
 }
 
@@ -274,7 +285,6 @@ void mouseClick(int button, int state, int x, int y)
 	glInitNames();
 	glPushName(0);
 	
-	
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -286,7 +296,7 @@ void mouseClick(int button, int state, int x, int y)
 	float aspect = (float)width/(float)height;
 
 	glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-	drawSquares(GL_SELECT);
+	drawButtons(GL_SELECT);
 	//hits = glRenderMode(GL_RENDER);
 	
 	glMatrixMode(GL_PROJECTION);
