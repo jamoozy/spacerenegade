@@ -45,9 +45,12 @@ int screenState;
 	int window;
 #endif
 
-Ship *playerShip;
-OctTree *env;
 
+Ship *playerShip;  // Jam: The player's ship, duh.
+OctTree *env;      // Jam: Collision detection of objects and the world
+                   //      (environment) in general.
+Button *buttons;   // Jam: To contain any menus.
+int numButtons;    // Jam: Number of buttons in the array.
 
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
@@ -67,6 +70,9 @@ struct perspectiveData
 	float farPlane;
 } pD, hudpd;
 
+// Jam:
+// Put any deletes in here.  Make sure that the value is only deleted
+// if it's actually pointing to something (i.e. "if (x) delete x").
 void cleanup()
 {
 	#if (!DEBUG_MODE)
@@ -75,12 +81,26 @@ void cleanup()
 	Camera::cleanUp();
 	Keyboard::cleanUp();
 	Mouse::cleanUp();
-	delete env;
+	if (env) delete env;
+	if (buttons) delete [] buttons;
 	exit(0);
 }
 
-void handleInput()
+// Jam:
+// "rr" stands for "Random Range".  It's a nice little function meant
+// (initially) for creating random-ish asteroids.
+double rr(double max, double min)
 {
+	return (rand() * (max - min)) / RAND_MAX + min;
+}
+
+// Jam:
+// I use the keyboard here for the purpose of getting multiple
+// key presses and constant feedback, as opposed to the callback
+// mechanism of the glutXXXFunc()'s.
+void handleTacticalInput()
+{
+	// Quit.
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
 		cleanup();
 
@@ -111,18 +131,21 @@ void handleInput()
 
 // Menus and picking functions... (JG)
 
-void drawSquares(GLenum mode)
+void drawButtons(GLenum mode)
 {
-	if(mode == GL_SELECT)
-		glLoadName(1);
-	glColor3f(0.0, 1.0, 0.0);
-	glRectf(-.50, -.50, .50, .50);
-	
-	if(mode == GL_SELECT)
-		glLoadName(2);
-	glColor3f(0.0, 1.0, 0.0);
-	glRectf(.60, .60, 1.1, 1.1);
-	//glutSolidCube(10);
+	for (int i = 0; i < numButtons; i++)
+		buttons[i].Place(mode);
+
+//	if(mode == GL_SELECT)
+//		glLoadName(1);
+//	glColor3f(0.0, 1.0, 0.0);
+//	glRectf(-.50, -.50, .50, .50);
+//	
+//	if(mode == GL_SELECT)
+//		glLoadName(2);
+//	glColor3f(0.0, 1.0, 0.0);
+//	glRectf(.60, .60, 1.1, 1.1);
+//	//glutSolidCube(10);
 }
 
 // End of menus and picking functions... (JG)
@@ -169,12 +192,12 @@ void displayStartScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
 
-	Button b("Start Button?", .1, 150, 150, .6, .8, .2, 1, initTactical);
-	b.Place();
+	for (int i = 0; i < 4; i++)
+		buttons[i].Place(GL_RENDER);
 
-	glFlush();
+	//glFlush();
 
-	//drawSquares(GL_RENDER);
+	//drawButtons(GL_RENDER);
 	glutSwapBuffers();
 }
 
@@ -262,8 +285,8 @@ void displayTactical(void)
 	adjustCamera();
 
 	adjustGlobalLighting();
-
-	handleInput();
+	
+	handleTacticalInput();
 
 	#if (PRINT_FPS)
 		if (last_time != time(NULL))
@@ -317,11 +340,46 @@ void initStartScreen()
 
 	glTranslatef( 0,0,-5);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+
+	if (buttons) delete buttons;
+	numButtons = 4;
+	buttons = new Button[numButtons];
+
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glRenderMode(GL_RENDER);
+
+	buttons[0] = Button("New Game", .1 , -10,50   , .6,.8,.2 , 1,initTactical);
+	buttons[1] = Button("Load Game",.1 , -10,0    , .6,.8,.2 , 2,NULL);
+	buttons[2] = Button("Options",  .1 , -10,-50  , .6,.8,.2 , 3,NULL);
+	buttons[3] = Button("Quit",     .1 , -10,-100 , .6,.8,.2 , 4,cleanup);
 }
 
 void initTactical()
 {
 	screenState = TACTICAL; 
+
+	// Set up the octtree, making it ready for objects to populate it.
+	if (env) delete env;
+	env = new OctTree();
+	env->initLeaves();
+
+	// Populate the world with some asteroids.
+	Asteroid *next;
+	for (int i = 0; i < 100; i++)
+	{
+		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
+		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
+		next = new Asteroid(pos, vel);
+		env->add(next);
+	}
+
+	// Jam:
+	// Initialize the player's ship.  Don't delete it, because deleting
+	// the environment should have taken care of it already.
+	playerShip = new Ship();
+	playerShip->setAt(0,0,0);
+	env->add(playerShip);
 
 	#if (PRINT_FPS)
 		last_time = 0;
@@ -334,6 +392,7 @@ void initTactical()
 	pD.nearPlane   = 0.1;
 	pD.farPlane    = 2000.0;
 
+	// Special perspective for menu items.
 	hudpd.fieldOfView = 45.0;
 	hudpd.aspect = (float)screen_width/screen_height;
 	hudpd.nearPlane = 49.9;
@@ -371,11 +430,6 @@ void initTactical()
 //##########################################
 // Main function
 
-double rr(double max, double min)
-{
-	return (rand() * (max - min)) / RAND_MAX + min;
-}
-
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
@@ -383,23 +437,12 @@ int main(int argc, char **argv)
 	FPS = 0;
 	MSPF = 17;
 
+	env = NULL;
+	playerShip = NULL;
+	buttons = NULL;
+	numButtons = 0;
+
 	srand(time(NULL));
-
-	env = new OctTree();
-	env->initLeaves();
-
-	Asteroid *next;
-	for (int i = 0; i < 100; i++)
-	{
-		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
-		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
-		next = new Asteroid(pos, vel);
-		env->add(next);
-	}
-
-	playerShip = new Ship();
-	playerShip->setAt(0,0,0);
-	env->add(playerShip);
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
