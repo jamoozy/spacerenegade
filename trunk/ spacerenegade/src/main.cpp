@@ -37,7 +37,6 @@ using std::endl;
 static int FPS;
 static int MSPF;
 
-
 int screenState;
 
 
@@ -69,6 +68,9 @@ struct perspectiveData
 	float nearPlane;
 	float farPlane;
 } pD, hudpd;
+
+double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in the tactical screen.
+
 
 // Jam:
 // Put any deletes in here.  Make sure that the value is only deleted
@@ -235,14 +237,12 @@ void drawHUD()
 {
 	// Change the perspective so we're looking at just a boring old plane.
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
+	glPushMatrix();
+	glLoadMatrixd(tacticalHudProjMat);
 
-	// Change the matrix to modelview and translate all things to the
-	// one and only one plane we can look at.
+	// Change the matrix to modelview so it can be "cleared".
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslated(0,0,-50);
 
 	// Enable transparency, disable the lighting and deptch checking,
 	// and draw the HUD here.
@@ -263,8 +263,7 @@ void drawHUD()
 
 	// Shift things back into the "normal" camera that lets us look.
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+	glPopMatrix();
 
 	// Set parameters back to tactical.
 	glEnable(GL_LIGHTING);
@@ -407,6 +406,14 @@ void initTactical()
 	glLoadIdentity();
 	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
+	// Initialize the HUD projection matrix.
+	glPushMatrix();
+	glLoadIdentity();
+	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
+	glTranslated(0,0,-50);
+	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
+	glPopMatrix();
+
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
 
@@ -434,7 +441,7 @@ int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
-	FPS = 0;
+	FPS = 60;
 	MSPF = 17;
 
 	env = NULL;
