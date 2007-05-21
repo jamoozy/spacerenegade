@@ -51,6 +51,7 @@ OctTree *env;      // Jam: Collision detection of objects and the world
 Button *buttons;   // Jam: To contain any menus.
 int numButtons;    // Jam: Number of buttons in the array.
 
+#define PI 3.1415926535
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 int screen_width = 1024;
@@ -233,6 +234,24 @@ void adjustGlobalLighting()
 }
 
 
+void drawMiniMap()
+{	//GLfloat cx,GLfloat cy,GLfloat r,int side
+	GLfloat cx = 20;
+	GLfloat cy = -11.5;
+	GLfloat r = 5;
+	int side = 20;
+
+    unsigned int i;
+ 
+    glBegin(GL_POLYGON);
+    for (i = 0; i < side; i++) {
+	glVertex2f(cx+r*cos(i*2*PI/side),cy+r*sin(i*2*PI/side));
+    }
+
+
+    glEnd();
+}
+
 void drawHUD()
 {
 	// Change the perspective so we're looking at just a boring old plane.
@@ -251,7 +270,7 @@ void drawHUD()
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
 
 	glColor4d(0,0,1,0.2);
-
+	/*
 	glRecti(0,0 , 10,10);
 	glRecti(10,10 , 20,20);
 	glRecti(10,-10 , 20,0);
@@ -260,6 +279,9 @@ void drawHUD()
 	glRecti(-10,-10 , -20,-20);
 	glRecti(-10,10 , -20,0);
 	glRecti(10,-10 , 0,-20);
+	*/
+	glRecti(-30,-5,30,-20);
+	drawMiniMap();
 
 	// Shift things back into the "normal" camera that lets us look.
 	glMatrixMode(GL_PROJECTION);
