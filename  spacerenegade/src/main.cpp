@@ -160,11 +160,8 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
-void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
+void DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
 {
-    int lines;
-	char* p;
-
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -177,12 +174,14 @@ void DrawText(GLint x, GLint y, char* s, GLfloat r, GLfloat g, GLfloat b)
 	x = (int)floor(x + (.5 * screen_width));
 	y = (int)floor(y + (.5 * screen_height));
 	glRasterPos2i(x, y);
-	for(p = s, lines = 0; *p; p++) {
-		if (*p == '\n') {
+	for(unsigned int i = 0, lines = 0; i < s.size(); i++)
+	{
+		if (s.at(i) == '\n')
+		{
 			lines++;
 			glRasterPos2i(x, y-(lines*18));
 		}
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, *p);
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
 	}
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
@@ -240,14 +239,12 @@ void drawMiniMap()
 	GLfloat cy = -11.5;
 	GLfloat r = 5;
 	int side = 20;
-
-    unsigned int i;
  
     glBegin(GL_POLYGON);
-    for (i = 0; i < side; i++) {
-	glVertex2f(cx+r*cos(i*2*PI/side),cy+r*sin(i*2*PI/side));
+    for (int i = 0; i < side; i++)
+	{
+		glVertex2f(cx+r*cos(i*2*PI/side),cy+r*sin(i*2*PI/side));
     }
-
 
     glEnd();
 }
@@ -370,10 +367,10 @@ void initStartScreen()
 	glInitNames();
 	glRenderMode(GL_RENDER);
 
-	buttons[0] = Button("New Game", .1 , -10,50   , .6,.8,.2 , 1,initTactical);
-	buttons[1] = Button("Load Game",.1 , -10,0    , .6,.8,.2 , 2,NULL);
-	buttons[2] = Button("Options",  .1 , -10,-50  , .6,.8,.2 , 3,NULL);
-	buttons[3] = Button("Quit",     .1 , -10,-100 , .6,.8,.2 , 4,cleanup);
+	buttons[0] = Button("New Game", 0.1 , -10,50   , 0.6,0.8,0.2 , 1,initTactical);
+	buttons[1] = Button("Load Game",0.1 , -10,0    , 0.6,0.8,0.2 , 2,NULL);
+	buttons[2] = Button("Options",  0.1 , -10,-50  , 0.6,0.8,0.2 , 3,NULL);
+	buttons[3] = Button("Quit",     0.1 , -10,-100 , 0.6,0.8,0.2 , 4,cleanup);
 }
 
 void initTactical()
