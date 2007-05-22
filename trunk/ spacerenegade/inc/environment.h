@@ -72,7 +72,7 @@ public:
 	void add(Object* o);
 	void checkCollisions();
 	void update();
-	void getArea(Vec3 pos, double radius, Vec3 *objs, int numObjs);
+	void getArea(const Vec3& pos, double radius, Object **objs, int& numObjs);
 };
 
 #endif
