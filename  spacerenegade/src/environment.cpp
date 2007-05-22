@@ -148,108 +148,212 @@ void Leaf::initLeaves()
 
 	Object *anchor = new Object();
 
-	anchor->setAt(center-Vec3(diff,diff,diff));
+	anchor->setAt(center+Vec3(-diff,-diff,-diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[0] = anchor->getResidence();
+		checkedNeighbors[0] = anchor->getResidence();
 	else
-		neighbors[0] = NULL;
+		checkedNeighbors[0] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(diff,diff,0));
+	anchor->setAt(center+Vec3(-diff,-diff,0));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[1] = anchor->getResidence();
+		checkedNeighbors[1] = anchor->getResidence();
 	else
-		neighbors[1] = NULL;
+		checkedNeighbors[1] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(diff,diff,-diff));
+	anchor->setAt(center+Vec3(-diff,-diff,+diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[2] = anchor->getResidence();
+		checkedNeighbors[2] = anchor->getResidence();
 	else
-		neighbors[2] = NULL;
+		checkedNeighbors[2] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(diff,0,diff));
+	anchor->setAt(center+Vec3(-diff,0,-diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[3] = anchor->getResidence();
+		checkedNeighbors[3] = anchor->getResidence();
 	else
-		neighbors[3] = NULL;
+		checkedNeighbors[3] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(diff,0,0));
+	anchor->setAt(center+Vec3(-diff,0,0));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[4] = anchor->getResidence();
+		checkedNeighbors[4] = anchor->getResidence();
 	else
-		neighbors[4] = NULL;
+		checkedNeighbors[4] = NULL;
 	anchor->getResidence()->remove(anchor);
 
 	anchor->setAt(center+Vec3(-diff,0,diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[5] = anchor->getResidence();
+		checkedNeighbors[5] = anchor->getResidence();
 	else
-		neighbors[5] = NULL;
+		checkedNeighbors[5] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(diff,-diff,diff));
+	anchor->setAt(center+Vec3(-diff,diff,-diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[6] = anchor->getResidence();
+		checkedNeighbors[6] = anchor->getResidence();
 	else
-		neighbors[6] = NULL;
+		checkedNeighbors[6] = NULL;
 	anchor->getResidence()->remove(anchor);
 
 	anchor->setAt(center+Vec3(-diff,diff,0));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[7] = anchor->getResidence();
+		checkedNeighbors[7] = anchor->getResidence();
 	else
-		neighbors[7] = NULL;
+		checkedNeighbors[7] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(-diff,diff,diff));
+	anchor->setAt(center+Vec3(-diff,diff,diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[8] = anchor->getResidence();
+		checkedNeighbors[8] = anchor->getResidence();
 	else
-		neighbors[8] = NULL;
+		checkedNeighbors[8] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(0,diff,diff));
+	anchor->setAt(center+Vec3(0,-diff,-diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[9] = anchor->getResidence();
+		checkedNeighbors[9] = anchor->getResidence();
 	else
-		neighbors[9] = NULL;
+		checkedNeighbors[9] = NULL;
 	anchor->getResidence()->remove(anchor);
 
 	anchor->setAt(center+Vec3(0,-diff,0));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[10] = anchor->getResidence();
+		checkedNeighbors[10] = anchor->getResidence();
 	else
-		neighbors[10] = NULL;
+		checkedNeighbors[10] = NULL;
 	anchor->getResidence()->remove(anchor);
 
 	anchor->setAt(center+Vec3(0,-diff,diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[11] = anchor->getResidence();
+		checkedNeighbors[11] = anchor->getResidence();
 	else
-		neighbors[11] = NULL;
+		checkedNeighbors[11] = NULL;
 	anchor->getResidence()->remove(anchor);
 
-	anchor->setAt(center-Vec3(0,0,diff));
+	anchor->setAt(center+Vec3(0,0,-diff));
 	env->add(anchor);
 	if (anchor->getResidence() != this)
-		neighbors[12] = anchor->getResidence();
+		checkedNeighbors[12] = anchor->getResidence();
 	else
-		neighbors[12] = NULL;
+		checkedNeighbors[12] = NULL;
+	anchor->getResidence()->remove(anchor);
+	
+	anchor->setAt(center-Vec3(-diff,-diff,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[0] = anchor->getResidence();
+	else
+		unCheckedNeighbors[0] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,-diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[1] = anchor->getResidence();
+	else
+		unCheckedNeighbors[1] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,-diff,+diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[2] = anchor->getResidence();
+	else
+		unCheckedNeighbors[2] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,0,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[3] = anchor->getResidence();
+	else
+		unCheckedNeighbors[3] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,0,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[4] = anchor->getResidence();
+	else
+		unCheckedNeighbors[4] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,0,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[5] = anchor->getResidence();
+	else
+		unCheckedNeighbors[5] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,diff,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[6] = anchor->getResidence();
+	else
+		unCheckedNeighbors[6] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[7] = anchor->getResidence();
+	else
+		unCheckedNeighbors[7] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(-diff,diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[8] = anchor->getResidence();
+	else
+		unCheckedNeighbors[8] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,-diff,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[9] = anchor->getResidence();
+	else
+		unCheckedNeighbors[9] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,-diff,0));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[10] = anchor->getResidence();
+	else
+		unCheckedNeighbors[10] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,-diff,diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[11] = anchor->getResidence();
+	else
+		unCheckedNeighbors[11] = NULL;
+	anchor->getResidence()->remove(anchor);
+
+	anchor->setAt(center-Vec3(0,0,-diff));
+	env->add(anchor);
+	if (anchor->getResidence() != this)
+		unCheckedNeighbors[12] = anchor->getResidence();
+	else
+		unCheckedNeighbors[12] = NULL;
 	anchor->getResidence()->remove(anchor);
 
 	delete anchor;
@@ -292,9 +396,9 @@ void Leaf::update()
 			
 			// Check all the dudes in the neighboring nodes.
 			for (int j = 0; j < 13; j++)
-				if (neighbors[j] != NULL)
-					for (unsigned int k = 0; k < neighbors[j]->data.size(); k++)
-						if (data[i]->collidesWith(neighbors[j]->data[k]));
+				if (checkedNeighbors[j] != NULL)
+					for (unsigned int k = 0; k < checkedNeighbors[j]->data.size(); k++)
+						if (data[i]->collidesWith(checkedNeighbors[j]->data[k]));
 							//std::cout << "remote: " << data[i]->getPos().str() << std::endl
 							//          << "        " << neighbors[j]->data[k]->getPos().str() << std::endl;
 		}
@@ -352,5 +456,15 @@ void OctTree::add(Object* o)
 void OctTree::update()
 {
 	head->update();
+}
+
+void OctTree::getArea(Vec3 pos, double radius, Vec3 *objs, int numObjs)
+{
+	Object o;
+	o.setAt(pos);
+	head->add(&o);
+
+	//////  Jam:
+	//////  FIXME:  This is not yet fully done!
 }
 

@@ -43,7 +43,8 @@ struct Leaf : public Node
 
 	Vec3 min, max;  // Bounds of this leaf node.
 
-	Leaf *neighbors[13];   // Pointers to each of the 13 neighbor-leaves this leaf is responsible for comparing collisions against.
+	Leaf *checkedNeighbors[13];   // Pointers to each of the 13 neighbor-leaves this leaf is responsible for comparing collisions against.
+	Leaf *unCheckedNeighbors[13]; // Pointers to the rest of the neighbors (for completeness).
 
 	Leaf(Vec3 min, Vec3 max);
 	virtual ~Leaf();
@@ -71,6 +72,7 @@ public:
 	void add(Object* o);
 	void checkCollisions();
 	void update();
+	void getArea(Vec3 pos, double radius, Vec3 *objs, int numObjs);
 };
 
 #endif
