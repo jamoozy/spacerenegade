@@ -377,6 +377,18 @@ void initTactical()
 {
 	screenState = TACTICAL; 
 
+	
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearIndex(0);
+	glClearDepth(1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	Button b("Loading...",0.0 , 0.0f,0.0f , 0.0f,0.0f,0.0f , 0,NULL);
+	b.Place(GL_RENDER);
+
+	glutSwapBuffers();
+
 	// Set up the octtree, making it ready for objects to populate it.
 	if (env) delete env;
 	env = new OctTree();
@@ -438,10 +450,6 @@ void initTactical()
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
-
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClearIndex(0);
-	glClearDepth(1);
 
 	// Color-ability.
 	glEnable(GL_COLOR_MATERIAL);
