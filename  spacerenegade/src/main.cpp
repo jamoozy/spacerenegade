@@ -39,7 +39,6 @@ static int MSPF;
 
 int screenState;
 
-
 #if (DEBUG_MODE)
 	int window;
 #endif
@@ -254,9 +253,6 @@ void drawMiniMap()
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
 	env->getArea(playerShip->getPos(), 250, objs, numbObjs);
-	
-	cout << numbObjs << "\n";
-
 }
 
 void drawHUD()
@@ -386,8 +382,6 @@ void initStartScreen()
 void initTactical()
 {
 	screenState = TACTICAL; 
-
-	
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClearIndex(0);
