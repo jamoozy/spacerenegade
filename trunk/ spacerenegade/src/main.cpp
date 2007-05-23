@@ -247,6 +247,16 @@ void drawMiniMap()
     }
 
     glEnd();
+	
+	//playerShip->getPos
+	Object *objs[100];
+	int numbObjs = 0;
+
+	//const Vec3& pos, double radius, Object **objs, int& numObjs);
+	env->getArea(playerShip->getPos(), 250, objs, numbObjs);
+	
+	cout << numbObjs << "\n";
+
 }
 
 void drawHUD()
@@ -408,7 +418,7 @@ void initTactical()
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
 	playerShip = new Ship();
-	playerShip->setAt(0,0,0);
+	playerShip->setAt(250,250,250);
 	env->add(playerShip);
 
 	#if (PRINT_FPS)
