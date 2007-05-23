@@ -33,7 +33,8 @@ public:
 	Ship();
 	virtual ~Ship();
 	Vec3 getDir();
-	void draw();
+	virtual void draw();
+
 	void accelerate();
 	void decelerate();
 	void stabilize();
@@ -43,6 +44,9 @@ public:
 	void rollRight();
 	void pitchBack();
 	void pitchForward();
+
+	void fire();
+	virtual void hits(Object *o);
 };
 
 #endif
