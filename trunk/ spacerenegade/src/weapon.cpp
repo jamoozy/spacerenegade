@@ -1,15 +1,17 @@
+#include <iostream>
 #include "GL/glut.h"
+#include "environment.h"
 #include "vec3.h"
 #include "weapon.h"
 #include "object.h"
 #include "ship.h"
 
 
-const double Weapon::WEAPON_SPEED = 30.0;
+const double Weapon::WEAPON_SPEED = 1.4;
 
-Weapon::Weapon(Ship *shooter) :
-	Object(Vec3(0,0,0), shooter->getDir() * Weapon::WEAPON_SPEED),
-	shooter(shooter) {}
+Weapon::Weapon(Ship *shooter, unsigned int ttl) :
+	Object(shooter->getPos(), shooter->getDir() * Weapon::WEAPON_SPEED),
+	shooter(shooter), ttl(ttl) {}
 
 Weapon::~Weapon() {}
 
@@ -21,13 +23,26 @@ void Weapon::draw()
 
 	glTranslated(position.x(), position.y(), position.z());
 
-	glColor3d(1,0,0);
-	glutSolidCube(.2);
+	glColor3d(0.8,0,0);
+	glutSolidCube(.5);
 
 	glPopMatrix();
+
+	if (ttl-- == 0) selfDistruct();
 }
 
-bool Weapon::collidesWith(Object *o)
+void Weapon::hits(Object *o)
 {
-	return (Object::collidesWith(o));
+	if (o != shooter)
+	{
+		std::cout << "Bullet hit!" << std::endl;
+		selfDistruct();
+	}
 }
+
+void Weapon::selfDistruct()
+{
+	getResidence()->remove(this);
+	delete this;
+}
+
