@@ -1,3 +1,4 @@
+#include <iostream>
 #include "object.h"
 #include "vec3.h"
 #include "environment.h"
@@ -66,6 +67,11 @@ bool Object::checkResidence()
 	}
 
 	return true;
+}
+
+void Object::hits(Object *o)
+{
+	// TODO: Put PM's collision code here.
 }
 
 // Sets the leaf that this object *thinks* it's in.
