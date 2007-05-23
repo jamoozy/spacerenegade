@@ -3,6 +3,7 @@
 #include "environment.h"
 #include "vec3.h"
 
+using namespace std;
 extern OctTree *env;
 
 
@@ -466,26 +467,37 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 	o.setAt(pos);
 	head->add(&o);
 
-	Leaf l = *o.getResidence();
-	l.remove(&o);
+	Leaf *l = o.getResidence();
+	l->remove(&o);
 
 	numObjs = 0;   // Also serves as the numObjs slot in objs to assign a value.
 
-	for (unsigned int i = 0; i < l.data.size(); i++)
-		if ((l.data[i]->getPos() - pos) * (l.data[i]->getPos() - pos) < radius2)
-			objs[numObjs++] = l.data[i];
+	for (int i = 0; i < l->data.size(); i++){
+		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2){
+			objs[numObjs++] = l->data[i];
+		}//if
+	}//for
 
-	for (int i = 0; i < 13; i++)
-		if (l.checkedNeighbors[i] != NULL)
-			for (unsigned int j = 0; j < l.checkedNeighbors[i]->data.size(); j++)
-				if ((l.checkedNeighbors[i]->data[j]->getPos() - pos) * (l.checkedNeighbors[i]->data[j]->getPos() - pos) < radius2)
-					objs[numObjs++] = l.checkedNeighbors[i]->data[j];
+	for (int i = 0; i < 13; i++){
+		if (l->checkedNeighbors[i] != NULL){
+			for (unsigned int j = 0; j < l->checkedNeighbors[i]->data.size(); j++){
+				if ((l->checkedNeighbors[i]->data[j]->getPos() - pos) * (l->checkedNeighbors[i]->data[j]->getPos() - pos) < radius2){
+					objs[numObjs++] = l->checkedNeighbors[i]->data[j];
+				}//if
+			}//for
+		}//if
+	}//for
 
-	for (int i = 0; i < 13; i++)
-		if (l.unCheckedNeighbors[i] != NULL)
-			for (unsigned int j = 0; j < l.unCheckedNeighbors[i]->data.size(); j++)
-				if ((l.unCheckedNeighbors[i]->data[j]->getPos() - pos) * (l.unCheckedNeighbors[i]->data[j]->getPos() - pos) < radius2)
-					objs[numObjs++] = l.unCheckedNeighbors[i]->data[j];
+	for (int i = 0; i < 13; i++){
+		if (l->unCheckedNeighbors[i] != NULL){
+			for (unsigned int j = 0; j < l->unCheckedNeighbors[i]->data.size(); j++){
+				if ((l->unCheckedNeighbors[i]->data[j]->getPos() - pos) * (l->unCheckedNeighbors[i]->data[j]->getPos() - pos) < radius2){
+					objs[numObjs++] = l->unCheckedNeighbors[i]->data[j];
+				}//if
+			}//for
+		}//if
+	}//for
+
 
 	//////  Jam:
 	//////  FIXME:  This is not yet fully done!
