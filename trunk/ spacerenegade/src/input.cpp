@@ -121,7 +121,7 @@ extern OctTree *env;
 /////////////////////////////////////
 
 // Reads any key that emits a character.
-void readKeyboard(unsigned char key, int x, int y)
+void updateKeyboard(unsigned char key, int x, int y)
 {
 	if ('a' <= key && key <= 'z')
 		Keyboard::getKeyboard()->setDown(key - 'a');
@@ -135,8 +135,7 @@ void readKeyboard(unsigned char key, int x, int y)
 		std::cout << "got a " << key << " down." << std::endl;
 }
 
-
-void readKeyboardUp(unsigned char key, int x, int y)
+void updateKeyboardUp(unsigned char key, int x, int y)
 {
 	if ('a' <= key && key <= 'z')
 		Keyboard::getKeyboard()->setUp(key - 'a');
@@ -151,22 +150,8 @@ void readKeyboardUp(unsigned char key, int x, int y)
 }
 
 // Reads the arrow, F- and special keys.
-void readSpecialKeys(int key, int x, int y)
+void udpateSpecialKeys(int key, int x, int y)
 {
-	if (key == GLUT_KEY_F9)
-		std::cout << playerShip->getPos().str() << std::endl;
-
-	if (key == GLUT_KEY_F12)
-		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->min.str() << std::endl
-		          << "Max bound of Leaf: " << playerShip->getResidence()->max.str() << std::endl;
-
-	if (key == GLUT_KEY_HOME)
-	{
-		playerShip->getResidence()->remove(playerShip);
-		playerShip->setAt(0,0,0);
-		env->add(playerShip);
-	}
-
 	switch (key)
 	{
 		case GLUT_KEY_F1: Keyboard::getKeyboard()->setDown(SR_KEY_F1); break;
@@ -195,7 +180,7 @@ void readSpecialKeys(int key, int x, int y)
 	}
 }
 
-void readSpecialKeysUp(int key, int x, int y)
+void updateSpecialKeysUp(int key, int x, int y)
 {
 	switch (key)
 	{
@@ -226,43 +211,85 @@ void readSpecialKeysUp(int key, int x, int y)
 }
 
 
+// Tactical-specific one-hit actions.
+void tacticalKeyboard(unsigned char key, int x, int y)
+{
+//	if (key == 't' || key == 'T')
+//		playerShip->fire();
+}
+
+void tacticalKeyboardUp(unsigned char key, int x, int y)
+{
+}
+
+void tacticalSpecialKeys(int key, int x, int y)
+{
+	if (key == GLUT_KEY_F9)
+		std::cout << playerShip->getPos().str() << std::endl;
+
+	if (key == GLUT_KEY_F12)
+		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->min.str() << std::endl
+		          << "Max bound of Leaf: " << playerShip->getResidence()->max.str() << std::endl;
+
+	if (key == GLUT_KEY_HOME)
+	{
+		playerShip->getResidence()->remove(playerShip);
+		playerShip->setAt(0,0,0);
+		env->add(playerShip);
+	}
+}
+
+void tacticalSpecialKeysUp(int key, int x, int y)
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// -------------------------- Glut callbacks -------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+void readKeyboard(unsigned char key, int x, int y)
+{
+	if (screenState == TACTICAL)
+		tacticalKeyboard(key, x, y);
+
+	updateKeyboard(key, x, y);
+}
+
+void readKeyboardUp(unsigned char key, int x, int y)
+{
+	if (screenState == TACTICAL)
+		tacticalKeyboardUp(key, x, y);
+
+	updateKeyboardUp(key, x, y);
+}
+
+void readSpecialKeys(int key, int x, int y)
+{
+	if (screenState == TACTICAL)
+		tacticalSpecialKeys(key, x, y);
+
+	udpateSpecialKeys(key, x, y);
+}
+
+void readSpecialKeysUp(int key, int x, int y)
+{
+	if (screenState == TACTICAL)
+		tacticalSpecialKeysUp(key, x, y);
+
+	updateSpecialKeysUp(key, x, y);
+}
+
+
 extern Button *buttons;
 extern int numButtons;
 
 void processHits(GLint hits, GLuint buffer[])
 {
-//	GLuint names, *ptr;
-//	
-//	printf("hits = %d\n", hits);
-//	ptr = (GLuint *) buffer;
-	
 	for(int i = 0; i < hits; i++)
-	{
 		for (int j = 0; j < numButtons; j++)
-		{
 			if (buffer[i*4 + 3] == buttons[j].getID())
-			{
 				buttons[j].buttonPressed();
-			}
-		}
-		
-//		names = *ptr;
-//		printf("number of names for hit = %d\n", names); 
-//		ptr += 3;
-//
-//		for(GLuint j = 0; j < names; j++) {
-//			if(*ptr == 1) { 
-//				printf("You hit the RED box!");
-//				initTactical(); 
-//			}
-//			else if(*ptr == 2) { 
-//				printf("You hit the BLUE box!"); 
-//				cleanup(); 
-//			}
-//			ptr++;
-//		}
-//		printf("\n\n");
-	}
 }
 
 #define BUFSIZE 512////////////////
@@ -328,39 +355,6 @@ void mouseButtHandler(int button, int state, int x, int y)
 	else if (screenState == START_SCREEN)
 	{
 		mouseClick(button,state,x,y);
-	
-//		//(JG)
-//		GLuint selectBuffer[BUFSIZE];
-//		GLint hits;
-//		GLint viewport[4];
-//		
-//		if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
-//			return;
-//		
-//		glGetIntegerv(GL_VIEWPORT, viewport);
-//		
-//		glSelectBuffer(BUFSIZE, selectBuffer);
-//		(void) glRenderMode(GL_SELECT);
-//		
-//		glInitNames();
-//		glPushName(0);
-//		
-//		glMatrixMode(GL_PROJECTION);
-//		glPushMatrix();
-//		glLoadIdentity();
-//		
-//		gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
-//		
-//		//glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-//		//drawSquares(GL_SELECT);
-//		
-//		glMatrixMode(GL_PROJECTION);
-//		glPopMatrix();
-//		glFlush();
-//		
-//		hits = glRenderMode(GL_RENDER);
-//		if(hits > 0) processHits(hits, selectBuffer);
-//		// /(JG)
 	}
 }
 
@@ -368,3 +362,4 @@ void mouseMoveHandler(int x, int y)
 {
 	Mouse::getMouse()->setLastMousePos(x, y);
 }
+
