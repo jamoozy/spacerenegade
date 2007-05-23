@@ -214,8 +214,8 @@ void updateSpecialKeysUp(int key, int x, int y)
 // Tactical-specific one-hit actions.
 void tacticalKeyboard(unsigned char key, int x, int y)
 {
-//	if (key == 't' || key == 'T')
-//		playerShip->fire();
+	if (key == 't' || key == 'T')
+		playerShip->fire();
 }
 
 void tacticalKeyboardUp(unsigned char key, int x, int y)

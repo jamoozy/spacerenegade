@@ -6,8 +6,11 @@
 	#include <process.h>
 #endif
 #include <iostream>
+#include "environment.h"
+#include "weapon.h"
 #include "ship.h"
 
+extern OctTree *env;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -18,12 +21,7 @@ Ship::Ship() : Object(),
 	direction(0,0,1), modelLoaded(false), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
 	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
 {
-	#ifdef WIN32
-		char modelName[] = ".\\art\\personalship.3DS";
-	#else
-		char modelName[] = "./art/personalship.3DS";
-	#endif
-
+	char modelName[] = "./art/personalship.3DS";
 	modelLoaded = model.Load(modelName); // Load the model
 	if (!modelLoaded) std::cerr << "Could not load model! " << modelName << std::endl;
 }
@@ -86,6 +84,18 @@ void Ship::draw()
 	}
 
 	glPopMatrix();
+}
+
+void Ship::hits(Object *o)
+{
+	// TODO: damage the ship?
+	std::cout << "Ship collision!" << std::endl;
+}
+
+void Ship::fire()
+{
+	Weapon *w = new Weapon(this,120);
+	env->add(w);
 }
 
 Vec3 Ship::getDir()
