@@ -386,23 +386,29 @@ void Leaf::update()
 //	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
-		data[i]->draw();
 		if (data[i]->checkResidence())
 		{
 			// Check all the dudes in this node.
-			for (unsigned int j = i+1; j < data.size(); j++)
-				if (data[i]->collidesWith(data[j]));
-					//std::cout << "local : " << data[i]->getPos().str() << std::endl
-					//		  << "        " << data[j]->getPos().str() << std::endl;
+			for (unsigned int j = i+1; j < data.size(); j++) {
+				if (data[i]->collidesWith(data[j])) {
+					data[i]->hits(data[j]);
+					data[j]->hits(data[i]);
+				}
+			}
 			
 			// Check all the dudes in the neighboring nodes.
-			for (int j = 0; j < 13; j++)
-				if (checkedNeighbors[j] != NULL)
-					for (unsigned int k = 0; k < checkedNeighbors[j]->data.size(); k++)
-						if (data[i]->collidesWith(checkedNeighbors[j]->data[k]));
-							//std::cout << "remote: " << data[i]->getPos().str() << std::endl
-							//          << "        " << neighbors[j]->data[k]->getPos().str() << std::endl;
+			for (int j = 0; j < 13; j++) {
+				if (checkedNeighbors[j] != NULL) {
+					for (unsigned int k = 0; k < checkedNeighbors[j]->data.size(); k++) {
+						if (data[i]->collidesWith(checkedNeighbors[j]->data[k])) {
+							data[i]->hits(checkedNeighbors[j]->data[k]);
+							checkedNeighbors[j]->data[k]->hits(data[i]);
+						}
+					}
+				}
+			}
 		}
+		data[i]->draw();
 	}
 //	cout << "leaving Leaf::update()" << endl;
 }
@@ -472,7 +478,7 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 
 	numObjs = 0;   // Also serves as the numObjs slot in objs to assign a value.
 
-	for (int i = 0; i < l->data.size(); i++){
+	for (unsigned int i = 0; i < l->data.size(); i++){
 		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2){
 			objs[numObjs++] = l->data[i];
 		}//if
@@ -502,4 +508,3 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 	//////  Jam:
 	//////  FIXME:  This is not yet fully done!
 }
-
