@@ -34,6 +34,7 @@ public:
 	void setResidence(Leaf *l);
 
 	bool collidesWith(Object *o);
+	virtual void hits(Object *o);
 };
 
 #endif
