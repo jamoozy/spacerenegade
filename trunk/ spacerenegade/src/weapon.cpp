@@ -11,7 +11,7 @@ const double Weapon::WEAPON_SPEED = 1.4;
 
 Weapon::Weapon(Ship *shooter, unsigned int ttl) :
 	Object(shooter->getPos(), shooter->getDir() * Weapon::WEAPON_SPEED),
-	shooter(shooter), ttl(ttl) {}
+	shooter(shooter), ttl(ttl), killNextTick(false) {}
 
 Weapon::~Weapon() {}
 
@@ -28,7 +28,7 @@ void Weapon::draw()
 
 	glPopMatrix();
 
-	if (ttl-- == 0) selfDistruct();
+	if (killNextTick || ttl-- == 0) selfDistruct();
 }
 
 void Weapon::hits(Object *o)
@@ -36,7 +36,7 @@ void Weapon::hits(Object *o)
 	if (o != shooter)
 	{
 		std::cout << "Bullet hit!" << std::endl;
-		selfDistruct();
+		killNextTick = true;
 	}
 }
 

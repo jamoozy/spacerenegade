@@ -8,8 +8,9 @@
 class Weapon : public Object
 {
 protected:
-	Ship *shooter;    // The person that shot me.
-	unsigned int ttl; // Time to live in frames
+	Ship *shooter;     // The person that shot me.
+	unsigned int ttl;  // Time to live in frames
+	bool killNextTick; // To avoid having hits() kill itself.
 	static const double WEAPON_SPEED;
 
 public:
