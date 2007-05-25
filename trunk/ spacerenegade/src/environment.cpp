@@ -386,6 +386,7 @@ void Leaf::update()
 //	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
+		data[i]->draw();
 		if (data[i]->checkResidence())
 		{
 			// Check all the dudes in this node.
@@ -408,7 +409,6 @@ void Leaf::update()
 				}
 			}
 		}
-		data[i]->draw();
 	}
 //	cout << "leaving Leaf::update()" << endl;
 }
