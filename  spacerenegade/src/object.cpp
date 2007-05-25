@@ -1,9 +1,16 @@
 #include <iostream>
+#include <GL/glut.h>
 #include "object.h"
 #include "vec3.h"
+#include "ship.h"
 #include "environment.h"
 
+using namespace std;
+
+extern Ship *playerShip;
 extern OctTree *env;
+extern GLfloat miniMapX;
+extern GLfloat miniMapY;
 
 // Create a new obect at the origin that does not move.
 Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
@@ -59,6 +66,19 @@ bool Object::collidesWith(Object *o)
 	double distance2 = diff * diff;
 	double sum = o->radius + radius;
 	return (distance2 < sum * sum);
+}
+void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side);
+void Object::drawOnMiniMap(double r)
+{
+	double zBright = (position.z() + r) / (2*r);
+	double xShift = 5*((position.x() - playerShip->getPos().x()) / r);
+	double yShift = 5*((position.y() - playerShip->getPos().x()) / r);
+
+	cout << zBright << "," << xShift << "," << yShift << "," << "\n";
+
+	glColor3d(red*zBright, green*zBright, blue*zBright);
+	glCircle(miniMapX + xShift, miniMapY + yShift, .1, 5);
+	
 }
 
 void Object::hits(Object *o)
