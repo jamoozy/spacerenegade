@@ -53,8 +53,11 @@ int numButtons;    // Jam: Number of buttons in the array.
 #define PI 3.1415926535
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
+
 int screen_width = 1024;
 int screen_height = 768;
+GLfloat miniMapX = 20;
+GLfloat miniMapY = -11.5;
 
 #if (PRINT_FPS)
 time_t last_time;
@@ -231,13 +234,8 @@ void adjustGlobalLighting()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 }
 
-
-void drawMiniMap()
-{	//GLfloat cx,GLfloat cy,GLfloat r,int side
-	GLfloat cx = 20;
-	GLfloat cy = -11.5;
-	GLfloat r = 5;
-	int side = 20;
+void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side)
+{
  
     glBegin(GL_POLYGON);
     for (int i = 0; i < side; i++)
@@ -246,13 +244,29 @@ void drawMiniMap()
     }
 
     glEnd();
+}
+
+
+void drawMiniMap()
+{	//GLfloat cx,GLfloat cy,GLfloat r,int side
+	
 	
 	//playerShip->getPos
 	Object *objs[100];
 	int numbObjs = 0;
+	double radius = 125;
+
+	glCircle(miniMapX, miniMapY, 5, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
-	env->getArea(playerShip->getPos(), 250, objs, numbObjs);
+	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
+
+	for(int i = 0; i < numbObjs; i++)
+	{
+		objs[i]->drawOnMiniMap(radius);
+	}//for
+
+	//exit(0);
 }
 
 void drawHUD()
@@ -398,7 +412,7 @@ void initTactical()
 	Asteroid *next;
 	for (int i = 0; i < 100; i++)
 	{
-		Vec3 pos(rr(1000,-1000), rr(1000,-1000), rr(1000,-1000));
+		Vec3 pos(rr(250,-250), rr(250,-250), rr(250,-250));
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
 		next = new Asteroid(pos, vel);
 		env->add(next);
@@ -408,7 +422,7 @@ void initTactical()
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
 	playerShip = new Ship();
-	playerShip->setAt(250,250,250);
+	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 
 	#if (PRINT_FPS)
