@@ -405,8 +405,8 @@ void Leaf::update()
 					}
 				}
 			}
-		}
 		data[i]->draw();
+		}
 	}
 //	cout << "leaving Leaf::update()" << endl;
 }
