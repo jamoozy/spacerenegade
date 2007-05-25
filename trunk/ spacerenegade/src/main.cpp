@@ -272,17 +272,13 @@ void drawHUD()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
 
+	// The health meter.
+	glColor3d(.3,.3,.8);
+	glRecti(24,10,27,20);
+	glColor3d(.8,.3,.3);
+	glRectd(24.2,10.2,26.8,10.2 + playerShip->getHealth() * 9.6);
+
 	glColor4d(0,0,1,0.2);
-	/*
-	glRecti(0,0 , 10,10);
-	glRecti(10,10 , 20,20);
-	glRecti(10,-10 , 20,0);
-	glRecti(-10,10 , 0,20);
-	glRecti(0,0 , -10,-10);
-	glRecti(-10,-10 , -20,-20);
-	glRecti(-10,10 , -20,0);
-	glRecti(10,-10 , 0,-20);
-	*/
 	glRecti(-30,-5,30,-20);
 	drawMiniMap();
 
