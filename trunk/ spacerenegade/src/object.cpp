@@ -6,15 +6,15 @@
 extern OctTree *env;
 
 // Create a new obect at the origin that does not move.
-Object::Object(char *modelName) : leaf(NULL), radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
+Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
 }
 
 // Creates a new object at the given point with the given velocity.
-Object::Object(char *modelName, double px, double py, double pz, double vx, double vy, double vz) :
-	leaf(NULL), radius(4.0), position(px,py,pz), velocity(vx,vy,vz), damage(0)
+Object::Object(char *modelName, double red, double green, double blue, double px, double py, double pz, double vx, double vy, double vz) :
+	leaf(NULL), red(red), green(green), blue(blue), radius(4.0), position(px,py,pz), velocity(vx,vy,vz), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
@@ -22,7 +22,7 @@ Object::Object(char *modelName, double px, double py, double pz, double vx, doub
 
 // Creates a new object at the given point with the given velocity.
 Object::Object(char *modelName, const Vec3& pos, const Vec3& v) :
-	leaf(NULL), radius(4.0), position(pos), velocity(v), damage(0)
+	leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(pos), velocity(v), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
