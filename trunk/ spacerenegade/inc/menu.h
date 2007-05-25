@@ -10,7 +10,7 @@
 #include <string>
 using namespace std;
 
-class Menu : public Object
+class Menu
 {
 private:
 	Button *buttons;

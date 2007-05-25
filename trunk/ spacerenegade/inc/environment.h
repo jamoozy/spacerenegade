@@ -41,12 +41,12 @@ struct Leaf : public Node
 {
 	std::vector<Object*> data;
 
-	Vec3 min, max;  // Bounds of this leaf node.
+	Vec3 minBound, maxBound;  // Bounds of this leaf node.
 
 	Leaf *checkedNeighbors[13];   // Pointers to each of the 13 neighbor-leaves this leaf is responsible for comparing collisions against.
 	Leaf *unCheckedNeighbors[13]; // Pointers to the rest of the neighbors (for completeness).
 
-	Leaf(Vec3 min, Vec3 max);
+	Leaf(const Vec3 minBound, const Vec3 maxBound);
 	virtual ~Leaf();
 	virtual void initLeaves();
 

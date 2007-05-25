@@ -10,8 +10,6 @@ class Ship : public Object
 {
 private:
 	Vec3 direction;
-	Model_3DS model; // 3D Model of the ship
-	bool modelLoaded;
 
 	//bool lightRnotL;
 	//int lightTime;
@@ -46,7 +44,7 @@ public:
 	void pitchForward();
 
 	void fire();
-	virtual void hits(Object *o);
+	//virtual void hits(Object *o);
 };
 
 #endif

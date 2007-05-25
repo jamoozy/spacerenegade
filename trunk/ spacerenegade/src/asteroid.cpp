@@ -6,30 +6,21 @@
 
 // Creates a new stationary Asteroid at the origin.
 Asteroid::Asteroid() :
-	Object(),
+	Object("art/asteroid.3DS"),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) 
-{
-	model.Load("art/asteroid.3DS"); // Load the model
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double px, double py, double pz, double vx, double vy, double vz) :
-	Object(px, py, pz, vx, vy, vz),
+	Object("art/asteroid.3DS", px, py, pz, vx, vy, vz),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) 
-{
-	model.Load("art/asteroid.3DS"); // Load the model
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(const Vec3& pos, const Vec3& v) :
-	Object(pos, v),
+	Object("art/asteroid.3DS", pos, v),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
-	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{
-	model.Load("art/asteroid.3DS"); // Load the model
-}
+	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
 // Draw this asteroid.
 void Asteroid::draw()
@@ -53,8 +44,23 @@ void Asteroid::draw()
 	glTranslated(position.x(), position.y(), position.z());
 	glRotated(angle.x(),  1.0,0.0,0.0);
 	glRotated(angle.y(),  0.0,1.0,0.0);
-	//glutWireSphere(5,4,2);
-	model.Draw();
+	
+	if (modelLoaded)
+	{
+		//glutWireSphere(5,4,2);
+		model.Draw();
+	}
+	else
+	{
+		glColor3f(1,1,1);
+		glutWireSphere(4,16,8);
+	} 
 
 	glPopMatrix();
+}
+
+void Asteroid::hits(Object *o)
+{
+	o->hurt(3);
+	o->push(velocity);
 }
