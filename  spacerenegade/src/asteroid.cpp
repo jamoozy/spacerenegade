@@ -22,6 +22,8 @@ Asteroid::Asteroid(const Vec3& pos, const Vec3& v) :
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
+Asteroid::~Asteroid() {}
+
 // Draw this asteroid.
 void Asteroid::draw()
 {
@@ -57,6 +59,8 @@ void Asteroid::draw()
 	} 
 
 	glPopMatrix();
+
+	if (damage >= maxHealth()) delete this;
 }
 
 void Asteroid::hits(Object *o)

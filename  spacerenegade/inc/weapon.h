@@ -16,11 +16,11 @@ protected:
 public:
 	Weapon(Ship *shooter, unsigned int ttl);
 	virtual ~Weapon();
+	virtual std::string getType() const { return "Weapon"; };
 
 	virtual void draw();
 
 	virtual void hits(Object *o);
-	virtual void selfDistruct();
 };
 
 #endif

@@ -147,217 +147,215 @@ void Leaf::initLeaves()
 	Vec3 center((maxBound+minBound)/2);
 	double diff = maxBound.x() - center.x() + 1;
 
-	Object *anchor = new Object("");
+	Object anchor("");
 
-	anchor->setAt(center+Vec3(-diff,-diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[0] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,-diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[0] = anchor.getResidence();
 	else
 		checkedNeighbors[0] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,-diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[1] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,-diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[1] = anchor.getResidence();
 	else
 		checkedNeighbors[1] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,-diff,+diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[2] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,-diff,+diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[2] = anchor.getResidence();
 	else
 		checkedNeighbors[2] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,0,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[3] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,0,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[3] = anchor.getResidence();
 	else
 		checkedNeighbors[3] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,0,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[4] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,0,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[4] = anchor.getResidence();
 	else
 		checkedNeighbors[4] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,0,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[5] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,0,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[5] = anchor.getResidence();
 	else
 		checkedNeighbors[5] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[6] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[6] = anchor.getResidence();
 	else
 		checkedNeighbors[6] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[7] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[7] = anchor.getResidence();
 	else
 		checkedNeighbors[7] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(-diff,diff,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[8] = anchor->getResidence();
+	anchor.setAt(center+Vec3(-diff,diff,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[8] = anchor.getResidence();
 	else
 		checkedNeighbors[8] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(0,-diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[9] = anchor->getResidence();
+	anchor.setAt(center+Vec3(0,-diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[9] = anchor.getResidence();
 	else
 		checkedNeighbors[9] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(0,-diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[10] = anchor->getResidence();
+	anchor.setAt(center+Vec3(0,-diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[10] = anchor.getResidence();
 	else
 		checkedNeighbors[10] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(0,-diff,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[11] = anchor->getResidence();
+	anchor.setAt(center+Vec3(0,-diff,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[11] = anchor.getResidence();
 	else
 		checkedNeighbors[11] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center+Vec3(0,0,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		checkedNeighbors[12] = anchor->getResidence();
+	anchor.setAt(center+Vec3(0,0,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		checkedNeighbors[12] = anchor.getResidence();
 	else
 		checkedNeighbors[12] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 	
-	anchor->setAt(center-Vec3(-diff,-diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[0] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,-diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[0] = anchor.getResidence();
 	else
 		unCheckedNeighbors[0] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,-diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[1] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,-diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[1] = anchor.getResidence();
 	else
 		unCheckedNeighbors[1] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,-diff,+diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[2] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,-diff,+diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[2] = anchor.getResidence();
 	else
 		unCheckedNeighbors[2] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,0,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[3] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,0,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[3] = anchor.getResidence();
 	else
 		unCheckedNeighbors[3] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,0,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[4] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,0,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[4] = anchor.getResidence();
 	else
 		unCheckedNeighbors[4] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,0,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[5] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,0,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[5] = anchor.getResidence();
 	else
 		unCheckedNeighbors[5] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[6] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[6] = anchor.getResidence();
 	else
 		unCheckedNeighbors[6] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[7] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[7] = anchor.getResidence();
 	else
 		unCheckedNeighbors[7] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(-diff,diff,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[8] = anchor->getResidence();
+	anchor.setAt(center-Vec3(-diff,diff,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[8] = anchor.getResidence();
 	else
 		unCheckedNeighbors[8] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(0,-diff,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[9] = anchor->getResidence();
+	anchor.setAt(center-Vec3(0,-diff,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[9] = anchor.getResidence();
 	else
 		unCheckedNeighbors[9] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(0,-diff,0));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[10] = anchor->getResidence();
+	anchor.setAt(center-Vec3(0,-diff,0));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[10] = anchor.getResidence();
 	else
 		unCheckedNeighbors[10] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(0,-diff,diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[11] = anchor->getResidence();
+	anchor.setAt(center-Vec3(0,-diff,diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[11] = anchor.getResidence();
 	else
 		unCheckedNeighbors[11] = NULL;
-	anchor->getResidence()->remove(anchor);
+	anchor.getResidence()->remove(&anchor);
 
-	anchor->setAt(center-Vec3(0,0,-diff));
-	env->add(anchor);
-	if (anchor->getResidence() != this)
-		unCheckedNeighbors[12] = anchor->getResidence();
+	anchor.setAt(center-Vec3(0,0,-diff));
+	env->add(&anchor);
+	if (anchor.getResidence() != this)
+		unCheckedNeighbors[12] = anchor.getResidence();
 	else
 		unCheckedNeighbors[12] = NULL;
-	anchor->getResidence()->remove(anchor);
-
-	delete anchor;
+	anchor.getResidence()->remove(&anchor);
 }
 
 Leaf::~Leaf()
@@ -380,8 +378,8 @@ bool Leaf::isResident(Object *o) const
 // Update all of the members of this leaf node.
 void Leaf::update()
 {
-	using std::cout;
-	using std::endl;
+//	using std::cout;
+//	using std::endl;
 
 //	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)

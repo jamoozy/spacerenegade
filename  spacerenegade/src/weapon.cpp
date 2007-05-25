@@ -28,7 +28,7 @@ void Weapon::draw()
 
 	glPopMatrix();
 
-	if (killNextTick || ttl-- == 0) selfDistruct();
+	if (killNextTick || ttl-- == 0) delete this;
 }
 
 void Weapon::hits(Object *o)
@@ -38,11 +38,5 @@ void Weapon::hits(Object *o)
 		o->hurt(10);
 		killNextTick = true;
 	}
-}
-
-void Weapon::selfDistruct()
-{
-	getResidence()->remove(this);
-	delete this;
 }
 
