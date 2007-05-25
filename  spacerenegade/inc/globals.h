@@ -7,11 +7,12 @@
 //Ship *playerShip;
 
 
-enum { START_SCREEN, TACTICAL };
+enum { START_SCREEN, TACTICAL, MISSION };
 void cleanup();
-void drawButtons(GLenum);
+//void drawButtons(GLenum);
 void mouseClick(int, int, int, int);
 void initTactical();
+void initStartScreen();
 
 #endif
 

@@ -9,6 +9,12 @@ using std::string;
 
 int bountiesKilled = 0;
 
+BountyObjective::BountyObjective()
+{
+	bountyId = 0;
+	num = 0;
+}
+
 BountyObjective::BountyObjective(int bountyId, int num) :
 	bountyId(bountyId), num(num)
 	{
@@ -26,22 +32,19 @@ bool BountyObjective::isComplete()
 
 string BountyObjective::getDescription()
 {
-	string response = "";
+	string response;
 	string shipName = ""; //getShipName(bountyId);
 	if (num == 1) // only one bounty
 	{
 		if (bountiesKilled == 1) // destroyed bounty
-			return (shipName + " destroyed.");
+			response = shipName + " destroyed.";
 		else // haven't destroyed bounty
-			return (shipName + " not yet destroyed.");
+			response = shipName + " not yet destroyed.";
 	}
 	else // several bounties
 	{
-		// stupid c++ string handling... I'll fix this later
-
-		//response = response.concat(num + " out of ");
-		//response.concat (response, num)
-		// return (num + " out of " + num + " " + shipName + " destroyed.");
+		response = bountiesKilled + " out of " + num;
+		response += " " + shipName + " destroyed.";
 	}
-	return "";
+	return response;
 }

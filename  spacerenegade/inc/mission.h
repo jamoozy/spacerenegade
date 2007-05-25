@@ -7,13 +7,12 @@ class Mission
 {
 private:
 	int id;
-	bool isComplete;
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
-	Objective **objectives;
+	Objective *objectives;
 	int reward; // ex. 1000 credits
 
-	//bool isComplete; // all objectives have been met, and player should go to finishPlanet
+	bool isComplete; // all objectives have been met, and player should go to finishPlanet
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
 	// EventListener listens for objective-specific events (such as # of bounties killed)
 

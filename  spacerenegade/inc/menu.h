@@ -15,13 +15,15 @@ class Menu
 private:
 	Button *buttons;
 	int numButtons;
-	string type;
+	int type;
 
 public:
 	Menu();
-	Menu(string type);
+	Menu(int type);
 	virtual ~Menu();
 	void draw(GLenum mode);
+	//int getNumButtons() {return numButtons;}
+	void processHits(GLint hits, GLuint buffer[]);
 
 };
 

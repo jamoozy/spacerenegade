@@ -6,6 +6,7 @@
 #include "input.h"
 #include "ship.h"
 #include "button.h"
+#include "menu.h"
 
 extern int screenState;
 
@@ -284,15 +285,18 @@ void readSpecialKeysUp(int key, int x, int y)
 }
 
 
-extern Button *buttons;
-extern int numButtons;
+//extern Button *buttons;
+//extern int numButtons;
+extern Menu *menu;
 
 void processHits(GLint hits, GLuint buffer[])
 {
+	menu->processHits(hits, buffer);
+	/*
 	for(int i = 0; i < hits; i++)
-		for (int j = 0; j < numButtons; j++)
+		for (int j = 0; j < menu->getNumButtons(); j++)
 			if (buffer[i*4 + 3] == buttons[j].getID())
-				buttons[j].buttonPressed();
+				buttons[j].buttonPressed();*/
 }
 
 #define BUFSIZE 512////////////////
@@ -326,7 +330,8 @@ void mouseClick(int button, int state, int x, int y)
 	float aspect = (float)width/(float)height;
 
 	glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-	drawButtons(GL_SELECT);
+	//drawButtons(GL_SELECT);
+	menu->draw(GL_SELECT);
 	//hits = glRenderMode(GL_RENDER);
 	
 	glMatrixMode(GL_PROJECTION);
