@@ -521,33 +521,3 @@ int main(int argc, char **argv)
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-	/*GLfloat kolor = 0.0;
-	GLfloat vidth = -6.0;
-	GLfloat fontWidthCoef = 0.013033;
-	GLfloat fontWidth = 9;
-	int thing;
-	for(thing = 0; thing < 150; thing++) {
-
-		glColor3f(kolor, 0.5, 0.5);
-		kolor += .2;
-		if (kolor > .8)
-			kolor = .2;
-
-		glRectf(vidth, 0, vidth + (fontWidth * fontWidthCoef), 1);
-		vidth = vidth + (fontWidth * fontWidthCoef);
-	}*/
-
-	//DrawText(-500, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ",1.0, 0.5, 0.0);
-	
-	// The above tested the font width pixel coefficient thingy, it was placed in DisplayStartScreen.
-	// It's probably OK to delete, but I'll let it hang around for a day or two. -James
