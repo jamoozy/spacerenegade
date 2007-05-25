@@ -74,8 +74,6 @@ void Object::drawOnMiniMap(double r)
 	double xShift = 5*((position.x() - playerShip->getPos().x()) / r);
 	double yShift = 5*((position.y() - playerShip->getPos().y()) / r);
 
-	cout << zBright << "," << xShift << "," << yShift << "," << "\n";
-
 	glColor3d(red*zBright, green*zBright, blue*zBright);
 	glCircle(miniMapX + xShift, miniMapY + yShift, .1, 5);
 	
