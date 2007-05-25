@@ -27,6 +27,7 @@ public:
 	Object(char *modelName, const Vec3& pos, const Vec3& v);
 	Object(char *modelName, double px, double py, double pz, double vx, double vy, double vz);
 	virtual ~Object();
+	virtual std::string getType() const { return "Object"; };
 
 	virtual void draw() { position += velocity; };
 	virtual void setAt(const Vec3& pos) { position = pos; };
@@ -44,6 +45,8 @@ public:
 
 	bool collidesWith(Object *o);
 	virtual void hits(Object *o);
+
+	virtual int maxHealth() const { return 100; };
 };
 
 #endif

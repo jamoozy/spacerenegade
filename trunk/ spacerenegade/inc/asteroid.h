@@ -15,9 +15,12 @@ public:
 	Asteroid();
 	Asteroid(double px, double py, double pz, double vx, double vy, double vz);
 	Asteroid(const Vec3& pos, const Vec3& v);
+	virtual ~Asteroid();
+	virtual std::string getType() const { return "Asteroid"; };
 
-	void draw();
-	void hits(Object *o);
+	virtual void draw();
+	virtual void hits(Object *o);
+	virtual int maxHealth() const { return 10; }
 };
 
 #endif

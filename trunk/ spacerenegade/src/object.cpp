@@ -29,7 +29,13 @@ Object::Object(char *modelName, const Vec3& pos, const Vec3& v) :
 }
 
 // Does nothing (nothing to be done).
-Object::~Object() {}
+Object::~Object()
+{
+	if (leaf != NULL) {
+		leaf->remove(this);
+		leaf = NULL;
+	}
+}
 
 // Make sure we're still in the right place.
 bool Object::checkResidence()

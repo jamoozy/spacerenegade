@@ -30,7 +30,9 @@ private:
 public:
 	Ship();
 	virtual ~Ship();
-	Vec3 getDir();
+	virtual std::string getType() const { return "Ship"; };
+
+	Vec3 getDir() const { return direction; };
 	virtual void draw();
 
 	void accelerate();
@@ -45,6 +47,7 @@ public:
 
 	void fire();
 	//virtual void hits(Object *o);
+	virtual int maxHealth() const { return 1000; };
 };
 
 #endif

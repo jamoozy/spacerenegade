@@ -93,11 +93,6 @@ void Ship::fire()
 	env->add(w);
 }
 
-Vec3 Ship::getDir()
-{
-	return direction;
-}
-
 void Ship::recompdir()
 {
 	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
