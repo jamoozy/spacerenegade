@@ -8,25 +8,26 @@ struct Leaf;
 
 class Object
 {
+private:
 	Leaf *leaf;  // Leaf where this object resides.
 
 	double red;
 	double green;
 	double blue;
-	double radius;   // Radius of the bounding sphere.
+	
 	//double radius2;  // Radius squared.
 
+protected:
+	double radius;   // Radius of the bounding sphere.
 	Vec3 position;
 	Vec3 velocity;
-
 	int damage;
-
 	Model_3DS model;
 	bool modelLoaded;
 
 public:
 
-	Object(char *modelName);
+	Object(char *modelName = NULL);
 	Object(char *modelName,const Vec3& pos, const Vec3& v);
 	Object(char *modelName,double red, double green, double blue, double px, double py, double pz, double vx, double vy, double vz);
 	//Object(double px, double py, double pz, double vx, double vy, double vz);
