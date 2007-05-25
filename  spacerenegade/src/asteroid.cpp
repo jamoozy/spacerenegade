@@ -12,7 +12,7 @@ Asteroid::Asteroid() :
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double px, double py, double pz, double vx, double vy, double vz) :
-	Object("art/asteroid.3DS", px, py, pz, vx, vy, vz),
+Object("art/asteroid.3DS", 255, 255, 255, px, py, pz, vx, vy, vz),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0) {}
 
