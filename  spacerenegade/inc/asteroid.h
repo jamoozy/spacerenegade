@@ -10,7 +10,6 @@ class Asteroid : public Object
 private:
 	Vec3 angle;      // The angle of rotation in the local coord-sys.
 	Vec3 avelocity;  // The change of angle over time.
-	Model_3DS model; // 3D Model of the asteroid
 
 public:
 	Asteroid();
@@ -18,6 +17,7 @@ public:
 	Asteroid(const Vec3& pos, const Vec3& v);
 
 	void draw();
+	void hits(Object *o);
 };
 
 #endif

@@ -133,7 +133,7 @@ void Branch::add(Object* o)
 // ---------------------------- Leaf Object --------------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Leaf::Leaf(Vec3 min, Vec3 max) : min(min), max(max) {}
+Leaf::Leaf(Vec3 minBound, Vec3 maxBound) : minBound(minBound), maxBound(maxBound) {}
 
 void Leaf::initLeaves()
 {
@@ -144,10 +144,10 @@ void Leaf::initLeaves()
 	// Think of fishing - once the lure hits the bottom a fish grabs it.
 	// Get the fish and re-cast the lure in a different spot.
 
-	Vec3 center((max+min)/2);
-	double diff = max.x() - center.x() + 1;
+	Vec3 center((maxBound+minBound)/2);
+	double diff = maxBound.x() - center.x() + 1;
 
-	Object *anchor = new Object();
+	Object *anchor = new Object("");
 
 	anchor->setAt(center+Vec3(-diff,-diff,-diff));
 	env->add(anchor);
@@ -386,7 +386,6 @@ void Leaf::update()
 //	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
-		data[i]->draw();
 		if (data[i]->checkResidence())
 		{
 			// Check all the dudes in this node.
@@ -409,6 +408,7 @@ void Leaf::update()
 				}
 			}
 		}
+		data[i]->draw();
 	}
 //	cout << "leaving Leaf::update()" << endl;
 }
@@ -469,7 +469,7 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 {
 	double radius2 = radius * radius;
 
-	Object o;
+	Object o("");
 	o.setAt(pos);
 	head->add(&o);
 

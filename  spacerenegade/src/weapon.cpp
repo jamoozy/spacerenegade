@@ -10,8 +10,8 @@
 const double Weapon::WEAPON_SPEED = 1.4;
 
 Weapon::Weapon(Ship *shooter, unsigned int ttl) :
-	Object(shooter->getPos(), shooter->getVel() + shooter->getDir() * Weapon::WEAPON_SPEED),
-	shooter(shooter), ttl(ttl), killNextTick(false) {}
+	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * Weapon::WEAPON_SPEED),
+	shooter(shooter), ttl(ttl), killNextTick(false) { radius = .2;}
 
 Weapon::~Weapon() {}
 
@@ -35,7 +35,7 @@ void Weapon::hits(Object *o)
 {
 	if (o != shooter)
 	{
-		std::cout << "Bullet hit!" << std::endl;
+		o->hurt(10);
 		killNextTick = true;
 	}
 }

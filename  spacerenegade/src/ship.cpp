@@ -17,14 +17,9 @@ extern OctTree *env;
 #endif
 
 // Makes a new, boring ship that just sits there.
-Ship::Ship() : Object(),
-	direction(0,0,1), modelLoaded(false), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
-	roa(0.005), rod(0.001), ros(0.95), rot(0.02)
-{
-	char modelName[] = "./art/personalship.3DS";
-	modelLoaded = model.Load(modelName); // Load the model
-	if (!modelLoaded) std::cerr << "Could not load model! " << modelName << std::endl;
-}
+Ship::Ship() : Object("./art/personalship.3DS"),
+	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
+	roa(0.005), rod(0.001), ros(0.95), rot(0.02) {}
 
 // Deconstructor: file is a pointer, so delete it
 Ship::~Ship() {}
@@ -86,11 +81,11 @@ void Ship::draw()
 	glPopMatrix();
 }
 
-void Ship::hits(Object *o)
-{
-	// TODO: damage the ship?
-	std::cout << "Ship collision!" << std::endl;
-}
+//void Ship::hits(Object *o)
+//{
+//	// TODO: damage the ship?
+//	std::cout << "Ship collision!" << std::endl;
+//}
 
 void Ship::fire()
 {
