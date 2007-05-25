@@ -48,7 +48,7 @@ public:
 	void fire();
 	virtual void hits(Object *o);
 	virtual int maxHealth() const { return 1000; };
-	virtual int getHealth() const { return 100 - 100 * damage / maxHealth(); };
+	virtual double getHealth() const { return 1.0 - damage / (double)maxHealth(); };
 };
 
 #endif
