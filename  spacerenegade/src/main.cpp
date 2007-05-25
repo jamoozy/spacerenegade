@@ -16,17 +16,6 @@
 #include "environment.h"
 #include "button.h"
 
-
-// (JG)
-#ifdef __APPLE__
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
-
-#include <stdio.h>
-// /(JG)
-
 using std::cout;
 using std::endl;
 
@@ -42,7 +31,6 @@ int screenState;
 #if (DEBUG_MODE)
 	int window;
 #endif
-
 
 Ship *playerShip;  // Jam: The player's ship, duh.
 OctTree *env;      // Jam: Collision detection of objects and the world
