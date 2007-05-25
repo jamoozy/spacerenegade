@@ -46,8 +46,9 @@ public:
 	void pitchForward();
 
 	void fire();
-	//virtual void hits(Object *o);
+	virtual void hits(Object *o);
 	virtual int maxHealth() const { return 1000; };
+	virtual int getHealth() const { return 100 - 100 * damage / maxHealth(); };
 };
 
 #endif

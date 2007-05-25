@@ -227,6 +227,9 @@ void tacticalSpecialKeys(int key, int x, int y)
 	if (key == GLUT_KEY_F9)
 		std::cout << playerShip->getPos().str() << std::endl;
 
+	if (key == GLUT_KEY_F10)
+		std::cout << "Health: " << playerShip->getHealth() << (char)0x25 << std::endl;
+
 	if (key == GLUT_KEY_F12)
 		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->minBound.str() << std::endl
 		          << "Max bound of Leaf: " << playerShip->getResidence()->maxBound.str() << std::endl;
