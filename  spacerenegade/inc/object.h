@@ -27,7 +27,7 @@ protected:
 
 public:
 
-	Object(char *modelName = NULL);
+	Object(char *modelName);
 	Object(char *modelName,const Vec3& pos, const Vec3& v);
 	Object(char *modelName,double red, double green, double blue, double px, double py, double pz, double vx, double vy, double vz);
 	//Object(double px, double py, double pz, double vx, double vy, double vz);
