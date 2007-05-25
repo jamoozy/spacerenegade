@@ -8,16 +8,16 @@ using std::string;
 class BountyObjective: public Objective
 {
 private:
-	int bountyId;
-	int num;
-
-protected:
-	bool isComplete();
-	string getDescription();
+	int bountyId; // id of enemy ship
+	int num; // number of enemies to kill
 
 public:
+	BountyObjective();
 	BountyObjective(int bountyId, int num);
 	virtual ~BountyObjective();
+
+	bool isComplete();
+	string getDescription();
 };
 
 #endif

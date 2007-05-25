@@ -7,13 +7,12 @@ using std::string;
 
 class Objective
 {
-protected:
-	// Listener of some sort
-
 public:
+	// Listener of some sort
 	Objective(){}
 	bool isComplete();
-	string getDescription();
+	string getDescription(); // ex. "2 out of 3 pirates destroyed."
+							 //     "Deliver package to Ganymede."
 };
 
 #endif

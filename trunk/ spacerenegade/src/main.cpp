@@ -15,6 +15,7 @@
 #include "ship.h"
 #include "environment.h"
 #include "button.h"
+#include "menu.h"
 
 using std::cout;
 using std::endl;
@@ -35,8 +36,7 @@ int screenState;
 Ship *playerShip;  // Jam: The player's ship, duh.
 OctTree *env;      // Jam: Collision detection of objects and the world
                    //      (environment) in general.
-Button *buttons;   // Jam: To contain any menus.
-int numButtons;    // Jam: Number of buttons in the array.
+Menu *menu;        // Gum: The current menu of buttons
 
 #define PI 3.1415926535
 #define IMAGE_WIDTH 1024
@@ -75,7 +75,7 @@ void cleanup()
 	Keyboard::cleanUp();
 	Mouse::cleanUp();
 	if (env) delete env;
-	if (buttons) delete [] buttons;
+	if (menu) delete menu;
 	exit(0);
 }
 
@@ -118,32 +118,6 @@ void handleTacticalInput()
 		playerShip->pitchForward();
 }
 
-
-//##########################################
-// OpenGL Display function
-
-// Menus and picking functions... (JG)
-
-void drawButtons(GLenum mode)
-{
-	for (int i = 0; i < numButtons; i++)
-		buttons[i].Place(mode);
-
-//	if(mode == GL_SELECT)
-//		glLoadName(1);
-//	glColor3f(0.0, 1.0, 0.0);
-//	glRectf(-.50, -.50, .50, .50);
-//	
-//	if(mode == GL_SELECT)
-//		glLoadName(2);
-//	glColor3f(0.0, 1.0, 0.0);
-//	glRectf(.60, .60, 1.1, 1.1);
-//	//glutSolidCube(10);
-}
-
-// End of menus and picking functions... (JG)
-
-
 void doNextFrame(int value)
 {
 	glutPostRedisplay();
@@ -184,12 +158,10 @@ void displayStartScreen()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
 
-	for (int i = 0; i < 4; i++)
-		buttons[i].Place(GL_RENDER);
+	menu->draw(GL_RENDER);
 
 	//glFlush();
 
-	//drawButtons(GL_RENDER);
 	glutSwapBuffers();
 }
 
@@ -363,18 +335,13 @@ void initStartScreen()
 	glTranslatef( 0,0,-5);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
-	if (buttons) delete buttons;
-	numButtons = 4;
-	buttons = new Button[numButtons];
+	if (menu) delete menu;
 
 	glRenderMode(GL_SELECT);
 	glInitNames();
 	glRenderMode(GL_RENDER);
 
-	buttons[0] = Button("New Game", 0.1 , -10,50   , 0.6,0.8,0.2 , 1,initTactical);
-	buttons[1] = Button("Load Game",0.1 , -10,0    , 0.6,0.8,0.2 , 2,NULL);
-	buttons[2] = Button("Options",  0.1 , -10,-50  , 0.6,0.8,0.2 , 3,NULL);
-	buttons[3] = Button("Quit",     0.1 , -10,-100 , 0.6,0.8,0.2 , 4,cleanup);
+	menu = new Menu (screenState);
 }
 
 void initTactical()
@@ -475,8 +442,7 @@ int main(int argc, char **argv)
 
 	env = NULL;
 	playerShip = NULL;
-	buttons = NULL;
-	numButtons = 0;
+	menu = NULL;
 
 	srand(time(NULL));
 
