@@ -81,11 +81,15 @@ void Ship::draw()
 	glPopMatrix();
 }
 
-//void Ship::hits(Object *o)
-//{
+void Ship::hits(Object *o)
+{
 //	// TODO: damage the ship?
 //	std::cout << "Ship collision!" << std::endl;
-//}
+
+	// This is a constant right now.  Later it will be a function of things,
+	// like hull defense, shields, and stuff.
+	hurt(15);
+}
 
 void Ship::fire()
 {
