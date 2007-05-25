@@ -10,7 +10,9 @@ class Object
 {
 	Leaf *leaf;  // Leaf where this object resides.
 
-protected:
+	double red;
+	double green;
+	double blue;
 	double radius;   // Radius of the bounding sphere.
 	//double radius2;  // Radius squared.
 
@@ -23,9 +25,12 @@ protected:
 	bool modelLoaded;
 
 public:
+
 	Object(char *modelName);
-	Object(char *modelName, const Vec3& pos, const Vec3& v);
-	Object(char *modelName, double px, double py, double pz, double vx, double vy, double vz);
+	Object(char *modelName,const Vec3& pos, const Vec3& v);
+	Object(char *modelName,double red, double green, double blue, double px, double py, double pz, double vx, double vy, double vz);
+	//Object(double px, double py, double pz, double vx, double vy, double vz);
+
 	virtual ~Object();
 	virtual std::string getType() const { return "Object"; };
 
@@ -44,6 +49,7 @@ public:
 	void push(Vec3 direction) { velocity += direction; };
 
 	bool collidesWith(Object *o);
+	void drawOnMiniMap(double r);
 	virtual void hits(Object *o);
 
 	virtual int maxHealth() const { return 100; };
