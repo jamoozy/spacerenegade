@@ -38,5 +38,10 @@ void Weapon::hits(Object *o)
 		o->hurt(10);
 		killNextTick = true;
 	}
+	else
+	{
+		// The hacky way not to hurt the shooter of this weapon.
+		o->hurt(-15);
+	}
 }
 
