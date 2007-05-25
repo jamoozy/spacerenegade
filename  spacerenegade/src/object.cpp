@@ -70,9 +70,9 @@ bool Object::collidesWith(Object *o)
 void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side);
 void Object::drawOnMiniMap(double r)
 {
-	double zBright = (position.z() + r) / (2*r);
+	double zBright = (position.z() - playerShip->getPos().z() + r) / (2*r);
 	double xShift = 5*((position.x() - playerShip->getPos().x()) / r);
-	double yShift = 5*((position.y() - playerShip->getPos().x()) / r);
+	double yShift = 5*((position.y() - playerShip->getPos().y()) / r);
 
 	cout << zBright << "," << xShift << "," << yShift << "," << "\n";
 
