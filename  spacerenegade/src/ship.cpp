@@ -88,7 +88,7 @@ void Ship::hits(Object *o)
 
 	// This is a constant right now.  Later it will be a function of things,
 	// like hull defense, shields, and stuff.
-	hurt(15);
+	hurt(200);
 }
 
 void Ship::fire()
