@@ -65,6 +65,6 @@ void Asteroid::draw()
 
 void Asteroid::hits(Object *o)
 {
-	o->hurt(3);
-	o->push(velocity);
+	o->hurt(10);
+	o->push((o->getPos() - position)/10);
 }
