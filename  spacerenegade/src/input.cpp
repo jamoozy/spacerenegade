@@ -6,6 +6,7 @@
 #include "input.h"
 #include "ship.h"
 #include "button.h"
+#include "display.h"
 #include "menu.h"
 
 extern int screenState;
@@ -245,6 +246,37 @@ void tacticalSpecialKeys(int key, int x, int y)
 
 void tacticalSpecialKeysUp(int key, int x, int y)
 {
+}
+
+// Jam:
+// I use the keyboard here for the purpose of getting multiple
+// key presses and constant feedback, as opposed to the callback
+// mechanism of the glutXXXFunc()'s.
+void handleTacticalInput()
+{
+	// Quit.
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
+		cleanup();
+
+	// Yaw.
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
+		playerShip->yawLeft();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
+		playerShip->yawRight();
+
+	// Acceleration.
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
+		playerShip->accelerate();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
+		playerShip->decelerate();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_G))
+		playerShip->stabilize();
+
+	// Pitch.
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_D))
+		playerShip->pitchBack();
+	if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
+		playerShip->pitchForward();
 }
 
 

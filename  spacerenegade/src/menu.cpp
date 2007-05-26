@@ -5,7 +5,7 @@
 #include "object.h"
 #include "button.h"
 #include "menu.h"
-#include "globals.h"
+#include "display.h"
 
 void initTactical();
 void initStartScreen();
