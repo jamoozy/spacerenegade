@@ -67,7 +67,7 @@ bool Object::collidesWith(Object *o)
 	double sum = o->radius + radius;
 	return (distance2 < sum * sum);
 }
-void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side);
+
 void Object::drawOnMiniMap(double r)
 {
 	double zBright = (position.z() - playerShip->getPos().z() + r) / (2*r);
