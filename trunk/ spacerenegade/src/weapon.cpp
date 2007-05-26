@@ -41,7 +41,7 @@ void Weapon::hits(Object *o)
 	else
 	{
 		// The hacky way not to hurt the shooter of this weapon.
-		o->hurt(-15);
+		o->hurt(-200);
 	}
 }
 
