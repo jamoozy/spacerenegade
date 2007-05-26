@@ -4,6 +4,7 @@
 #include "vec3.h"
 #include "ship.h"
 #include "environment.h"
+#include "display.h"
 
 using namespace std;
 
