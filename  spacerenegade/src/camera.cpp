@@ -1,3 +1,4 @@
+#include <iostream>
 #include <GL/glut.h>
 #include <cmath>
 #include "ship.h"

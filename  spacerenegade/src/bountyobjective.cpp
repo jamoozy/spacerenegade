@@ -48,3 +48,4 @@ string BountyObjective::getDescription()
 	}
 	return response;
 }
+
