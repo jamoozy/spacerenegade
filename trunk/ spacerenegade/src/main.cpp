@@ -66,9 +66,7 @@ void doNextFrame(int value)
 	glutTimerFunc(MSPF, doNextFrame, 0);
 }
 
-//##########################################
 // Main function
-
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);

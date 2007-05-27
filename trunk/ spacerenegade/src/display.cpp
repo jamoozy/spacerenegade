@@ -34,7 +34,7 @@ struct perspectiveData
 	float aspect;
 	float nearPlane;
 	float farPlane;
-} pD, hudpd;
+} pD, hudpd, gopd;
 
 double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in the tactical screen.
 
@@ -117,21 +117,19 @@ void resize(int w, int h)
 
 void display()
 {
-	if (screenState == START_SCREEN)
+	switch (screenState)
 	{
-		displayStartScreen();
-	}
-	else if (screenState == TACTICAL)
-	{
-		displayTactical();
-	}
-	else if (screenState == GAME_OVER)
-	{
-		displayGameOver();
-	}
-	else
-	{
-		std::cerr << "Got unrecognized game state! " << screenState << " Exiting!" << std::endl;
+		case START_SCREEN:
+			displayStartScreen();
+			break;
+		case TACTICAL:
+			displayTactical();
+			break;
+		case GAME_OVER:
+			displayGameOver();
+			break;
+		default:
+			std::cerr << "Got unrecognized game state! " << screenState << " Exiting!" << std::endl;
 	}
 }
 
@@ -180,7 +178,7 @@ void displayTactical()
 	glutSwapBuffers();
 
 	if (playerShip->getHealth() <= 0)
-		initGameOver();
+		initStartScreen();
 }
 
 void adjustGlobalLighting()
@@ -258,7 +256,8 @@ void drawMiniMap()
 
 void displayGameOver()
 {
-	cleanup();
+	drawText(0,0 , "GAME OVER", 1,1,1);
+	glutPostRedisplay();
 }
 
 
@@ -283,8 +282,9 @@ void initStartScreen()
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-	glTranslatef( 0,0,-5);
+//	glTranslatef( 0,0,-5);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	glRenderMode(GL_SELECT);
@@ -384,5 +384,25 @@ void initTactical()
 void initGameOver()
 {
 	screenState = GAME_OVER;
+
+//	gopd.fieldOfView = 45.0f;
+//	gopd.aspect = (float)screen_width/screen_height;
+//	gopd.nearPlane = 50.0f;
+//	gopd.farPlane = 2000.0f;
+
+	// Set up the perspective;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0,screen_width , 0,screen_height);
+//	gluPerspective(gopd.fieldOfView, gopd.aspect, gopd.nearPlane, gopd.farPlane);
+//	glTranslated(0,0,-200);
+
+	glMatrixMode(GL_MODELVIEW);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	if (menu) delete menu;
+	menu = new Menu(GAME_OVER);
+	menu->draw(GL_RENDER);
+	glutPostRedisplay();
 }
 

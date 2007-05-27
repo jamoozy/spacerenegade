@@ -10,6 +10,13 @@
 #include "menu.h"
 
 extern int screenState;
+extern Ship *playerShip;
+extern OctTree *env;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// -------------------------- Keyboard Definitions -------------------------- //
+////////////////////////////////////////////////////////////////////////////////
 
 Keyboard *Keyboard::keyboard = NULL;
 
@@ -51,6 +58,11 @@ void Keyboard::cleanUp()
 {
 	delete keyboard;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ---------------------------- Mouse Definitions --------------------------- //
+////////////////////////////////////////////////////////////////////////////////
 
 Mouse *Mouse::mouse = NULL;
 
@@ -114,13 +126,11 @@ void Mouse::clearDiffs()
 	diffX = diffY = 0;
 }
 
-extern Ship *playerShip;
-extern OctTree *env;
 
 
-/////////////////////////////////////
-// Global Input-Handling Functions //
-/////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// -------------------- Global Input-Handling Functions --------------------- //
+////////////////////////////////////////////////////////////////////////////////
 
 // Reads any key that emits a character.
 void updateKeyboard(unsigned char key, int x, int y)
@@ -212,41 +222,72 @@ void updateSpecialKeysUp(int key, int x, int y)
 	}
 }
 
-
-// Tactical-specific one-hit actions.
-void tacticalKeyboard(unsigned char key, int x, int y)
+// Start Screen-specific one-hit actions. ---------------------
+void startScreenKeyboard(unsigned char key, int x, int y)
 {
-	if (key == 't' || key == 'T')
-		playerShip->fire();
-}
-
-void tacticalKeyboardUp(unsigned char key, int x, int y)
-{
-}
-
-void tacticalSpecialKeys(int key, int x, int y)
-{
-	if (key == GLUT_KEY_F9)
-		std::cout << playerShip->getPos().str() << std::endl;
-
-	if (key == GLUT_KEY_F10)
-		std::cout << "Health: " << (100 * playerShip->getHealth()) << (char)0x25 << std::endl;
-
-	if (key == GLUT_KEY_F12)
-		std::cout << "Min bound of Leaf: " << playerShip->getResidence()->minBound.str() << std::endl
-		          << "Max bound of Leaf: " << playerShip->getResidence()->maxBound.str() << std::endl;
-
-	if (key == GLUT_KEY_HOME)
+	switch (key)
 	{
-		playerShip->getResidence()->remove(playerShip);
-		playerShip->setAt(0,0,0);
-		env->add(playerShip);
+		case 'q':
+		case 'Q':
+			cleanup();
+			break;
+
+		case 's':
+		case 'S':
+			initTactical();
+			break;
 	}
 }
 
-void tacticalSpecialKeysUp(int key, int x, int y)
+// Tactical-specific one-hit actions. -------------------------
+void tacticalKeyboard(unsigned char key, int x, int y)
 {
+	switch (key)
+	{
+		case 't':
+		case 'T':
+			playerShip->fire();
+			break;
+		case 'q':
+		case 'Q':
+			cleanup();
+			break;
+	}
 }
+
+void tacticalKeyboardUp(unsigned char key, int x, int y) {}
+
+void tacticalSpecialKeys(int key, int x, int y)
+{
+	switch (key)
+	{
+		case GLUT_KEY_F9:
+			std::cout << playerShip->getPos().str() << std::endl;
+			break;
+
+		case GLUT_KEY_F10:
+			std::cout << "Health: " << (100 * playerShip->getHealth()) << (char)0x25 << std::endl;
+			break;
+
+		case GLUT_KEY_F11:
+			std::cout << "Kill the player!" << std::endl;
+			playerShip->hurt(1000);
+			break;
+
+		case GLUT_KEY_F12:
+			std::cout << "Min bound of Leaf: " << playerShip->getResidence()->minBound.str() << std::endl
+					  << "Max bound of Leaf: " << playerShip->getResidence()->maxBound.str() << std::endl;
+			break;
+
+		case GLUT_KEY_HOME:
+			playerShip->getResidence()->remove(playerShip);
+			playerShip->setAt(0,0,0);
+			env->add(playerShip);
+			break;
+	}
+}
+
+void tacticalSpecialKeysUp(int key, int x, int y) {}
 
 // Jam:
 // I use the keyboard here for the purpose of getting multiple
@@ -254,10 +295,6 @@ void tacticalSpecialKeysUp(int key, int x, int y)
 // mechanism of the glutXXXFunc()'s.
 void handleTacticalInput()
 {
-	// Quit.
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_Q))
-		cleanup();
-
 	// Yaw.
 	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
 		playerShip->yawLeft();
@@ -286,32 +323,54 @@ void handleTacticalInput()
 
 void readKeyboard(unsigned char key, int x, int y)
 {
-	if (screenState == TACTICAL)
-		tacticalKeyboard(key, x, y);
+	switch (screenState)
+	{
+		case START_SCREEN:
+			startScreenKeyboard(key, x, y);
+			break;
+		case TACTICAL:
+			tacticalKeyboard(key, x, y);
+			break;
+		case GAME_OVER:
+//			gameOverKeyboard(key, x, y);
+			break;
+	}
 
 	updateKeyboard(key, x, y);
 }
 
 void readKeyboardUp(unsigned char key, int x, int y)
 {
-	if (screenState == TACTICAL)
-		tacticalKeyboardUp(key, x, y);
+	switch (screenState)
+	{
+		case TACTICAL:
+			tacticalKeyboardUp(key, x, y);
+			break;
+	}
 
 	updateKeyboardUp(key, x, y);
 }
 
 void readSpecialKeys(int key, int x, int y)
 {
-	if (screenState == TACTICAL)
-		tacticalSpecialKeys(key, x, y);
+	switch (screenState)
+	{
+		case TACTICAL:
+			tacticalSpecialKeys(key, x, y);
+			break;
+	}
 
 	udpateSpecialKeys(key, x, y);
 }
 
 void readSpecialKeysUp(int key, int x, int y)
 {
-	if (screenState == TACTICAL)
-		tacticalSpecialKeysUp(key, x, y);
+	switch (screenState)
+	{
+		case TACTICAL:
+			tacticalSpecialKeysUp(key, x, y);
+			break;
+	}
 
 	updateSpecialKeysUp(key, x, y);
 }
