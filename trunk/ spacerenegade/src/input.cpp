@@ -9,9 +9,15 @@
 #include "display.h"
 #include "menu.h"
 
+using std::cout;
+using std::endl;
+using std::cerr;
+
 extern int screenState;
 extern Ship *playerShip;
 extern OctTree *env;
+extern int screen_width;
+extern int screen_height;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +397,6 @@ void processHits(GLint hits, GLuint buffer[])
 }
 
 #define BUFSIZE 512////////////////
-//extern struct perspectiveData pD;
 
 void mouseClick(int button, int state, int x, int y)
 {
@@ -413,26 +418,19 @@ void mouseClick(int button, int state, int x, int y)
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	
-	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3]-y), 5.0, 5.0, viewport);
 
-	int width = 1024;
-	int height = 768;
-	float aspect = (float)width/(float)height;
+	gluPickMatrix((GLdouble)x, (GLdouble) (viewport[3] - y), 5.0, 5.0, viewport);
 
-	glFrustum(-0.1 * aspect, 0.1 * aspect, -0.1, 0.1, 0.1, 20.0);
-	//drawButtons(GL_SELECT);
+	gluOrtho2D(0,screen_width , 0,screen_height);
 	menu->draw(GL_SELECT);
-	//hits = glRenderMode(GL_RENDER);
+	hits = glRenderMode(GL_RENDER);
 	
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glFlush();
 	
-	hits = glRenderMode(GL_RENDER);
-	printf("Names = %d\nArea =  %d\n", selectBuffer[0], selectBuffer[3]);
-	if(hits == 1) processHits(hits, selectBuffer);
-	//printf("hits = %d\n", hits);
+	if(hits == 1)
+		processHits(hits, selectBuffer);
 }
 
 void mouseButtHandler(int button, int state, int x, int y)
@@ -451,7 +449,7 @@ void mouseButtHandler(int button, int state, int x, int y)
 			Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
 		}
 	}
-	else if (screenState == START_SCREEN)
+	else //if (screenState == START_SCREEN)
 	{
 		mouseClick(button,state,x,y);
 	}
@@ -459,6 +457,11 @@ void mouseButtHandler(int button, int state, int x, int y)
 
 void mouseMoveHandler(int x, int y)
 {
-	Mouse::getMouse()->setLastMousePos(x, y);
+	switch (screenState)
+	{
+		case TACTICAL:
+			Mouse::getMouse()->setLastMousePos(x, y);
+			break;
+	}
 }
 

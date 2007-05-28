@@ -59,49 +59,14 @@ void Button::Place(GLenum mode)
 	glColor3f(RGB[0], RGB[1], RGB[2]);
 	if (mode == GL_SELECT)
 	{
-//		cout << "there" << endl;
-
-//		cout << "rect: (" << (xPos) - border << ", " 
-//		     << (yPos) - border << "), -> ("
-//		     << (xPos) + border + (numOfLetters * FONTWIDTH)
-//		     << ", " << (yPos) + border + (FONTHEIGHT) << ')' << endl;
-
 		glLoadName(id);
 		glRectf((xPos) - border, 
 				(yPos) - border, 
 				(xPos) + border + (numOfLetters * FONTWIDTH), 
 				(yPos) + border + (FONTHEIGHT));
-//		menu->setProjection();
-//		glRenderMode(GL_RENDER);
-//		glRectf((xPos) - border, 
-//				(yPos) - border, 
-//				(xPos) + border + (numOfLetters * FONTWIDTH), 
-//				(yPos) + border + (FONTHEIGHT));
-//		glRenderMode(GL_SELECT);
-//		menu->cleanProjection();
 	}
 	else if (mode == GL_RENDER)
 	{
-//		cout << "Modelview Matrix:" << endl;
-//		GLdouble matrix[16];
-//		glGetDoublev(GL_MODELVIEW_MATRIX, matrix);
-//		for (int i = 0; i < 4; i++) {
-//			for (int j = 0; j < 4; j++) {
-//				cout << j*4+i << ": " << matrix[j*4+i] << ",  ";
-//			}
-//			cout << endl;
-//		}
-//		cout << endl;
-//		cout << "Projection Matrix:" << endl;
-//		glGetDoublev(GL_PROJECTION_MATRIX, matrix);
-//		for (int i = 0; i < 4; i++) {
-//			for (int j = 0; j < 4; j++) {
-//				cout << j*4+i << ": " << matrix[j*4+i] << ",  ";
-//			}
-//			cout << endl;
-//		}
-//		cout << endl;
-
 		glRectf((xPos) - border,
 				(yPos) - border,
 				(xPos) + border + (numOfLetters * FONTWIDTH), 
@@ -112,7 +77,6 @@ void Button::Place(GLenum mode)
 
 void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
 {
-//	menu->setProjection();
 	glPushMatrix();
 	glLoadIdentity();
 	glColor3f(r,g,b);
@@ -125,7 +89,6 @@ void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat 
 		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
 	}
 	glPopMatrix();
-//	menu->cleanProjection();
 }
 
 
