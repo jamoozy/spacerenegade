@@ -221,7 +221,7 @@ void drawHUD()
 	glColor3d(.3,.3,.8);
 	glRecti(921, 567, 973, 750);
 	glColor3d(.8,.3,.3);
-	glRecti(925, 571, 969, 571 + playerShip->getHealth() * 175);
+	glRecti(925, 571, 969, (GLuint) floor(571 + playerShip->getHealth() * 175));
 
 	drawMiniMap();
 
@@ -280,13 +280,13 @@ void initStartScreen()
 	// setup context
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+	gluOrtho2D(0, screen_width, 0, screen_height);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef( 0,0,-5);
+//	glTranslatef( 0,0,-5);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	glRenderMode(GL_SELECT);
