@@ -52,7 +52,9 @@ public:
 	Menu();
 	Menu(int type);
 	virtual ~Menu();
+	void setProjection();
 	void draw(GLenum mode);
+	void cleanProjection();
 	//int getNumButtons() {return numButtons;}
 	void processHits(GLint hits, GLuint buffer[]);
 };

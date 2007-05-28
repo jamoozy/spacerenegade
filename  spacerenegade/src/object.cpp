@@ -72,11 +72,11 @@ bool Object::collidesWith(Object *o)
 void Object::drawOnMiniMap(double r)
 {
 	double zBright = (position.z() - playerShip->getPos().z() + r) / (2*r);
-	double xShift = 5*((position.x() - playerShip->getPos().x()) / r);
-	double yShift = 5*((position.y() - playerShip->getPos().y()) / r);
+	double xShift = 85*((position.x() - playerShip->getPos().x()) / r);
+	double yShift = 85*((position.y() - playerShip->getPos().y()) / r);
 
 	glColor3d(red*zBright, green*zBright, blue*zBright);
-	glCircle(miniMapX + xShift, miniMapY + yShift, .1, 5);
+	glCircle(miniMapX + xShift, miniMapY + yShift, 2, 5);
 	
 }
 

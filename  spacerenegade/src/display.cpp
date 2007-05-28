@@ -12,6 +12,9 @@
 #include "asteroid.h"
 #include "menu.h"
 
+using std::cout;
+using std::endl;
+
 #ifndef M_PI
 	#define M_PI 3.14159265358979
 #endif
@@ -25,8 +28,8 @@ int screen_width = IMAGE_WIDTH;
 int screen_height = IMAGE_HEIGHT;
 
 int screenState;
-GLfloat miniMapX = 20;
-GLfloat miniMapY = -11.5;
+GLfloat miniMapX = 853.0f;
+GLfloat miniMapY = 174.0f;
 
 struct perspectiveData 
 {
@@ -139,7 +142,9 @@ void displayStartScreen()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+//	menu->setProjection();
 	menu->draw(GL_RENDER);
+//	menu->cleanProjection();
 
 	glutSwapBuffers();
 }
@@ -214,12 +219,10 @@ void drawHUD()
 
 	// The health meter.
 	glColor3d(.3,.3,.8);
-	glRecti(24,10,27,20);
+	glRecti(921, 567, 973, 750);
 	glColor3d(.8,.3,.3);
-	glRectd(24.2,10.2,26.8,10.2 + playerShip->getHealth() * 9.6);
+	glRecti(925, 571, 969, 571 + playerShip->getHealth() * 175);
 
-	glColor4d(0,0,1,0.2);
-	glRecti(-30,-5,30,-20);
 	drawMiniMap();
 
 	// Shift things back into the "normal" camera that lets us look.
@@ -233,15 +236,16 @@ void drawHUD()
 }
 
 void drawMiniMap()
-{	//GLfloat cx,GLfloat cy,GLfloat r,int side
-	
+{
+	//GLfloat cx,GLfloat cy,GLfloat r,int side
 	
 	//playerShip->getPos
 	Object *objs[100];
 	int numbObjs = 0;
 	double radius = 125;
 
-	glCircle(miniMapX, miniMapY, 5, 20);
+	glColor3d(.3, .3, .8);
+	glCircle(miniMapX, miniMapY, 85, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
 	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
@@ -250,8 +254,6 @@ void drawMiniMap()
 	{
 		objs[i]->drawOnMiniMap(radius);
 	}//for
-
-	//exit(0);
 }
 
 void displayGameOver()
@@ -284,7 +286,7 @@ void initStartScreen()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-//	glTranslatef( 0,0,-5);
+	glTranslatef( 0,0,-5);
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 
 	glRenderMode(GL_SELECT);
@@ -360,8 +362,9 @@ void initTactical()
 	// Initialize the HUD projection matrix.
 	glPushMatrix();
 	glLoadIdentity();
-	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
-	glTranslated(0,0,-50);
+	gluOrtho2D(0, screen_width, 0, screen_height);
+//	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
+//	glTranslated(0,0,-50);
 	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
 	glPopMatrix();
 
