@@ -18,8 +18,10 @@ extern OctTree *env;
 
 // Makes a new, boring ship that just sits there.
 Ship::Ship() : Object("./art/personalship.3DS"),
-	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0), //lightRnotL(true), lightTime(0),
-	roa(0.005), rod(0.001), ros(0.95), rot(0.02) {}
+	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
+	//lightRnotL(true), lightTime(0),
+	roa(0.005), rod(0.001), ros(0.95), rot(0.02),
+	fuel(maxFuel()), ammo(maxAmmo()) {}
 
 // Deconstructor: file is a pointer, so delete it
 Ship::~Ship() {}
@@ -93,6 +95,9 @@ void Ship::hits(Object *o)
 
 void Ship::fire()
 {
+	--ammo;
+
+	// This deletes itself after 120 frames (~3s) or it hits something.
 	Weapon *w = new Weapon(this,120);
 	env->add(w);
 }
@@ -106,18 +111,21 @@ void Ship::recompdir()
 // Adds to the ship's velocity.
 void Ship::accelerate()
 {
+	--fuel;
 	velocity += direction * roa;
 }
 
 // Subtracts from the ship's velocity.
 void Ship::decelerate()
 {
+	--fuel;
 	velocity -= direction * rod;
 }
 
 // Brings the velocity down to 0
 void Ship::stabilize()
 {
+	fuel -= 5;
 	if (velocity.norm() <= 3 * roa)
 		velocity = Vec3(0,0,0);
 	else
@@ -127,6 +135,7 @@ void Ship::stabilize()
 // Tilt the nose up.
 void Ship::pitchBack()
 {
+	fuel -= 0.2;
 	radpyr -= Vec3(rot, 0, 0);
 	recompdir();
 }
@@ -134,6 +143,7 @@ void Ship::pitchBack()
 // Tilt the nose down.
 void Ship::pitchForward()
 {
+	fuel -= 0.2;
 	radpyr += Vec3(rot, 0, 0);
 	recompdir();
 }
@@ -141,6 +151,7 @@ void Ship::pitchForward()
 // Turn left about the Y(up)-axis
 void Ship::yawLeft()
 {
+	fuel -= 0.2;
 	radpyr += Vec3(0, rot, 0);
 	recompdir();
 }
@@ -148,6 +159,7 @@ void Ship::yawLeft()
 // Turn right about the Y(up)-axis
 void Ship::yawRight()
 {
+	fuel -= 0.2;
 	radpyr -= Vec3(0, rot, 0);
 	recompdir();
 }
@@ -155,6 +167,7 @@ void Ship::yawRight()
 //
 void Ship::rollLeft()
 {
+//	fuel -= 0.2;
 //	radpyr += Vec3(0, 0, rot);
 //	recompdir();
 }
@@ -162,6 +175,7 @@ void Ship::rollLeft()
 //
 void Ship::rollRight()
 {
+//	fuel -= 0.2;
 //	radpyr -= Vec3(0, 0, rot);
 //	recompdir();
 }

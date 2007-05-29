@@ -25,6 +25,9 @@ private:
 	double ros;  // Rate of Stabilization
 	double rot;  // Rate of Turn
 
+	double fuel; // Amount of fuel left.
+	double ammo; // Amount of ammo left.
+
 	void recompdir(); // Recompute the direction based on pyr
 
 public:
@@ -48,7 +51,11 @@ public:
 	void fire();
 	virtual void hits(Object *o);
 	virtual int maxHealth() const { return 1000; };
+	virtual int maxFuel() const { return 10000; };
+	virtual int maxAmmo() const { return 100; };
 	virtual double getHealth() const { return 1.0 - damage / (double)maxHealth(); };
+	virtual double getFuel() const { return fuel / (double)maxFuel(); };
+	virtual double getAmmo() const { return ammo / (double)maxAmmo(); };
 };
 
 #endif
