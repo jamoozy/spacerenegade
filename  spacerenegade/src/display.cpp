@@ -15,6 +15,7 @@
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::stringstream;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -232,12 +233,7 @@ void drawHUD()
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
 
-	// The health meter.
-	glColor3d(.3,.3,.8);
-	glRecti(921, 567, 973, 750);
-	glColor3d(.8,.3,.3);
-	glRecti(925, 571, 969, (GLuint) floor(571 + playerShip->getHealth() * 175));
-
+	drawMeters();
 	drawMiniMap();
 
 	// Shift things back into the "normal" camera that lets us look.
@@ -248,6 +244,34 @@ void drawHUD()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
+}
+
+void drawMeters()
+{
+	// Background blue-ish boxes of the meters.
+	glColor3d(.3,.3,.9);
+	glRecti(960, 570, 1005, 750);
+	glRecti(905, 570, 950, 750);
+	glRecti(850, 570, 895, 750);
+
+	// The bar that communicates the information.
+	glColor3d(.3,.8,.3);
+	glRecti(965, 575, 1000, 575 + (int)(170 * playerShip->getHealth()));
+	glColor3d(.7,.7,.2);
+	glRecti(910, 575, 945, 575 + (int)(170 * playerShip->getFuel()));
+	glColor3d(.8,.3,.3);
+	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->getAmmo()));
+
+	// The labels of the meters
+	drawText(964, 550, "Hlth" , Color(1,1,1));
+	drawText(909, 550, "Fuel" , Color(1,1,1));
+	drawText(854, 550, "Ammo" , Color(1,1,1));
+
+	// Prints the ammo left on the bottom-left of the screen.
+	// This should probably be somewhere else, though ...
+	stringstream stream(stringstream::in | stringstream::out);
+	stream << "ammo used: " << playerShip->getAmmo() * playerShip->maxAmmo();
+	drawText(0,0, stream.str(), Color(1,1,1));
 }
 
 void drawMiniMap()

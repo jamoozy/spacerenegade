@@ -36,6 +36,7 @@ void displayStartScreen();
 void displayTactical();
 void adjustGlobalLighting();
 void drawHUD();
+void drawMeters();
 void drawMiniMap();
 void displayGameOver();
 

@@ -254,7 +254,8 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 	{
 		case 't':
 		case 'T':
-			playerShip->fire();
+			if (playerShip->getAmmo() > 0)
+				playerShip->fire();
 			break;
 		case 'q':
 		case 'Q':
@@ -325,25 +326,28 @@ void gameOverKeyboard(unsigned char key, int x, int y)
 // mechanism of the glutXXXFunc()'s.
 void handleTacticalInput()
 {
-	// Yaw.
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
-		playerShip->yawLeft();
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
-		playerShip->yawRight();
+	if (playerShip->getFuel() > 0)
+	{
+		// Yaw.
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
+			playerShip->yawLeft();
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
+			playerShip->yawRight();
 
-	// Acceleration.
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
-		playerShip->accelerate();
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
-		playerShip->decelerate();
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_G))
-		playerShip->stabilize();
+		// Acceleration.
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
+			playerShip->accelerate();
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
+			playerShip->decelerate();
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_G))
+			playerShip->stabilize();
 
-	// Pitch.
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_D))
-		playerShip->pitchBack();
-	if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
-		playerShip->pitchForward();
+		// Pitch.
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_D))
+			playerShip->pitchBack();
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
+			playerShip->pitchForward();
+	}
 }
 
 
