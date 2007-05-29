@@ -10,14 +10,16 @@
 #include "menu.h"
 
 using std::cout;
-using std::endl;
 using std::cerr;
+using std::endl;
 
+extern Menu *menu;
 extern int screenState;
 extern Ship *playerShip;
 extern OctTree *env;
 extern int screen_width;
 extern int screen_height;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -267,22 +269,27 @@ void tacticalSpecialKeys(int key, int x, int y)
 {
 	switch (key)
 	{
+		case GLUT_KEY_F8:
+			cout << "Resetting." << endl;
+			initTactical();
+			break;
+
 		case GLUT_KEY_F9:
-			std::cout << playerShip->getPos().str() << std::endl;
+			cout << "player's pos: " << playerShip->getPos().str() << endl;
 			break;
 
 		case GLUT_KEY_F10:
-			std::cout << "Health: " << (100 * playerShip->getHealth()) << (char)0x25 << std::endl;
+			cout << "Health: " << (100 * playerShip->getHealth()) << (char)0x25 << endl;
 			break;
 
 		case GLUT_KEY_F11:
-			std::cout << "Kill the player!" << std::endl;
+			cout << "Kill the player!" << endl;
 			playerShip->hurt(1000);
 			break;
 
 		case GLUT_KEY_F12:
-			std::cout << "Min bound of Leaf: " << playerShip->getResidence()->minBound.str() << std::endl
-					  << "Max bound of Leaf: " << playerShip->getResidence()->maxBound.str() << std::endl;
+			cout << "Min bound of Leaf: " << playerShip->getResidence()->minBound.str() << endl
+			     << "Max bound of Leaf: " << playerShip->getResidence()->maxBound.str() << endl;
 			break;
 
 		case GLUT_KEY_HOME:
@@ -294,6 +301,23 @@ void tacticalSpecialKeys(int key, int x, int y)
 }
 
 void tacticalSpecialKeysUp(int key, int x, int y) {}
+
+// Game Over-specific one-hit actions. ------------------------
+void gameOverKeyboard(unsigned char key, int x, int y)
+{
+	switch (key)
+	{
+		case 'q':
+		case 'Q':
+			cleanup();
+			break;
+
+		case 's':
+		case 'S':
+			initTactical();
+			break;
+	}
+}
 
 // Jam:
 // I use the keyboard here for the purpose of getting multiple
@@ -338,7 +362,7 @@ void readKeyboard(unsigned char key, int x, int y)
 			tacticalKeyboard(key, x, y);
 			break;
 		case GAME_OVER:
-//			gameOverKeyboard(key, x, y);
+			gameOverKeyboard(key, x, y);
 			break;
 	}
 
@@ -382,34 +406,27 @@ void readSpecialKeysUp(int key, int x, int y)
 }
 
 
-//extern Button *buttons;
-//extern int numButtons;
-extern Menu *menu;
-
 void processHits(GLint hits, GLuint buffer[])
 {
 	menu->processHits(hits, buffer);
-	/*
-	for(int i = 0; i < hits; i++)
-		for (int j = 0; j < menu->getNumButtons(); j++)
-			if (buffer[i*4 + 3] == buttons[j].getID())
-				buttons[j].buttonPressed();*/
 }
-
-#define BUFSIZE 512////////////////
 
 void mouseClick(int button, int state, int x, int y)
 {
+	#define BUFSIZE 512
+
 	GLuint selectBuffer[BUFSIZE];
 	GLint hits;
 	GLint viewport[4];
-	
-	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN)
-		return;
+
+	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN) return;
 	
 	glGetIntegerv(GL_VIEWPORT, viewport);
 	
 	glSelectBuffer(BUFSIZE, selectBuffer);
+
+	#undef BUFSIZE
+	
 	(void) glRenderMode(GL_SELECT);
 	
 	glInitNames();

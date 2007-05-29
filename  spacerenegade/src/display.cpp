@@ -13,6 +13,7 @@
 #include "menu.h"
 
 using std::cout;
+using std::cerr;
 using std::endl;
 
 #ifndef M_PI
@@ -37,9 +38,22 @@ struct perspectiveData
 	float aspect;
 	float nearPlane;
 	float farPlane;
-} pD, hudpd, gopd;
+} pD;
 
 double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in the tactical screen.
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Color Class ------------------------------------ //
+////////////////////////////////////////////////////////////////////////////////
+
+Color::Color() : _r(0), _g(0), _b(0), _a(1) {}
+
+Color::Color(double r, double g, double b) : _r(r), _g(g), _b(b), _a(1) {}
+
+Color::Color(double r, double g, double b, double a) :
+	_r(r), _g(g), _b(b), _a(a) {}
 
 
 
@@ -56,19 +70,20 @@ double rr(double max, double min)
 }
 
 // Draw some text somewhere.
-void drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
+void drawText(GLint x, GLint y, string s, Color c)
 {
+	// Make the nice, easy-to-use (0,0) -> (w,h) screen coords.
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0.0, glutGet(GLUT_WINDOW_WIDTH), 
-			0.0, glutGet(GLUT_WINDOW_HEIGHT), -1.0, 1.0);
+	gluOrtho2D(0.0, screen_width, 0.0, screen_height);
+
+	// Nullify all effects of the modelview matrix.
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
-	glColor3f(r,g,b);
-	x = (int)floor(x + (.5 * screen_width));
-	y = (int)floor(y + (.5 * screen_height));
+
+	glColor4d(c.r(), c.g(), c.b(), c.a());
 	glRasterPos2i(x, y);
 	for(unsigned int i = 0, lines = 0; i < s.size(); i++)
 	{
@@ -79,6 +94,8 @@ void drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
 		}
 		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
 	}
+
+	// Clean up the matricies we've made.
 	glPopMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -132,7 +149,7 @@ void display()
 			displayGameOver();
 			break;
 		default:
-			std::cerr << "Got unrecognized game state! " << screenState << " Exiting!" << std::endl;
+			cerr << "Got unrecognized game state! " << screenState << " Exiting!" << endl;
 	}
 }
 
@@ -142,9 +159,7 @@ void displayStartScreen()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//	menu->setProjection();
 	menu->draw(GL_RENDER);
-//	menu->cleanProjection();
 
 	glutSwapBuffers();
 }
@@ -183,7 +198,7 @@ void displayTactical()
 	glutSwapBuffers();
 
 	if (playerShip->getHealth() <= 0)
-		initStartScreen();
+		initGameOver();
 }
 
 void adjustGlobalLighting()
@@ -258,8 +273,13 @@ void drawMiniMap()
 
 void displayGameOver()
 {
-	drawText(0,0 , "GAME OVER", 1,1,1);
-	glutPostRedisplay();
+	// Clear the screen and the depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	drawText(500,500 , "GAME OVER", Color(1,1,1));
+	menu->draw(GL_RENDER);
+
+	glutSwapBuffers();
 }
 
 
@@ -270,50 +290,62 @@ void displayGameOver()
 
 void initStartScreen()
 {
+	// Setting this ensures all the right display
+	// and input functions are called.
 	screenState = START_SCREEN;
-	
-	pD.fieldOfView = 45.0;
-	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
-	pD.nearPlane   = 0.1;
-	pD.farPlane    = 200.0;
 
-	// setup context
+	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
+
+	// Turn off transparancies.
+	glBlendFunc(GL_ONE, GL_ZERO);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-//	glTranslatef( 0,0,-5);
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 
+	// Set up OpenGL for picking.
 	glRenderMode(GL_SELECT);
 	glInitNames();
 	glRenderMode(GL_RENDER);
 
+	// Create the appropriate menu.
 	if (menu) delete menu;
 	menu = new Menu(screenState);
+
+	// Schedule a re-draw.
+	glutPostRedisplay();
 }
 
 void initTactical()
 {
 	screenState = TACTICAL; 
 
-	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearIndex(0);
 	glClearDepth(1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	Button b("Loading...",0.0 , 0.0f,0.0f , 0.0f,0.0f,0.0f , 0,NULL);
-	b.Place(GL_RENDER);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	drawText(512,350 , "Loading..." , Color(1,0,0));
 	glutSwapBuffers();
 
 	// Set up the octtree, making it ready for objects to populate it.
 	if (env) delete env;
 	env = new OctTree();
+
+	// Jam:
+	// You may be asking yourself "Why not just put the call to initLeaves()
+	// in the constructor?"  The answer is that the leaves need the env
+	// variable to initialize themselves.  If you put the call to initLeaves()
+	// in the constructor, then the new operator has not yet returned, and the
+	// env variable is not yet initialized, causing a segfault when the
+	// memory is accessed illegally by the leaves.  Therefore this stays here.
 	env->initLeaves();
 
 	// Populate the world with some asteroids.
@@ -344,12 +376,6 @@ void initTactical()
 	pD.nearPlane   = 0.1;
 	pD.farPlane    = 2000.0;
 
-	// Special perspective for menu items.
-	hudpd.fieldOfView = 45.0;
-	hudpd.aspect = (float)screen_width/screen_height;
-	hudpd.nearPlane = 49.9;
-	hudpd.farPlane = 50.1;
-
 	// Puts the blending function in a way that makes for nice
 	// HUD and menu transparency.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -359,17 +385,17 @@ void initTactical()
 	glLoadIdentity();
 	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
 
-	// Initialize the HUD projection matrix.
+	// Initialize the HUD projection matrix.  This makes for a
+	// speedier change between the HUD and the rest.
 	glPushMatrix();
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
-//	gluPerspective(hudpd.fieldOfView, hudpd.aspect, hudpd.nearPlane, hudpd.farPlane);
-//	glTranslated(0,0,-50);
 	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
 	glPopMatrix();
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
@@ -382,30 +408,37 @@ void initTactical()
 	glEnable(GL_LIGHT0);
 
 	adjustGlobalLighting();
+
+	glutPostRedisplay();
 }
 
 void initGameOver()
 {
 	screenState = GAME_OVER;
 
-//	gopd.fieldOfView = 45.0f;
-//	gopd.aspect = (float)screen_width/screen_height;
-//	gopd.nearPlane = 50.0f;
-//	gopd.farPlane = 2000.0f;
-
 	// Set up the perspective;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(0,screen_width , 0,screen_height);
-//	gluPerspective(gopd.fieldOfView, gopd.aspect, gopd.nearPlane, gopd.farPlane);
-//	glTranslated(0,0,-200);
 
+	// Turn off transparancies.
+	glBlendFunc(GL_ONE, GL_ZERO);
+
+	// Clear and reset everything.
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// Set up OpenGL for picking.
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glRenderMode(GL_RENDER);
+
+	// Create the appropriate menu.
 	if (menu) delete menu;
 	menu = new Menu(GAME_OVER);
-	menu->draw(GL_RENDER);
+
+	// Schedule a re-draw.
 	glutPostRedisplay();
 }
 
