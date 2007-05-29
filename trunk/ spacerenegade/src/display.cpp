@@ -262,6 +262,23 @@ void drawMeters()
 	glColor3d(.8,.3,.3);
 	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->getAmmo()));
 
+	// Draw the tick marks
+	glColor3d(.9, .9, .9);
+	glBegin(GL_LINES);
+	glVertex2i(965, 575);
+	glVertex2i(1000, 575);
+	glVertex2i(1000, 745);
+	glVertex2i(965, 745);
+	glVertex2i(910, 575);
+	glVertex2i(945, 575);
+	glVertex2i(945, 745);
+	glVertex2i(910, 745);
+	glVertex2i(855, 575);
+	glVertex2i(890, 575);
+	glVertex2i(890, 745);
+	glVertex2i(855, 745);
+	glEnd();
+
 	// The labels of the meters
 	drawText(964, 550, "Hlth" , Color(1,1,1));
 	drawText(909, 550, "Fuel" , Color(1,1,1));
