@@ -105,10 +105,11 @@ Menu::Menu(int type) : type(type)
 			numButtons = 4;
 			buttons = new Button[numButtons];
 			buttons[0] = Button("New Game", 5 , 500,450 , 0.6,0.8,0.2 , 1, initTactical);
-			buttons[1] = Button("Load Game",5 , 500,400 , 0.6,0.8,0.2 , 2,NULL);
-			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3,NULL);
+			buttons[1] = Button("Load Game",5 , 500,400 , 0.6,0.8,0.2 , 2, NULL);
+			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3, NULL);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.6,0.8,0.2 , 4, cleanup);
 			break;
+
 		case MISSION:
 			break;
 
@@ -116,11 +117,10 @@ Menu::Menu(int type) : type(type)
 			numButtons = 4;
 			buttons = new Button[numButtons];
 			buttons[0] = Button("New Game", 5 , 500,450 , 0.8,0.2,0.1 , 1, initTactical);
-			buttons[1] = Button("Load Game",5 , 500,400 , 0.8,0.2,0.1 , 2,NULL);
-			buttons[2] = Button("Options",  5 , 500,350 , 0.8,0.2,0.1 , 3,NULL);
+			buttons[1] = Button("Load Game",5 , 500,400 , 0.8,0.2,0.1 , 2, NULL);
+			buttons[2] = Button("Options",  5 , 500,350 , 0.8,0.2,0.1 , 3, NULL);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.8,0.2,0.1 , 4, cleanup);
 			break;
-		default: break;
 	}
 }
 
@@ -134,8 +134,7 @@ void Menu::setProjection()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0.0, glutGet(GLUT_WINDOW_WIDTH), 
-		0.0, glutGet(GLUT_WINDOW_HEIGHT), -50.1, 50.1);
+	gluOrtho2D(0.0, screen_width, 0.0, screen_height);
 	glMatrixMode(GL_MODELVIEW);
 }
 
