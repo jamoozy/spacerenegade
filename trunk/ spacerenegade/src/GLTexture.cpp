@@ -35,12 +35,11 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "GLTexture.h"
-#include "GL/gl.h"
-#include "GL/glu.h"
-#include <cstdio>
-#include <cstring>
-#include <cstdlib>
-#include "glbmp.h"
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -56,18 +55,7 @@ GLTexture::~GLTexture()
 
 }
 
-char *GLTexture::strlwr(char *str)
-{
-	// Move over the string.
-	for (int i = 0; str[i] != '\0'; i++)
-		if ('A' <= str[i] && str[i] <= 'Z')
-			str[i] = str[i] - 'A' + 'a';
-		
-	return str;
-}
-
-
-bool GLTexture::Load(char *name)
+void GLTexture::Load(char *name)
 {
 	// make the texture name all lower case
 	texturename = strlwr(strdup(name));
@@ -78,14 +66,21 @@ bool GLTexture::Load(char *name)
 
 	// check the file extension to see what type of texture
 	if(strstr(texturename, ".bmp"))	
-		return LoadBMP(texturename);
+		LoadBMP(texturename);
 	if(strstr(texturename, ".tga"))	
-		return LoadTGA(texturename);
+		LoadTGA(texturename);
+}
 
-	// Unrecognized format.
-	fprintf(stderr, "Unrecognized file extension! %s\n", name);
-	fprintf(stderr, "Make sure it is a \'.bmp\' or \'.tga\' file.");
-	return false;
+void GLTexture::LoadFromResource(char *name)
+{
+	// make the texture name all lower case
+	texturename = strlwr(strdup(name));
+
+	// check the file extension to see what type of texture
+	if(strstr(texturename, ".bmp"))
+		LoadBMPResource(name);
+	if(strstr(texturename, ".tga"))	
+		LoadTGAResource(name);
 }
 
 void GLTexture::Use()
@@ -94,21 +89,20 @@ void GLTexture::Use()
 	glBindTexture(GL_TEXTURE_2D, texture[0]);				// Bind the texture as the current one
 }
 
-bool GLTexture::LoadBMP(char *name)
+void GLTexture::LoadBMP(char *name)
 {
 	// Create a place to store the texture
-	glbmp_t *textureImage = (glbmp_t*)malloc(sizeof(glbmp_t));
+	AUX_RGBImageRec *TextureImage[1];
+
+	// Set the pointer to NULL
+	memset(TextureImage,0,sizeof(void *)*1);
 
 	// Load the bitmap and assign our pointer to it
-	if(!glbmp_LoadBitmap(name, 0, textureImage))
-	{
-		free(textureImage);
-		return false;
-	}
+	TextureImage[0] = auxDIBImageLoad(name);
 
 	// Just in case we want to use the width and height later
-	width = textureImage->width;
-	height = textureImage->height;
+	width = TextureImage[0]->sizeX;
+	height = TextureImage[0]->sizeY;
 
 	// Generate the OpenGL texture id
 	glGenTextures(1, &texture[0]);
@@ -121,21 +115,19 @@ bool GLTexture::LoadBMP(char *name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	// Generate the mipmaps
-//	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, textureImage->width, textureImage->height, GL_RGB, GL_UNSIGNED_BYTE, textureImage->rgb_data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
 
 	// Cleanup
-	if (textureImage)
+	if (TextureImage[0])
 	{
-		if (textureImage->rgb_data)
-			free(textureImage->rgb_data);
+		if (TextureImage[0]->data)
+			free(TextureImage[0]->data);
 
-		free(textureImage);
+		free(TextureImage[0]);
 	}
-
-	return true;
 }
 
-bool GLTexture::LoadTGA(char *name)
+void GLTexture::LoadTGA(char *name)
 {
 	GLubyte		TGAheader[12]	= {0,0,2,0,0,0,0,0,0,0,0,0};// Uncompressed TGA header
 	GLubyte		TGAcompare[12];								// Used to compare TGA header
@@ -156,15 +148,11 @@ bool GLTexture::LoadTGA(char *name)
 	   fread(header,1,sizeof(header),file) != sizeof(header))				// If so then read the next 6 header bytes
 	{
 		if (file == NULL)									// If the file didn't exist then return
-		{
-			fprintf(stderr, "File does not exist! %s\n", name);
-			return false;
-		}
+			return;
 		else
 		{
 			fclose(file);									// If something broke then close the file and return
-			fprintf(stderr, "Bad file format! %s\n", name);
-			return false;
+			return;
 		}
 	}
 
@@ -177,10 +165,8 @@ bool GLTexture::LoadTGA(char *name)
 	   height	<=0	||										// Is the height less than or equal to zero
 	   (header[4] != 24 && header[4] != 32))				// Is it 24 or 32 bit?
 	{
-
 		fclose(file);										// If anything didn't check out then close the file and return
-		fprintf(stderr, "Bad image resolution or bit-count! %s\n", name);
-		return false;
+		return;
 	}
 
 	bpp				= header[4];							// Grab the bits per pixel
@@ -198,12 +184,11 @@ bool GLTexture::LoadTGA(char *name)
 			free(imageData);								// If so, then release the image data
 
 		fclose(file);										// Close the file
-		fprintf(stderr, "%d Internal memory storage error! %s\n", __LINE__, name);
-		return false;
+		return;
 	}
 
 	// Loop through the image data and swap the 1st and 3rd bytes (red and blue)
-	for(GLuint i = 0; i < GLuint(imageSize); i += bytesPerPixel)
+	for(GLuint i = 0; i < int(imageSize); i += bytesPerPixel)
 	{
 		temp = imageData[i];
 		imageData[i] = imageData[i + 2];
@@ -232,33 +217,24 @@ bool GLTexture::LoadTGA(char *name)
 
 	// Cleanup
 	free(imageData);
-
-	return true;
 }
 
-#ifdef WIN32
 
-bool GLTexture::LoadBMPResource(char *name)
+void GLTexture::LoadBMPResource(char *name)
 {
 	// Find the bitmap in the bitmap resources
 	HRSRC hrsrc = FindResource(0, name, RT_BITMAP);
 
 	// If you can't find it then return
 	if (hrsrc==0)
-	{
-		fprintf(stderr, "Could not find resource! %s\n", name);
-		return false;
-	}
+		return;
 
 	// Load the bitmap
 	HGLOBAL resource = LoadResource(0, hrsrc);
 	
 	// If you can't load it then return
 	if (resource==0)
-	{
-		fprintf(stderr, "Could not load resource! %s\n", name);
-		return false;
-	}
+		return;
 
 	// Load it into the buffer
 	void *buffer = LockResource(resource);
@@ -298,11 +274,9 @@ bool GLTexture::LoadBMPResource(char *name)
 	// Cleanup
 	free(buffer);
 	free(bmp);
-
-	return true;
 }
 
-bool GLTexture::LoadTGAResource(char *name)
+void GLTexture::LoadTGAResource(char *name)
 {
 	// struct to cast the resource into
 	struct TGAstruct {
@@ -323,20 +297,14 @@ bool GLTexture::LoadTGAResource(char *name)
 
 	// If you can't find it then return
 	if (hrsrc==0)
-	{
-		fprintf(stderr, "Could not find resource! %s\n", name);
-		return false;
-	}
+		return;
 
 	// Load the targa
 	HGLOBAL resource = LoadResource(0, hrsrc);
 
 	// If you can't load it then return
 	if (resource==0)
-	{
-		fprintf(stderr, "Could not load resource! %s\n", name);
-		return false;
-	}
+		return;
 
 	// Load it into the buffer
 	void *buffer = LockResource(resource);
@@ -346,10 +314,7 @@ bool GLTexture::LoadTGAResource(char *name)
 
 	// Make sure it checks out against our comparison header
 	if (memcmp(TGAheader,top,sizeof(TGAheader)) != 0)
-	{
-		fprintf(stderr, "Header is not of the correct format! %s\n", name);
-		return false;
-	}
+		return;
 
 	// Determine the TGA width and height (highbyte*256+lowbyte)
 	width  = top->header[1] * 256 + top->header[0];
@@ -361,8 +326,7 @@ bool GLTexture::LoadTGAResource(char *name)
 	   (top->header[4] != 24 && top->header[4] != 32))		// Is it 24 or 32 bit?
 	{
 		// If anything didn't check out then close the file and return
-		fprintf(stderr, "Resource not a valid 24 or 32 bit targa! %s\n", name);
-		return false;
+		return;
 	}
 
 	bpp				= top->header[4];							// Grab the bits per pixel
@@ -404,27 +368,7 @@ bool GLTexture::LoadTGAResource(char *name)
 	free(imageData);
 	free(buffer);
 	free(top);
-
-	return true;
 }
-
-bool GLTexture::LoadFromResource(char *name)
-{
-	// make the texture name all lower case
-	texturename = strlwr(strdup(name));
-
-	// check the file extension to see what type of texture
-	if(strstr(texturename, ".bmp"))
-		return LoadBMPResource(name);
-	if(strstr(texturename, ".tga"))	
-		return LoadTGAResource(name);
-
-	fprintf(stderr, "Unrecognized resource extension! %s\n", name);
-	fprintf(stderr, "Make sure it is a bitmap or targa resource.");
-	return false;
-}
-
-#endif // WIN32
 
 void GLTexture::BuildColorTexture(unsigned char r, unsigned char g, unsigned char b)
 {
@@ -453,4 +397,3 @@ void GLTexture::BuildColorTexture(unsigned char r, unsigned char g, unsigned cha
 	// Generate the texture
 	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, 2, 2, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
-

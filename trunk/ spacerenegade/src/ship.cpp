@@ -16,6 +16,8 @@ extern OctTree *env;
 	#define M_PI 3.14159265358979
 #endif
 
+class GLUquadric {};
+GLvoid glDrawCube();
 
 ////////////////////////////////////////////////////////////////////////////////
 // ----------------------- General-Purpose Ship ----------------------------- //
@@ -101,11 +103,16 @@ void Ship::yawRight()
 ////////////////////////////////////////////////////////////////////////////////
 
 // Makes a new, boring ship that just sits there.
-PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo()) {}
+PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo())
 	//direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
 	//lightRnotL(true), lightTime(0),
 	//roa(0.005), rod(0.001), ros(0.95), rot(0.02),
 	//fuel(maxFuel()), ammo(maxAmmo()) {}
+{
+	// Load variables 
+	skymapLoaded = true;
+	skymap.Load("./art/sky.bmp");
+}
 
 // Deconstructor: file is a pointer, so delete it
 PShip::~PShip() {}
@@ -120,6 +127,22 @@ void PShip::draw()
 	//move
 	glTranslated(position.x(), position.y(), position.z());
 	
+	// Render the skymap
+	if (skymapLoaded) 
+	{
+		glPushMatrix();
+		// Set properties of the material of the sky map
+		GLfloat mat_amb_diff[] = { 0.0, 0.0, 0.0, 1.0 };
+		GLfloat mat_emission[] = { 1.0, 1.0, 1.0, 1.0 };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff);
+		glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+		skymap.Use();
+		// Draw the skymap
+		glScaled(2000, 2000, 2000);
+		glDrawCube();
+		glPopMatrix();
+	}
+
 	// direction rotation
 	glRotated(degpyr.z(),  0,0,1);
 	glRotated(degpyr.y(),  0,1,0);
@@ -249,5 +272,48 @@ void PShip::rollRight()
 //	fuel -= 0.2;
 //	radpyr -= Vec3(0, 0, rot);
 //	recompdir();
+}
+
+// Draws the sky cube for the environment
+GLvoid glDrawCube()
+{
+		glBegin(GL_QUADS);
+		// Front Face
+		glNormal3f( 0.0f, 0.0f, 0.5f);					
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		// Back Face
+		glNormal3f( 0.0f, 0.0f,-0.5f);					
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		// Top Face
+		glNormal3f( 0.0f, 0.5f, 0.0f);					
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		// Bottom Face
+		glNormal3f( 0.0f,-0.5f, 0.0f);					
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		// Right Face
+		glNormal3f( 0.5f, 0.0f, 0.0f);					
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		// Left Face
+		glNormal3f(-0.5f, 0.0f, 0.0f);					
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glEnd();
 }
 

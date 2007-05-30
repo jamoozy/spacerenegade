@@ -26,7 +26,7 @@
 //
 // Some models have problems loading even if you follow all of
 // the restrictions I have stated and I don't know why. If you
-// can import the 3D Studio file into Milkshape 3D
+// can import the 3D Studio file into Milkshape 3D 
 // (http://www.swissquake.ch/chumbalum-soft) and then export it
 // to a new 3D Studio file. This seems to fix many of the problems
 // but there is a limit on the number of faces and vertices Milkshape 3D
@@ -47,7 +47,7 @@
 //
 // // You can disable the rendering of the model
 // m.visible = false;
-//
+// 
 // // You can move and rotate the model like this:
 // m.rot.x = 90.0f;
 // m.rot.y = 30.0f;
@@ -72,19 +72,17 @@
 #define _QUOTE(x) # x
 #define QUOTE(x) _QUOTE(x)
 #define __FILE__LINE__ __FILE__ "(" QUOTE(__LINE__) ") : "
-#define warn( x )  message( __FILE__LINE__ #x "\n" )
+#define warn( x )  message( __FILE__LINE__ #x "\n" ) 
 
 // You need to uncomment this if you are using MFC
-//#pragma warn( You need to uncomment this if you are using MFC )
-#ifdef MFC
+#pragma warn( You need to uncomment this if you are using MFC )
 //#include "stdafx.h"
-#endif
 
 #include "Model_3DS.h"
+#include <iostream>
 
-#include <cstring>
-#include <cmath>    // Header file for the math library
-#include "GL/gl.h"  // Header file for the OpenGL32 library
+#include <math.h>			// Header file for the math library
+#include <gl\gl.h>			// Header file for the OpenGL32 library
 
 // The chunk's id numbers
 #define MAIN3DS				0x4D4D
@@ -159,7 +157,8 @@ Model_3DS::Model_3DS()
 	rot.z = 0.0f;
 
 	// Set up the path
-	path = NULL;
+	path = new char[80];
+	sprintf(path, "");
 
 	// Zero out our counters for MFC
 	numObjects = 0;
@@ -171,10 +170,10 @@ Model_3DS::Model_3DS()
 
 Model_3DS::~Model_3DS()
 {
-	if (path) delete [] path;
+
 }
 
-bool Model_3DS::Load(char *name)
+void Model_3DS::Load(char *name)
 {
 	// holds the main chunk header
 	ChunkHeader main;
@@ -186,48 +185,32 @@ bool Model_3DS::Load(char *name)
 	// Find the path
 	if (strstr(name, "/") || strstr(name, "\\"))
 	{
-//		// Holds the name of the model minus the path
-//		char *temp;
-//
-//		// Find the name without the path
-//		if (strstr(name, "/"))
-//			temp = strrchr(name, '/');
-//		else
-//			temp = strrchr(name, '\\');
+		// Holds the name of the model minus the path
+		char *temp;
 
-		// Get a "pointer" to the end of the path and name
-		int ptr = 0;
-		while (name[ptr] != '\0') ptr++;
-
-		// Back up until a \ or the start
-		#ifdef WIN32
-			while (ptr != 0 && name[ptr] != '\\') ptr--;
-		#else
-			while (ptr != 0 && name[ptr] != '/') ptr--;
-		#endif
+		// Find the name without the path
+		if (strstr(name, "/"))
+			temp = strrchr(name, '/');
+		else
+			temp = strrchr(name, '\\');
 
 		// Allocate space for the path
-		if (path) delete [] path;
-		path = new char[ptr+1];
+		path = new char[strlen(name)-strlen(temp)+1];
+
+		// Get a pointer to the end of the path and name
+		char *src = name + strlen(name) - 1;
+
+		// Back up until a \ or the start
+		while (src != path && !((*(src-1)) == '\\' || (*(src-1)) == '/'))
+			src--;
 
 		// Copy the path into path
-		for (int i = 0; i < ptr; i++)
-			path[i] = name[i];
-		path[ptr] = '\0';
-
-//		memcpy (path, name, src-name);
-//		path[src-name] = 0;
+		memcpy (path, name, src-name);
+		path[src-name] = 0;
 	}
-
+	
 	// Load the file
 	bin3ds = fopen(name,"rb");
-
-	// Make sure the file still exists.
-	if (!bin3ds)
-	{
-		fprintf(stderr, "File not found! %s\n", name);
-		return false;
-	}
 
 	// Make sure we are at the beginning
 	fseek(bin3ds, 0, SEEK_SET);
@@ -279,20 +262,17 @@ bool Model_3DS::Load(char *name)
 	}
 
 	// Let's build simple colored textures for the materials w/o a texture
-//	for (int j = 0; j < numMaterials; j++)
-//	{
-//		if (Materials[j].textured == false)
-//		{
-//			unsigned char r = Materials[j].color.r;
-//			unsigned char g = Materials[j].color.g;
-//			unsigned char b = Materials[j].color.b;
-//			Materials[j].tex.BuildColorTexture(r, g, b);
-//			Materials[j].textured = true;
-//		}
-//	}
-	// Let's not ....
-
-	return true;
+	for (int j = 0; j < numMaterials; j++)
+	{
+		if (Materials[j].textured == false)
+		{
+			unsigned char r = Materials[j].color.r;
+			unsigned char g = Materials[j].color.g;
+			unsigned char b = Materials[j].color.b;
+			Materials[j].tex.BuildColorTexture(r, g, b);
+			Materials[j].textured = true;
+		}
+	}
 }
 
 void Model_3DS::Draw()
@@ -332,13 +312,7 @@ void Model_3DS::Draw()
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
 				// Use the material's texture
-				if (Materials[Objects[i].MatFaces[j].MatIndex].textured)
-					Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
-				else
-					glColor4ub(Materials[Objects[i].MatFaces[j].MatIndex].color.r,
-					           Materials[Objects[i].MatFaces[j].MatIndex].color.g,
-					           Materials[Objects[i].MatFaces[j].MatIndex].color.b,
-					           Materials[Objects[i].MatFaces[j].MatIndex].color.a);
+				Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
 
 				glPushMatrix();
 
@@ -631,7 +605,7 @@ void Model_3DS::MaterialNameChunkProcessor(long length, long findex, int matinde
 		Materials[matindex].name[i] = fgetc(bin3ds);
 		if (Materials[matindex].name[i] == 0)
 		{
-			Materials[matindex].name[i] = '\0';
+			Materials[matindex].name[i] = NULL;
 			break;
 		}
 	}
@@ -783,20 +757,16 @@ void Model_3DS::MapNameChunkProcessor(long length, long findex, int matindex)
 		name[i] = fgetc(bin3ds);
 		if (name[i] == 0)
 		{
-			name[i] = '\0';
+			name[i] = NULL;
 			break;
 		}
 	}
 
 	// Load the name and indicate that the material has a texture
 	char fullname[80];
-	#ifdef WIN32
-		sprintf(fullname, "%s%s%s", path, "\\", name);
-	#else
-		sprintf(fullname, "%s%s%s", path, "/", name);
-	#endif
-
-	Materials[matindex].textured = Materials[matindex].tex.Load(fullname);
+	sprintf(fullname, "%s%s", path, name);
+	Materials[matindex].tex.Load(fullname);
+	Materials[matindex].textured = true;
 
 	// move the file pointer back to where we got it so
 	// that the ProcessChunk() which we interrupted will read
@@ -818,7 +788,7 @@ void Model_3DS::ObjectChunkProcessor(long length, long findex, int objindex)
 		Objects[objindex].name[i] = fgetc(bin3ds);
 		if (Objects[objindex].name[i] == 0)
 		{
-			Objects[objindex].name[i] = '\0';
+			Objects[objindex].name[i] = NULL;
 			break;
 		}
 	}
@@ -1138,7 +1108,7 @@ void Model_3DS::FacesMaterialsListChunkProcessor(long length, long findex, int o
 		name[i] = fgetc(bin3ds);
 		if (name[i] == 0)
 		{
-			name[i] = '\0';
+			name[i] = NULL;
 			break;
 		}
 	}
@@ -1162,7 +1132,7 @@ void Model_3DS::FacesMaterialsListChunkProcessor(long length, long findex, int o
 	Objects[objindex].MatFaces[subfacesindex].numSubFaces = numEntries * 3;
 
 	// Read the faces into the array
-	for (int i = 0; i < numEntries * 3; i+=3)
+	for (i = 0; i < numEntries * 3; i+=3)
 	{
 		// read the face
 		fread(&Face,sizeof(Face),1,bin3ds);
@@ -1171,7 +1141,7 @@ void Model_3DS::FacesMaterialsListChunkProcessor(long length, long findex, int o
 		Objects[objindex].MatFaces[subfacesindex].subFaces[i+1] = Objects[objindex].Faces[Face * 3 + 1];
 		Objects[objindex].MatFaces[subfacesindex].subFaces[i+2] = Objects[objindex].Faces[Face * 3 + 2];
 	}
-
+	
 	// move the file pointer back to where we got it so
 	// that the ProcessChunk() which we interrupted will read
 	// from the right place

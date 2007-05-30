@@ -76,6 +76,8 @@ class PShip : public Ship
 {
 	//bool lightRnotL;
 	//int lightTime;
+	GLTexture skymap;
+	bool skymapLoaded;
 
 public:
 	PShip();
