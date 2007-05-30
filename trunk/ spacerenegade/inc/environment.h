@@ -27,7 +27,7 @@ struct Branch : public Node
 	Vec3 split;
 	Node *kids[8];
 
-	Branch(int generation, Vec3 split);
+	Branch(int generation, int maxDepth, Vec3 split);
 	virtual ~Branch();
 	virtual void initLeaves();
 
@@ -62,10 +62,9 @@ class OctTree
 	Node* head;
 
 public:
-	static const int DEPTH;
 	static const double BOUND;
 
-	OctTree();
+	OctTree(int maxDepth);
 	virtual ~OctTree();
 	void initLeaves();
 

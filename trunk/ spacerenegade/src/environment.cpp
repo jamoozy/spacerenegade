@@ -36,7 +36,7 @@ void Node::add(Object *o) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 // Creates a new branch object with the given x,y,z split.
-Branch::Branch(int generation, Vec3 split) : split(split)
+Branch::Branch(int generation, int maxDepth, Vec3 split) : split(split)
 {
 	// --- An Explaination: ---
 	//
@@ -50,19 +50,19 @@ Branch::Branch(int generation, Vec3 split) : split(split)
 	// allows for (somewhat) fast calculation of index when the time
 	// comes.  For a concrete example, see the getIndex() method.
 
-	if (generation < pow(2.0, (OctTree::DEPTH)))
+	if (generation < pow(2.0, maxDepth))
 	{
 		int nextGen = generation + generation;
 		double inc = OctTree::BOUND / nextGen;
 
-		kids[0] = new Branch(nextGen, Vec3(split.x() + inc, split.y() + inc, split.z() + inc));
-		kids[1] = new Branch(nextGen, Vec3(split.x() + inc, split.y() + inc, split.z() - inc));
-		kids[2] = new Branch(nextGen, Vec3(split.x() + inc, split.y() - inc, split.z() + inc));
-		kids[3] = new Branch(nextGen, Vec3(split.x() + inc, split.y() - inc, split.z() - inc));
-		kids[4] = new Branch(nextGen, Vec3(split.x() - inc, split.y() + inc, split.z() + inc));
-		kids[5] = new Branch(nextGen, Vec3(split.x() - inc, split.y() + inc, split.z() - inc));
-		kids[6] = new Branch(nextGen, Vec3(split.x() - inc, split.y() - inc, split.z() + inc));
-		kids[7] = new Branch(nextGen, Vec3(split.x() - inc, split.y() - inc, split.z() - inc));
+		kids[0] = new Branch(nextGen, maxDepth, Vec3(split.x() + inc, split.y() + inc, split.z() + inc));
+		kids[1] = new Branch(nextGen, maxDepth, Vec3(split.x() + inc, split.y() + inc, split.z() - inc));
+		kids[2] = new Branch(nextGen, maxDepth, Vec3(split.x() + inc, split.y() - inc, split.z() + inc));
+		kids[3] = new Branch(nextGen, maxDepth, Vec3(split.x() + inc, split.y() - inc, split.z() - inc));
+		kids[4] = new Branch(nextGen, maxDepth, Vec3(split.x() - inc, split.y() + inc, split.z() + inc));
+		kids[5] = new Branch(nextGen, maxDepth, Vec3(split.x() - inc, split.y() + inc, split.z() - inc));
+		kids[6] = new Branch(nextGen, maxDepth, Vec3(split.x() - inc, split.y() - inc, split.z() + inc));
+		kids[7] = new Branch(nextGen, maxDepth, Vec3(split.x() - inc, split.y() - inc, split.z() - inc));
 	}
 	else
 	{
@@ -440,11 +440,9 @@ void Leaf::remove(Object *o)
 // ---------------------------- OctTree Object ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-const int OctTree::DEPTH = 3;
-
 const double OctTree::BOUND = 1000;
 
-OctTree::OctTree() : head(new Branch(1 , Vec3(0,0,0))) {}
+OctTree::OctTree(int maxDepth) : head(new Branch(1, maxDepth, Vec3(0,0,0))) {}
 
 void OctTree::initLeaves() { head->initLeaves(); }
 
