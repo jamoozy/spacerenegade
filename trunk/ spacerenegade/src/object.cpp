@@ -101,7 +101,7 @@ void Object::drawOnMiniMap(double r)
 	glPopMatrix();
 
 	double zBright = (miniMapPos.z() + r) / (2*r);
-	double xShift = 85*((miniMapPos.x()) / r);
+	double xShift = -85*((miniMapPos.x()) / r);
 	double yShift = 85*((miniMapPos.y()) / r);
 
 	glColor3d(red*zBright, green*zBright, blue*zBright);
