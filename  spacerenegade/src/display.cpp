@@ -415,7 +415,7 @@ void initTactical()
 	pD.fieldOfView = 45.0;
 	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
 	pD.nearPlane   = 0.1;
-	pD.farPlane    = 2000.0;
+	pD.farPlane    = 4000.0;
 
 	// Puts the blending function in a way that makes for nice
 	// HUD and menu transparency.
