@@ -1,6 +1,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
+#include <GL/glut.h>
 #include <sstream>
 #include <string>
 
@@ -33,6 +34,7 @@ public:
 	Vec3 operator-=(const Vec3& a); // element-wise difference
 	const double operator*(const Vec3& a) const;  // dot product
 	const Vec3 operator*(const double a) const;  // scalar product
+	const Vec3 operator*(const GLdouble *m) const;//matrix[16]*vec3(x,y,z,1)
 	const Vec3 operator*=(const double a); // scalar product
 	const Vec3 operator/(const double a) const; // scalar dividend
 	const Vec3 operator/=(const double a); // scalar dividend
