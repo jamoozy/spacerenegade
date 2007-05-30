@@ -261,6 +261,11 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 		case 'Q':
 			cleanup();
 			break;
+
+		case 'v':
+		case 'V':
+			Camera::getCamera()->toggleDefault();
+			break;
 	}
 }
 
@@ -459,15 +464,15 @@ void mouseButtHandler(int button, int state, int x, int y)
 	if (screenState == TACTICAL)
 	{
 		// Things to do when the button is pushed.
-		if (state == GLUT_UP)
-		{
-			Camera::getCamera()->setMode(CAMERA_MODE_FOLLOW);
-		}
-		// Things to do when the button is released.
-		else // state == GLUT_DOWN
+		if (state == GLUT_DOWN)
 		{
 			Mouse::getMouse()->setLastMousePos(x, y);
 			Camera::getCamera()->setMode(CAMERA_MODE_LOOK);
+		}
+		// Things to do when the button is released.
+		else // state == GLUT_UP
+		{
+			Camera::getCamera()->setMode(CAMERA_MODE_DEFAULT);
 		}
 	}
 	else //if (screenState == START_SCREEN)

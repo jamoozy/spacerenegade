@@ -3,7 +3,10 @@
 
 #include "vec3.h"
 
-enum {CAMERA_MODE_LOOK, CAMERA_MODE_FOLLOW };
+enum { CAMERA_MODE_DEFAULT,     // Determined by other aspects.
+       CAMERA_MODE_FOLLOW,      // Follows the ship.
+	   CAMERA_MODE_LOOK,        // Mouse-controlled Look
+	   CAMERA_MODE_BEHIND_10};  // Behind and up 10 units.
 
 class Camera
 {
@@ -22,6 +25,7 @@ private:
 	double theta, phi, lookinc;  // Theta is around the up vector, phi above the horizon.
 
 	int _mode;
+	int _defaultMode;
 
 	Camera();
 	void recomputeLook();
@@ -30,6 +34,8 @@ public:
 	void draw();
 	int mode();
 	void setMode(int newMode);
+	void setDefaultMode(int newMode);
+	void toggleDefault();
 	
 	// Controls
 	void turnUD(double amt);
