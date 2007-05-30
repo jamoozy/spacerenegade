@@ -8,6 +8,7 @@
 
 using std::string;
 
+// General form of ships.  Rather abstract.
 class Ship : public Object
 {
 protected:
@@ -41,8 +42,9 @@ public:
 	virtual void draw();
 	virtual void hits(Object *o);
 
+	// Movement.
 	virtual void accelerate()   { velocity += direction * roa(); };
-	virtual void decelerate()   { velocity += direction * rod(); };
+	virtual void decelerate()   { velocity -= direction * rod(); };
 	virtual void stabilize();
 	virtual void pitchBack();
 	virtual void pitchForward();
@@ -51,16 +53,25 @@ public:
 	virtual void rollLeft()  {};
 	virtual void rollRight() {};
 
+	// Status stuff.
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return 100; };
+	virtual double getHlth() const { return 1.0 - damage; };
+	virtual double getFuel() const { return fuel; };
+	virtual double getAmmo() const { return ammo; };
 	virtual double hlthPcnt() const { return 1.0 - damage / (double)maxHealth(); };
 	virtual double fuelPcnt() const { return fuel / (double)maxFuel(); };
 	virtual double ammoPcnt() const { return ammo / (double)maxAmmo(); };
 };
 
 
-// Interface for the player's ship.
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------ Player's Ship ----------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Interface for the player's ship.  Very specific to the needs of the player.
 class PShip : public Ship
 {
 	//bool lightRnotL;
@@ -92,13 +103,13 @@ public:
 	virtual double ros() const { return 0.95; };  // Rate of Stabilization
 	virtual double rot() const { return 0.02; };  // Rate of Turn
 
+	// Status of the ship.
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return 100; };
 	virtual double hlthPcnt() const { return 1.0 - damage / (double)maxHealth(); };
 	virtual double fuelPcnt() const { return fuel / (double)maxFuel(); };
 	virtual double ammoPcnt() const { return ammo / (double)maxAmmo(); };
-	virtual double getAmmo() const { return ammo; };
 };
 
 #endif
