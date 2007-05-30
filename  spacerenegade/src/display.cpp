@@ -21,7 +21,7 @@ using std::stringstream;
 	#define M_PI 3.14159265358979
 #endif
 
-extern Ship *playerShip;  // Jam: The player's ship, duh.
+extern PShip *playerShip; // Jam: The player's ship, duh.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
 extern Menu *menu;        // Gum: The current menu of buttons
@@ -198,7 +198,7 @@ void displayTactical()
 
 	glutSwapBuffers();
 
-	if (playerShip->getHealth() <= 0)
+	if (playerShip->hlthPcnt() <= 0)
 		initGameOver();
 }
 
@@ -256,11 +256,11 @@ void drawMeters()
 
 	// The bar that communicates the information.
 	glColor3d(.3,.8,.3);
-	glRecti(965, 575, 1000, 575 + (int)(170 * playerShip->getHealth()));
+	glRecti(965, 575, 1000, 575 + (int)(170 * playerShip->hlthPcnt()));
 	glColor3d(.7,.7,.2);
-	glRecti(910, 575, 945, 575 + (int)(170 * playerShip->getFuel()));
+	glRecti(910, 575, 945, 575 + (int)(170 * playerShip->fuelPcnt()));
 	glColor3d(.8,.3,.3);
-	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->getAmmo()));
+	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->ammoPcnt()));
 
 	// Draw the tick marks
 	glColor3d(.9, .9, .9);
@@ -287,7 +287,7 @@ void drawMeters()
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
 	stringstream stream(stringstream::in | stringstream::out);
-	stream << "ammo used: " << playerShip->getAmmo() * playerShip->maxAmmo();
+	stream << "ammo used: " << playerShip->getAmmo();
 	drawText(0,0, stream.str(), Color(1,1,1));
 }
 
@@ -402,7 +402,7 @@ void initTactical()
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
-	playerShip = new Ship();
+	playerShip = new PShip();
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 

@@ -16,18 +16,102 @@ extern OctTree *env;
 	#define M_PI 3.14159265358979
 #endif
 
-// Makes a new, boring ship that just sits there.
-Ship::Ship() : Object("./art/personalship.3DS"),
-	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
-	//lightRnotL(true), lightTime(0),
-	roa(0.005), rod(0.001), ros(0.95), rot(0.02),
-	fuel(maxFuel()), ammo(maxAmmo()) {}
 
-// Deconstructor: file is a pointer, so delete it
+////////////////////////////////////////////////////////////////////////////////
+// ----------------------- General-Purpose Ship ----------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+Ship::Ship(char* modelName, double fuel, double ammo) : Object(modelName),
+	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
+	fuel(fuel), ammo(ammo) {}
+
 Ship::~Ship() {}
 
-// Draws the ship.
+// This shouldn't ever be called.  But just in case ...
 void Ship::draw()
+{
+	position += velocity;
+
+	glPushMatrix();
+
+	//move
+	glTranslated(position.x(), position.y(), position.z());
+	
+	// direction rotation
+	glRotated(degpyr.z(),  0,0,1);
+	glRotated(degpyr.y(),  0,1,0);
+	glRotated(degpyr.x(),  1,0,0);
+
+	// Set color to purple.
+	glColor3f(.7,0,.8);
+	glutWireCone(2,4,5,1);
+
+	glPopMatrix();
+
+}
+
+// Do the object thang.
+void Ship::hits(Object *o)
+{
+	Object::hits(o);
+}
+
+void Ship::recompdir()
+{
+	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
+	degpyr = radpyr * (180 / M_PI);
+}
+
+void Ship::stabilize()
+{
+	if (velocity.norm() <= 3 * roa())
+		velocity = Vec3(0,0,0);
+	else
+		velocity *= ros();
+}
+
+void Ship::pitchBack()
+{
+	radpyr -= Vec3(rot(),0,0);
+	recompdir();
+}
+
+void Ship::pitchForward()
+{
+	radpyr += Vec3(rot(),0,0);
+	recompdir();
+}
+
+void Ship::yawLeft()
+{
+	radpyr += Vec3(0,rot(),0);
+	recompdir();
+}
+
+void Ship::yawRight()
+{
+	radpyr -= Vec3(0,rot(),0);
+	recompdir();
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Player's Ship ---------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Makes a new, boring ship that just sits there.
+PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo()) {}
+	//direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
+	//lightRnotL(true), lightTime(0),
+	//roa(0.005), rod(0.001), ros(0.95), rot(0.02),
+	//fuel(maxFuel()), ammo(maxAmmo()) {}
+
+// Deconstructor: file is a pointer, so delete it
+PShip::~PShip() {}
+
+// Draws the ship.
+void PShip::draw()
 {
 	position += velocity;
 
@@ -83,17 +167,17 @@ void Ship::draw()
 	glPopMatrix();
 }
 
-void Ship::hits(Object *o)
+void PShip::hits(Object *o)
 {
 //	// TODO: damage the ship?
-//	std::cout << "Ship collision!" << std::endl;
+//	std::cout << "PShip collision!" << std::endl;
 
 	// This is a constant right now.  Later it will be a function of things,
 	// like hull defense, shields, and stuff.
 	hurt(200);
 }
 
-void Ship::fire()
+void PShip::fire()
 {
 	--ammo;
 
@@ -102,70 +186,57 @@ void Ship::fire()
 	env->add(w);
 }
 
-void Ship::recompdir()
-{
-	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
-	degpyr = radpyr * (180 / M_PI);
-}
-
 // Adds to the ship's velocity.
-void Ship::accelerate()
+void PShip::accelerate()
 {
 	--fuel;
-	velocity += direction * roa;
+	Ship::accelerate();
 }
 
 // Subtracts from the ship's velocity.
-void Ship::decelerate()
+void PShip::decelerate()
 {
 	--fuel;
-	velocity -= direction * rod;
+	Ship::decelerate();
 }
 
 // Brings the velocity down to 0
-void Ship::stabilize()
+void PShip::stabilize()
 {
 	fuel -= 5;
-	if (velocity.norm() <= 3 * roa)
-		velocity = Vec3(0,0,0);
-	else
-		velocity *= ros;
+	Ship::stabilize();
 }
 
 // Tilt the nose up.
-void Ship::pitchBack()
+void PShip::pitchBack()
 {
 	fuel -= 0.2;
-	radpyr -= Vec3(rot, 0, 0);
-	recompdir();
+	Ship::pitchBack();
 }
 
 // Tilt the nose down.
-void Ship::pitchForward()
+void PShip::pitchForward()
 {
 	fuel -= 0.2;
-	radpyr += Vec3(rot, 0, 0);
-	recompdir();
+	Ship::pitchForward();
 }
 
 // Turn left about the Y(up)-axis
-void Ship::yawLeft()
+void PShip::yawLeft()
 {
 	fuel -= 0.2;
-	radpyr += Vec3(0, rot, 0);
-	recompdir();
+	Ship::yawLeft();
 }
 
 // Turn right about the Y(up)-axis
-void Ship::yawRight()
+void PShip::yawRight()
 {
 	fuel -= 0.2;
-	radpyr -= Vec3(0, rot, 0);
-	recompdir();
+	Ship::yawRight();
 }
 
 //
-void Ship::rollLeft()
+void PShip::rollLeft()
 {
 //	fuel -= 0.2;
 //	radpyr += Vec3(0, 0, rot);
@@ -173,7 +244,7 @@ void Ship::rollLeft()
 }
 
 //
-void Ship::rollRight()
+void PShip::rollRight()
 {
 //	fuel -= 0.2;
 //	radpyr -= Vec3(0, 0, rot);

@@ -32,7 +32,7 @@ static int MSPF;
 	int window;
 #endif
 
-Ship *playerShip;  // Jam: The player's ship, duh.
+PShip *playerShip;  // Jam: The player's ship, duh.
 OctTree *env;      // Jam: Collision detection of objects and the world
                    //      (environment) in general.
 Menu *menu;        // Gum: The current menu of buttons

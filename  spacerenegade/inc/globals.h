@@ -4,7 +4,7 @@
 //#include "asteroid.h"
 //#include "ship.h"
 //
-//Ship *playerShip;
+//PShip *playerShip;
 
 
 //enum { START_SCREEN, TACTICAL };
