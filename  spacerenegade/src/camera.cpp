@@ -5,6 +5,10 @@
 #include "input.h"
 #include "camera.h"
 
+using std::cout;
+using std::cerr;
+using std::endl;
+
 #ifndef M_PI
 	#define M_PI 3.14159265358979
 #endif
@@ -51,9 +55,10 @@ void Camera::cleanUp()
 // ---------- Object parts ----------------
 
 // Initialize a boring camera looking down the z-axis.
-Camera::Camera() : pos(0,0,0), lookat(0,0,-50), up(0,1,0),
-				   theta(M_PI), phi(0), lookinc(.02),
-                   _mode(CAMERA_MODE_FOLLOW)
+Camera::Camera() :
+	pos(0,0,0), lookat(0,0,-50), up(0,1,0),
+	theta(M_PI), phi(0), lookinc(.02),
+	_mode(CAMERA_MODE_BEHIND_10), _defaultMode(CAMERA_MODE_BEHIND_10)
 {
 	recomputeLook();
 }
@@ -102,7 +107,29 @@ int Camera::mode()
 
 void Camera::setMode(int newMode)
 {
-	_mode = newMode;
+	if (newMode == CAMERA_MODE_DEFAULT)
+		_mode = _defaultMode;
+	else
+		_mode = newMode;
+}
+
+void Camera::setDefaultMode(int newMode)
+{
+	_defaultMode = newMode;
+
+	if (_mode != CAMERA_MODE_LOOK)
+		_mode = _defaultMode;
+}
+
+void Camera::toggleDefault()
+{
+	if (_defaultMode == CAMERA_MODE_FOLLOW)
+		_defaultMode = CAMERA_MODE_BEHIND_10;
+	else if (_defaultMode == CAMERA_MODE_BEHIND_10)
+		_defaultMode = CAMERA_MODE_FOLLOW;
+
+	if (_mode != CAMERA_MODE_LOOK)
+		_mode = _defaultMode;
 }
 
 // Start looking at the point and remain stationary.
@@ -122,13 +149,32 @@ void Camera::setFocus(const Vec3 &p)
 // Start looking at the point and remain "dist" away from it.
 void Camera::setFocus(const Vec3 &p, double dist)
 {
+	// In this mode we base the direction and position
+	// of the camera on the Mouse
 	if (_mode == CAMERA_MODE_LOOK)
 	{
 		Vec3 difference = p - lookat;
 		lookat = p;
 		pos += difference;
 	}
-	else
+	// In this mode we stay behind the player's ship at all times.
+	else if (_mode == CAMERA_MODE_BEHIND_10)
+	{
+		Vec3 d = -playerShip->getDir();
+		d.normalize();
+		d *= dist;
+
+		Vec3 side = Vec3(0,1,0) ^ d;
+		Vec3 up = d ^ side;
+		up.normalize();
+		up *= 10;
+
+		lookat = p;
+		pos = playerShip->getPos() + d + up;
+	}
+	// In this mode the camera follows the ship as though
+	// it's attached to it by a string.
+	else if (_mode == CAMERA_MODE_FOLLOW)
 	{
 		lookat = p;
 		Vec3 look = lookat - pos;
@@ -142,6 +188,8 @@ void Camera::setFocus(const Vec3 &p, double dist)
 
 		pos = lookat + (look * (-dist));
 	}
+	else
+		cerr << "Got a funny value for Camera Mode!" << endl;
 }
 
 
