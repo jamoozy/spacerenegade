@@ -192,7 +192,6 @@ void Camera::setFocus(const Vec3 &p, double dist)
 		cerr << "Got a funny value for Camera Mode!" << endl;
 }
 
-
 // Alter the camera as needed and put its changes into effect.
 void adjustCamera()
 {
