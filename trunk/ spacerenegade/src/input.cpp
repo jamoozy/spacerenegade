@@ -15,7 +15,7 @@ using std::endl;
 
 extern Menu *menu;
 extern int screenState;
-extern Ship *playerShip;
+extern PShip *playerShip;
 extern OctTree *env;
 extern int screen_width;
 extern int screen_height;
@@ -254,7 +254,7 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 	{
 		case 't':
 		case 'T':
-			if (playerShip->getAmmo() > 0)
+			if (playerShip->ammoPcnt() > 0)
 				playerShip->fire();
 			break;
 		case 'q':
@@ -280,7 +280,7 @@ void tacticalSpecialKeys(int key, int x, int y)
 			break;
 
 		case GLUT_KEY_F10:
-			cout << "Health: " << (100 * playerShip->getHealth()) << (char)0x25 << endl;
+			cout << "Health: " << (100 * playerShip->hlthPcnt()) << (char)0x25 << endl;
 			break;
 
 		case GLUT_KEY_F11:
@@ -326,7 +326,7 @@ void gameOverKeyboard(unsigned char key, int x, int y)
 // mechanism of the glutXXXFunc()'s.
 void handleTacticalInput()
 {
-	if (playerShip->getFuel() > 0)
+	if (playerShip->fuelPcnt() > 0)
 	{
 		// Yaw.
 		if (Keyboard::getKeyboard()->isDown(SR_KEY_S))

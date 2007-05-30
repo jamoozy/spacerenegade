@@ -8,7 +8,7 @@
 
 using namespace std;
 
-extern Ship *playerShip;
+extern PShip *playerShip;
 extern OctTree *env;
 extern GLfloat miniMapX;
 extern GLfloat miniMapY;

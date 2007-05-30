@@ -17,7 +17,7 @@
 	#define TWO_PI 6.28318530717958
 #endif
 
-extern Ship *playerShip;
+extern PShip *playerShip;
 
 
 
