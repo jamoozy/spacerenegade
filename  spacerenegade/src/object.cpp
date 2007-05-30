@@ -1,10 +1,15 @@
 #include <iostream>
+#include <cmath>
 #include <GL/glut.h>
 #include "object.h"
 #include "vec3.h"
 #include "ship.h"
 #include "environment.h"
 #include "display.h"
+
+#ifndef M_PI
+	#define M_PI 3.14159265358979
+#endif
 
 using namespace std;
 
@@ -71,12 +76,35 @@ bool Object::collidesWith(Object *o)
 
 void Object::drawOnMiniMap(double r)
 {
-	double zBright = (position.z() - playerShip->getPos().z() + r) / (2*r);
-	double xShift = 85*((position.x() - playerShip->getPos().x()) / r);
-	double yShift = 85*((position.y() - playerShip->getPos().y()) / r);
+	GLdouble m[16];
+	
+	Vec3 lclPos = position - playerShip->getPos();
+	//double rho = lclPos.norm();
+	//double pantaloons = atan(playerShip->getDir().y()/playerShip->getDir().x());
+	GLdouble theta = 0;
+	GLdouble phi = 0;
+
+	if(playerShip->getDir().x() != 0)
+		theta = 180 * atan(playerShip->getDir().y()/playerShip->getDir().x()) / M_PI;
+	if(lclPos.norm() != 0)
+		phi = 180 * acos(playerShip->getDir().z()/lclPos.norm()) / M_PI;
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRotated(phi,0,0,1);
+	glRotated(theta,0,1,0);
+	glGetDoublev(GL_MODELVIEW_MATRIX, m);
+	Vec3 miniMapPos = lclPos*m;
+	glPopMatrix();
+
+	double zBright = (miniMapPos.z() + r) / (2*r);
+	double xShift = 85*((miniMapPos.x()) / r);
+	double yShift = 85*((miniMapPos.y()) / r);
 
 	glColor3d(red*zBright, green*zBright, blue*zBright);
 	glCircle(miniMapX + xShift, miniMapY + yShift, 2, 5);
+	glPopMatrix();
+	
 	
 }
 

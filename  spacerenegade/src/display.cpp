@@ -300,7 +300,7 @@ void drawMiniMap()
 	int numbObjs = 0;
 	double radius = 125;
 
-	glColor3d(.3, .3, .8);
+	glColor3d(0, .2, 0);
 	glCircle(miniMapX, miniMapY, 85, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
@@ -393,7 +393,7 @@ void initTactical()
 	Asteroid *next;
 	for (int i = 0; i < 100; i++)
 	{
-		Vec3 pos(rr(250,-250), rr(250,-250), rr(250,-250));
+		Vec3 pos(rr(125,-125), rr(125,-125), rr(125,-125));
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
 		next = new Asteroid(pos, vel);
 		env->add(next);
