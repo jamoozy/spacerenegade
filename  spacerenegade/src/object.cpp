@@ -6,6 +6,7 @@
 #include "ship.h"
 #include "environment.h"
 #include "display.h"
+#include "camera.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -79,15 +80,17 @@ void Object::drawOnMiniMap(double r)
 	GLdouble m[16];
 	
 	Vec3 lclPos = position - playerShip->getPos();
+	Vec3 cameraDir = Camera::getCamera()->getDir();
+	cameraDir.normalize();
 	//double rho = lclPos.norm();
 	//double pantaloons = atan(playerShip->getDir().y()/playerShip->getDir().x());
 	GLdouble theta = 0;
 	GLdouble phi = 0;
-
-	if(playerShip->getDir().x() != 0)
-		theta = 180 * atan(playerShip->getDir().y()/playerShip->getDir().x()) / M_PI;
-	if(lclPos.norm() != 0)
-		phi = 180 * acos(playerShip->getDir().z()/lclPos.norm()) / M_PI;
+	if(cameraDir.x() != 0)
+	//if(playerShip->getDir().x() != 0)
+		theta = 180 * atan(cameraDir.y()/cameraDir.x()) / M_PI;
+	if(cameraDir.norm() != 0)
+		phi = 180 * acos(cameraDir.z()/cameraDir.norm()) / M_PI;
 
 	glPushMatrix();
 	glLoadIdentity();

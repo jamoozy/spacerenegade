@@ -12,6 +12,8 @@ using std::endl;
 
 extern int screen_width;
 extern int screen_height;
+extern GLfloat miniMapX;
+extern GLfloat miniMapY;
 
 extern Menu *menu;
 
@@ -108,6 +110,13 @@ Menu::Menu(int type) : type(type)
 			buttons[1] = Button("Load Game",5 , 500,400 , 0.6,0.8,0.2 , 2, NULL);
 			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3, NULL);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.6,0.8,0.2 , 4, cleanup);
+			break;
+
+		case TACTICAL:
+			numButtons = 2;
+			buttons = new Button[numButtons];
+			buttons[0] = Button("-", .1, miniMapX - 85, miniMapY - 90, 0, 0, .2, 1, NULL);
+			buttons[1] = Button("+", .1, miniMapX + 85, miniMapY - 90, 0, 0, .2, 2, NULL);
 			break;
 
 		case MISSION:
