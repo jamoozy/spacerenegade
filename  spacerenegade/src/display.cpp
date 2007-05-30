@@ -378,7 +378,7 @@ void initTactical()
 
 	// Set up the octtree, making it ready for objects to populate it.
 	if (env) delete env;
-	env = new OctTree();
+	env = new OctTree(3);
 
 	// Jam:
 	// You may be asking yourself "Why not just put the call to initLeaves()
