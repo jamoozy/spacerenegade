@@ -87,6 +87,10 @@ const Vec3 Vec3::operator*(const double a) const
 {
 	return Vec3(_x * a, _y * a, _z * a);
 }
+const Vec3 Vec3::operator*(const GLdouble *m) const
+{
+	return Vec3(_x*m[0]+_y*m[4]+_z*m[8],_x*m[1]+_y*m[5]+_z*m[9],_x*m[2]+_y*m[6]+_z*m[10]);
+}
 
 // Multiply a vector by a scalar and return it.
 const Vec3 Vec3::operator*=(const double a)
