@@ -300,7 +300,7 @@ void drawMiniMap()
 	int numbObjs = 0;
 	double radius = 125;
 
-	glColor3d(0, .2, 0);
+	glColor3d(.3, .3, .9);
 	glCircle(miniMapX, miniMapY, 85, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
