@@ -87,9 +87,12 @@ const Vec3 Vec3::operator*(const double a) const
 {
 	return Vec3(_x * a, _y * a, _z * a);
 }
-const Vec3 Vec3::operator*(const GLdouble *m) const
+const Vec3 operator*(const GLdouble *m, const Vec3& v)
 {
-	return Vec3(_x*m[0]+_y*m[4]+_z*m[8],_x*m[1]+_y*m[5]+_z*m[9],_x*m[2]+_y*m[6]+_z*m[10]);
+	double denom = m[3]*v.x() + m[7]*v.y() + m[11]*v.z() + m[15];
+	return Vec3((m[0]*v.x() + m[4]*v.y() + m[8]*v.z() + m[12])/denom,
+	            (m[1]*v.x() + m[5]*v.y() + m[9]*v.z() + m[13])/denom,
+				(m[2]*v.x() + m[6]*v.y() + m[10]*v.z() + m[14])/denom);
 }
 
 // Multiply a vector by a scalar and return it.

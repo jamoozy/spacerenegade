@@ -34,7 +34,6 @@ public:
 	Vec3 operator-=(const Vec3& a); // element-wise difference
 	const double operator*(const Vec3& a) const;  // dot product
 	const Vec3 operator*(const double a) const;  // scalar product
-	const Vec3 operator*(const GLdouble *m) const;//matrix[16]*vec3(x,y,z,1)
 	const Vec3 operator*=(const double a); // scalar product
 	const Vec3 operator/(const double a) const; // scalar dividend
 	const Vec3 operator/=(const double a); // scalar dividend
@@ -44,6 +43,7 @@ public:
 };
 
 const Vec3 operator*(const double a, const Vec3& b);
+const Vec3 operator*(const GLdouble *m, const Vec3& v); //matrix[4x4]*vec3(x,y,z,1)
 
 #endif
 
