@@ -23,8 +23,7 @@ extern GLfloat miniMapY;
 Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
-		model.Load(modelName);
-	modelLoaded = true;
+		modelLoaded = model.Load(modelName);
 }
 
 // Creates a new object at the given point with the given velocity.
@@ -32,8 +31,7 @@ Object::Object(char *modelName, double red, double green, double blue, double px
 	leaf(NULL), red(red), green(green), blue(blue), radius(4.0), position(px,py,pz), velocity(vx,vy,vz), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
-		model.Load(modelName);
-	modelLoaded = true;
+		modelLoaded = model.Load(modelName);
 }
 
 // Creates a new object at the given point with the given velocity.
@@ -41,8 +39,7 @@ Object::Object(char *modelName, const Vec3& pos, const Vec3& v) :
 	leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(pos), velocity(v), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
-		model.Load(modelName);
-	modelLoaded = true;
+		modelLoaded = model.Load(modelName);
 }
 
 // Does nothing (nothing to be done).
