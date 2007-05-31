@@ -92,12 +92,13 @@ void Object::drawOnMiniMap(double r)
 	if(cameraDir.norm() != 0)
 		phi = 180 * acos(cameraDir.z()/cameraDir.norm()) / M_PI;
 
+	// Use OpenGL to compute a Matrix and get it.
 	glPushMatrix();
 	glLoadIdentity();
 	glRotated(phi,0,0,1);
 	glRotated(theta,0,1,0);
 	glGetDoublev(GL_MODELVIEW_MATRIX, m);
-	Vec3 miniMapPos = lclPos*m;
+	Vec3 miniMapPos = m*lclPos;
 	glPopMatrix();
 
 	double zBright = (miniMapPos.z() + r) / (2*r);
@@ -107,8 +108,6 @@ void Object::drawOnMiniMap(double r)
 	glColor3d(red*zBright, green*zBright, blue*zBright);
 	glCircle(miniMapX + xShift, miniMapY + yShift, 2, 5);
 	glPopMatrix();
-	
-	
 }
 
 void Object::hits(Object *o)
