@@ -53,7 +53,7 @@ public:
 	void drawOnMiniMap(double r);
 	virtual void hits(Object *o);
 
-	virtual int maxHealth() const { return 100; };
+	virtual double maxHlth() const { return 100; };
 };
 
 #endif
