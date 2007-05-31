@@ -1,3 +1,5 @@
+#ifdef WIN32
+
 //--------------------------------------------------------------
 #include <windows.h>		// Header File For Windows - has structures for BMP format
 #include <stdio.h>	    	// Header File For Standard Input/Output
@@ -75,3 +77,6 @@ bool AUX_RGBImageRec::loadFile(const char* Filename)
 	DeleteObject(DIBHandle);						// don't need the BMP Object anymore  
 	return NoErrors;
 }        
+
+#endif
+

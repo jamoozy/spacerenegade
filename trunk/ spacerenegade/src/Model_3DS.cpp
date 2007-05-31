@@ -335,8 +335,15 @@ void Model_3DS::Draw()
 			for (int j = 0; j < Objects[i].numMatFaces; j ++)
 			{
 				// Use the material's texture
-				if (Materials[Objects[i].MatFaces[j].MatIndex].textured)
+				if (Materials[Objects[i].MatFaces[j].MatIndex].textured) {
 					Materials[Objects[i].MatFaces[j].MatIndex].tex.Use();
+				} else {
+					glDisable(GL_TEXTURE_2D);
+					glColor4ub(Materials[Objects[i].MatFaces[j].MatIndex].color.r,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.g,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.b,
+					           Materials[Objects[i].MatFaces[j].MatIndex].color.a);
+				}
 
 				glPushMatrix();
 

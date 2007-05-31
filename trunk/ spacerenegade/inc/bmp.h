@@ -1,3 +1,5 @@
+#ifdef WIN32
+
 //--------------------------------------------------------------------------- 
 
 class AUX_RGBImageRec {
@@ -13,3 +15,6 @@ class AUX_RGBImageRec {
    bool loadFile(const char *FileName);
    friend AUX_RGBImageRec *auxDIBImageLoad(const char *FileName);
 };
+
+#endif
+

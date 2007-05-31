@@ -61,6 +61,8 @@ public:
 	bool Load(char *name);							// Load the texture
 	GLTexture();									// Constructor
 	virtual ~GLTexture();							// Destructor
+	char *strlwr(char *str);
 };
 
 #endif // GLTEXTURE_H
+
