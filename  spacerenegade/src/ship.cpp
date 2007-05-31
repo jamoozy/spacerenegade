@@ -110,8 +110,7 @@ PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo())
 	//fuel(maxFuel()), ammo(maxAmmo()) {}
 {
 	// Load variables 
-	skymapLoaded = true;
-	skymap.Load("./art/sky.bmp");
+	skymapLoaded = skymap.Load("./art/sky.bmp");
 }
 
 // Deconstructor: file is a pointer, so delete it
