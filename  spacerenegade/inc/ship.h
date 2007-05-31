@@ -57,12 +57,12 @@ public:
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return 100; };
-	virtual double getHlth() const { return 1.0 - damage; };
+	virtual double getHlth() const { return maxHlth() - damage; };
 	virtual double getFuel() const { return fuel; };
 	virtual double getAmmo() const { return ammo; };
-	virtual double hlthPcnt() const { return 1.0 - damage / (double)maxHealth(); };
-	virtual double fuelPcnt() const { return fuel / (double)maxFuel(); };
-	virtual double ammoPcnt() const { return ammo / (double)maxAmmo(); };
+	virtual double hlthPcnt() const { return 1.0 - damage / maxHlth(); };
+	virtual double fuelPcnt() const { return fuel / maxFuel(); };
+	virtual double ammoPcnt() const { return ammo / maxAmmo(); };
 };
 
 
@@ -109,9 +109,6 @@ public:
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return 100; };
-	virtual double hlthPcnt() const { return 1.0 - damage / (double)maxHealth(); };
-	virtual double fuelPcnt() const { return fuel / (double)maxFuel(); };
-	virtual double ammoPcnt() const { return ammo / (double)maxAmmo(); };
 };
 
 #endif
