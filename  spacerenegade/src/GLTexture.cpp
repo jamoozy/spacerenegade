@@ -57,6 +57,16 @@ GLTexture::~GLTexture()
 
 }
 
+char *GLTexture::strlwr(char *str) 
+{ 
+	// Move over the string. 
+	for (int i = 0; str[i] != '\0'; i++) 
+		if ('A' <= str[i] && str[i] <= 'Z') 
+			str[i] = str[i] - 'A' + 'a'; 
+
+	return str; 
+} 
+
 bool GLTexture::Load(char *name)
 {
 	// make the texture name all lower case
@@ -87,17 +97,18 @@ void GLTexture::Use()
 bool GLTexture::LoadBMP(char *name)
 {
 	// Create a place to store the texture
-	AUX_RGBImageRec *TextureImage[1];
-
-	// Set the pointer to NULL
-	memset(TextureImage,0,sizeof(void *)*1);
+	glbmp_t *textureImage = (glbmp_t*)malloc(sizeof(glbmp_t));
 
 	// Load the bitmap and assign our pointer to it
-	TextureImage[0] = auxDIBImageLoad(name);
+	if(!glbmp_LoadBitmap(name, 0, textureImage))
+	{
+		free(textureImage);
+		return false;
+	}
 
 	// Just in case we want to use the width and height later
-	width = TextureImage[0]->sizeX;
-	height = TextureImage[0]->sizeY;
+	width = textureImage->width;
+	height = textureImage->height;
 
 	// Generate the OpenGL texture id
 	glGenTextures(1, &texture[0]);
@@ -110,15 +121,15 @@ bool GLTexture::LoadBMP(char *name)
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 
 	// Generate the mipmaps
-	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]->sizeX, TextureImage[0]->sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]->data);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, 3, textureImage->width, textureImage->height, GL_RGB, GL_UNSIGNED_BYTE, textureImage->rgb_data);
 
 	// Cleanup
-	if (TextureImage[0])
+	if (textureImage)
 	{
-		if (TextureImage[0]->data)
-			free(TextureImage[0]->data);
+		if (textureImage->rgb_data)
+			free(textureImage->rgb_data);
 
-		free(TextureImage[0]);
+		free(textureImage);
 	}
 
 	return true;
