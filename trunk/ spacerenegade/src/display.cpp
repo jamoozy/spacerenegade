@@ -30,6 +30,7 @@ int screen_width = IMAGE_WIDTH;
 int screen_height = IMAGE_HEIGHT;
 
 int screenState;
+bool paused;
 GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
@@ -144,7 +145,10 @@ void display()
 			displayStartScreen();
 			break;
 		case TACTICAL:
-			displayTactical();
+			if (paused)
+				displayTacticalPaused();
+			else
+				displayTactical();
 			break;
 		case GAME_OVER:
 			displayGameOver();
@@ -163,6 +167,11 @@ void displayStartScreen()
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
+}
+
+void displayTacticalPaused()
+{
+	drawText(512,384, "PAUSED", Color(1,1,1));
 }
 
 void displayTactical()
@@ -365,6 +374,8 @@ void initStartScreen()
 void initTactical()
 {
 	screenState = TACTICAL; 
+
+	paused = false;
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClearIndex(0);

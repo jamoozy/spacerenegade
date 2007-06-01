@@ -19,6 +19,7 @@ extern PShip *playerShip;
 extern OctTree *env;
 extern int screen_width;
 extern int screen_height;
+extern bool paused;
 
 
 
@@ -152,7 +153,7 @@ void updateKeyboard(unsigned char key, int x, int y)
 	else if (key == ' ')
 		Keyboard::getKeyboard()->setDown(SR_KEY_SPACE);
 	else
-		std::cout << "got a " << key << " down." << std::endl;
+		std::cout << "got a \"normal\" " << (int)key << " down." << std::endl;
 }
 
 void updateKeyboardUp(unsigned char key, int x, int y)
@@ -166,7 +167,7 @@ void updateKeyboardUp(unsigned char key, int x, int y)
 	else if (key == ' ')
 		Keyboard::getKeyboard()->setUp(SR_KEY_SPACE);
 	else
-		std::cout << "got a " << key << " up." << std::endl;
+		std::cout << "got a \"normal\" " << (int)key << " up." << std::endl;
 }
 
 // Reads the arrow, F- and special keys.
@@ -261,7 +262,10 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 		case 'Q':
 			cleanup();
 			break;
-
+		case 'p':
+		case 'P':
+			paused = !paused;
+			break;
 		case 'v':
 		case 'V':
 			Camera::getCamera()->toggleDefault();
