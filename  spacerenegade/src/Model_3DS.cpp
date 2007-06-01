@@ -204,11 +204,7 @@ bool Model_3DS::Load(char *name)
 		while (name[ptr] != '\0') ptr++;
 
 		// Back up until a \ or the start
-		#ifdef WIN32
-			while (ptr != 0 && name[ptr] != '\\') ptr--;
-		#else
-			while (ptr != 0 && name[ptr] != '/') ptr--;
-		#endif
+		while (ptr != 0 && name[ptr] != '/') ptr--;
 
 		// Allocate space for the path
 		if (path) delete [] path;
