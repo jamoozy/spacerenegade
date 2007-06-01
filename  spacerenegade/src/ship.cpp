@@ -33,7 +33,7 @@ Ship::Ship(char* modelName, double fuel, double ammo) :
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
-	pitchF[2] = pitchF[3] = pitchF[4] = pitchF[7] = pitchF[8] =
+	pitchF[1] = pitchF[2] = pitchF[3] = pitchF[4] = pitchF[7] = pitchF[8] =
 		pitchF[11] = pitchF[12] = pitchF[13] = pitchF[14] = 0;
 	pitchF[5] = pitchF[10] = cos(rot());
 	pitchF[9] = -(pitchF[6] = sin(rot()));
@@ -70,6 +70,7 @@ Ship::Ship(char* modelName, double fuel, double ammo) :
 	// Initialize the local coordinate system to identity.
 	GLdouble m[] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 	lcs = m;
+
 }
 
 // This shouldn't ever be called.  But just in case ...
