@@ -66,9 +66,14 @@ Camera::Camera() :
 // Draw is just a call to gluLookAt.
 void Camera::draw()
 {
-	gluLookAt(pos.x(), pos.y(), pos.z(),
-	          lookat.x(), lookat.y(), lookat.z(),
-			  up.x(), up.y(), up.z());
+	if (_mode == CAMERA_MODE_LOOK)
+		gluLookAt(pos.x(), pos.y(), pos.z(),
+				  lookat.x(), lookat.y(), lookat.z(),
+				  up.x(), up.y(), up.z());
+	else
+		gluLookAt(pos.x(), pos.y(), pos.z(),
+		          lookat.x(), lookat.y(), lookat.z(),
+		          playerShip->getUp().x(), playerShip->getUp().y(), playerShip->getUp().z());
 }
 
 void Camera::recomputeLook()
@@ -167,9 +172,8 @@ void Camera::setFocus(const Vec3 &p, double dist)
 		theta = 0;
 		phi = -0.19740;
 
-		up.normalize();
 		lookat = p;
-		pos = playerShip->getPos() + d + up * 10;
+		pos = playerShip->getPos() + d + playerShip->getUp() * 10;
 	}
 	// In this mode the camera follows the ship as though
 	// it's attached to it by a string.
