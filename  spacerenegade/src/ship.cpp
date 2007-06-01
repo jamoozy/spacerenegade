@@ -159,7 +159,7 @@ PShip::~PShip() {}
 void PShip::recompdir()
 {
 	Ship::recompdir();
-	Camera::getCamera()->setUp(getUp());
+//	Camera::getCamera()->setUp(getUp());
 }
 
 // Draws the ship.
