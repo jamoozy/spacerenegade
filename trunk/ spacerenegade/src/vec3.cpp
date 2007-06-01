@@ -103,9 +103,9 @@ Vec3& Vec3::operator=(const Vec3& a)
 string Matrix::str() const
 {
 	std::stringstream str;
-	for (int i = 0; i < 16; i += 4) {
+	for (int i = 0; i < 4; i++) {
 		str << "[ ";
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < 16; j += 4)
 			str << matrix[i+j] << ' ';
 		str << "]\n";
 	}
