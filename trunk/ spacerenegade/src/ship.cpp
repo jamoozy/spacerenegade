@@ -28,17 +28,49 @@ GLvoid glDrawCube();
 // ----------------------- General-Purpose Ship ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Ship::Ship(char* modelName, double fuel, double ammo) : Object(modelName),
-	fuel(fuel), ammo(ammo)
+Ship::Ship(char* modelName, double fuel, double ammo) :
+	Object(modelName), fuel(fuel), ammo(ammo)
 {
-	GLdouble m[] = {1,0,0,0,
-	                0,1,0,0,
-	                0,0,1,0,
-	                0,0,0,1};
+	// This big messy thing is the initialization of pitchF et al.
+	pitchF[0] = pitchF[15] = 1;
+	pitchF[2] = pitchF[3] = pitchF[4] = pitchF[7] = pitchF[8] =
+		pitchF[11] = pitchF[12] = pitchF[13] = pitchF[14] = 0;
+	pitchF[5] = pitchF[10] = cos(rot());
+	pitchF[9] = -(pitchF[6] = sin(rot()));
+
+	for (int i = 0; i < 16; i++)
+		pitchB[i] = pitchF[i];
+	pitchB[6] = -pitchB[6];
+	pitchB[9] = -pitchB[9];
+
+	// Yaw left and right.
+	yawL[1] = yawL[3] = yawL[4] = yawL[6] = yawL[7] = yawL[9] =
+		yawL[11] = yawL[12] = yawL[13] = yawL[14] = 0;
+	yawL[5] = yawL[15] = 1;
+	yawL[0] = yawL[10] = cos(rot());
+	yawL[2] = -(yawL[8] = sin(rot()));
+
+	for (int i = 0; i < 16; i++)
+		yawR[i] = yawL[i];
+	yawR[8] = -yawR[8];
+	yawR[2] = -yawR[2];
+
+	// Roll left and right.
+	rollL[2] = rollL[3] = rollL[6] = rollL[7] = rollL[8] = rollL[9] =
+		rollL[11] = rollL[12] = rollL[13] = rollL[14] = 0;
+	rollL[10] = rollL[15] = 1;
+	rollL[0] = rollL[5] = cos(rot());
+	rollL[1] = -(rollL[4] = sin(rot()));
+
+	for (int i = 0; i < 16; i++)
+		rollR[i] = rollL[i];
+	rollR[1] = -rollR[1];
+	rollR[4] = -rollR[4];
+
+	// Initialize the local coordinate system to identity.
+	GLdouble m[] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 	lcs = m;
 }
-
-Ship::~Ship() {}
 
 // This shouldn't ever be called.  But just in case ...
 void Ship::draw()
@@ -61,18 +93,6 @@ void Ship::draw()
 
 }
 
-// Do the object thang.
-void Ship::hits(Object *o)
-{
-	Object::hits(o);
-}
-
-void Ship::recompdir()
-{
-//	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
-//	degpyr = radpyr * (180 / M_PI);
-}
-
 void Ship::stabilize()
 {
 	if (velocity.norm() <= 3 * roa())
@@ -83,62 +103,32 @@ void Ship::stabilize()
 
 void Ship::pitchBack()
 {
-	GLdouble m[] = {1,0,0,0,
-	                0,cos(rot()),-sin(rot()),0,
-	                0,sin(rot()),cos(rot()),0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= pitchB;
 }
 
 void Ship::pitchForward()
 {
-	GLdouble m[] = {1,0,0,0,
-	                0,cos(rot()),sin(rot()),0,
-	                0,-sin(rot()),cos(rot()),0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= pitchF;
 }
 
 void Ship::yawLeft()
 {
-	GLdouble m[] = {cos(rot()),0,-sin(rot()),0,
-	                0,1,0,0,
-	                sin(rot()),0,cos(rot()),0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= yawL;
 }
 
 void Ship::yawRight()
 {
-	GLdouble m[] = {cos(rot()),0,sin(rot()),0,
-	                0,1,0,0,
-	                -sin(rot()),0,cos(rot()),0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= yawR;
 }
 
 void Ship::rollLeft()
 {
-	GLdouble m[] = {cos(rot()),-sin(rot()),0,0,
-	                sin(rot()),cos(rot()),0,0,
-					0,0,1,0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= rollL;
 }
 
 void Ship::rollRight()
 {
-	GLdouble m[] = {cos(rot()),sin(rot()),0,0,
-	                -sin(rot()),cos(rot()),0,0,
-					0,0,1,0,
-	                0,0,0,1};
-	lcs *= m;
-	recompdir();
+	lcs *= rollR;
 }
 
 
@@ -151,15 +141,6 @@ PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo())
 {
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
-}
-
-// Deconstructor: file is a pointer, so delete it
-PShip::~PShip() {}
-
-void PShip::recompdir()
-{
-	Ship::recompdir();
-//	Camera::getCamera()->setUp(getUp());
 }
 
 // Draws the ship.
@@ -195,6 +176,11 @@ void PShip::draw()
 		//GLTexture tex3;
 		//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
 		//tex3.Use();  // Binds the targa for use
+		Vec3 temp = getDir() * 10;
+		glBegin(GL_LINES);
+		glVertex3d(0,0,0);
+		glVertex3d(temp.x(),temp.y(),temp.z());
+		glEnd();
 		model.Draw();  // Renders the model to the screen
 
 		//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
@@ -231,11 +217,8 @@ void PShip::draw()
 
 void PShip::hits(Object *o)
 {
-//	// TODO: damage the ship?
-//	std::cout << "PShip collision!" << std::endl;
-
 	// This is a constant right now.  Later it will be a function of things,
-	// like hull defense, shields, and stuff.
+	// like hull strenth, shields, and stuff.
 	hurt(200);
 }
 
