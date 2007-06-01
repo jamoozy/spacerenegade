@@ -25,10 +25,15 @@ protected:
 
 	Ship(char *modelName, double fuel, double ammo);
 
-	virtual void recompdir(); // Recompute the direction based on pyr
+	GLdouble pitchF[16];
+	GLdouble pitchB[16];
+	GLdouble yawL[16];
+	GLdouble yawR[16];
+	GLdouble rollL[16];
+	GLdouble rollR[16];
 
 public:
-	virtual ~Ship();
+	virtual ~Ship() {};
 
 	// Rate functions.
 	virtual double roa() const { return 0.005; }; // Rate of Acceleration
@@ -42,11 +47,10 @@ public:
 	Vec3 getUp() const { return Vec3(lcs[4],lcs[5],lcs[6]); };
 
 	virtual void draw();
-	virtual void hits(Object *o);
 
 	// Movement.
-	virtual void accelerate()   { velocity += getDir() * roa(); };
-	virtual void decelerate()   { velocity -= getDir() * rod(); };
+	virtual void accelerate() { velocity += getDir() * roa(); };
+	virtual void decelerate() { velocity -= getDir() * rod(); };
 	virtual void stabilize();
 	virtual void pitchBack();
 	virtual void pitchForward();
@@ -80,16 +84,16 @@ class PShip : public Ship
 	//int lightTime;
 	GLTexture skymap;
 	bool skymapLoaded;
-	virtual void recompdir();
 
 public:
 	PShip();
-	virtual ~PShip();
+	virtual ~PShip() {};
 	virtual string getType() const { return "PShip"; };
-
+	virtual void hits(Object *o);
 	virtual void draw();
-	virtual void hits(Object* o);
+	virtual void fire();
 
+	// Ship methods that need some restrictions put on them.
 	virtual void accelerate();
 	virtual void decelerate();
 	virtual void stabilize();
@@ -100,15 +104,15 @@ public:
 	virtual void pitchBack();
 	virtual void pitchForward();
 
-	void fire();
-
-	// Rate functions inherited from Ship
+	// Rate functions inherited from Ship. They act as inheritable constants
+	// for now, later they'll be based on engines and such.
 	virtual double roa() const { return 0.005; };  // Rate of Acceleration
 	virtual double rod() const { return 0.001; };  // Rate of Deceleration
 	virtual double ros() const { return 0.95; };  // Rate of Stabilization
 	virtual double rot() const { return 0.02; };  // Rate of Turn
 
-	// Status of the ship.
+	// Status of the ship. Later these will be affected by the
+	// capacity of the ship and such.
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return 100; };
