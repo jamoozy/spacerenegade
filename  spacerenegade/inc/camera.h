@@ -36,6 +36,7 @@ public:
 	void setMode(int newMode);
 	void setDefaultMode(int newMode);
 	void toggleDefault();
+	void setUp(Vec3 v) { up = v; };
 	
 	// Controls
 	void turnUD(double amt);

@@ -1,27 +1,10 @@
 #include <sstream>
-#include <cmath>
 #include "vec3.h"
 
 
-// The constructor initializes the vector to the origin.
-Vec3::Vec3() : _x(0), _y(0), _z(0) {}
-
-// This constructor initializes the vector to the given point.
-Vec3::Vec3(const double a, const double b, const double c) : _x(a), _y(b), _z(c) {}
-
-// This constructor initializes the vector to another vector.
-Vec3::Vec3(const Vec3& a) : _x(a._x), _y(a._y), _z(a._z) {}
-
-// Get the coordinates of this vector.
-double Vec3::x() const { return _x; }
-double Vec3::y() const { return _y; }
-double Vec3::z() const { return _z; }
-
-// Find the length of the vector.
-double Vec3::norm() const
-{
-	return sqrt(_x * _x + _y * _y + _z * _z);
-}
+////////////////////////////////////////////////////////////////////////////////
+// ----------------------------- Vector ------------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
 
 // Make this vector's length 1.
 void Vec3::normalize()
@@ -36,18 +19,12 @@ void Vec3::normalize()
 }
 
 // Returns a string representation of this vector.
-const std::string Vec3::str()
+string Vec3::str()
 {
 	std::ostringstream rtn;
 	rtn.precision(5);
 	rtn << '[' << _x << ", " << _y << ", " << _z << ']';
 	return rtn.str();
-}
-
-// Add two vectors.
-Vec3 Vec3::operator+(const Vec3& a) const
-{
-	return Vec3(a._x + _x, a._y + _y, a._z + _z);
 }
 
 // Add two vectors.
@@ -61,12 +38,6 @@ Vec3 Vec3::operator+=(const Vec3& a)
 }
 
 // Subtract two vectors.
-Vec3 Vec3::operator-(const Vec3& a) const
-{
-	return Vec3(_x - a._x, _y - a._y, _z - a._z);
-}
-
-// Subtract two vectors.
 Vec3 Vec3::operator-=(const Vec3& a)
 {
 	this->_x -= a._x;
@@ -76,17 +47,6 @@ Vec3 Vec3::operator-=(const Vec3& a)
 	return *this;
 }
 
-// Dot product of two vectors.
-const double Vec3::operator*(const Vec3& a) const
-{
-	return _x * a._x + _y * a._y + _z * a._z;
-}
-
-// Multiply a scalar by each component of the vector.
-const Vec3 Vec3::operator*(const double a) const
-{
-	return Vec3(_x * a, _y * a, _z * a);
-}
 const Vec3 operator*(const GLdouble *m, const Vec3& v)
 {
 	double denom = m[3]*v.x() + m[7]*v.y() + m[11]*v.z() + m[15];
@@ -96,7 +56,7 @@ const Vec3 operator*(const GLdouble *m, const Vec3& v)
 }
 
 // Multiply a vector by a scalar and return it.
-const Vec3 Vec3::operator*=(const double a)
+Vec3 Vec3::operator*=(const double a)
 {
 	this->_x *= a;
 	this->_y *= a;
@@ -105,14 +65,8 @@ const Vec3 Vec3::operator*=(const double a)
 	return *this;
 }
 
-// Multiply a scalar by each component of the vector.
-const Vec3 Vec3::operator/(const double a) const
-{
-	return Vec3(_x / a, _y / a, _z / a);
-}
-
 // Multiply a vector by a scalar and return it.
-const Vec3 Vec3::operator/=(const double a)
+Vec3 Vec3::operator/=(const double a)
 {
 	this->_x /= a;
 	this->_y /= a;
@@ -127,18 +81,6 @@ const Vec3 operator*(const double a, const Vec3& b)
 	return b * a;
 }
 
-// Cross product of two vectors.
-const Vec3 Vec3::operator^(const Vec3& a) const
-{
-	return Vec3(_y * a._z - _z * a._y, _z * a._x - _x * a._z, _x * a._y - _y * a._x);
-}
-
-// Unary negation.
-const Vec3 Vec3::operator-() const
-{
-	return Vec3(-_x, -_y, -_z);
-}
-
 // Assign one vector to another (copy it).
 Vec3& Vec3::operator=(const Vec3& a)
 {
@@ -151,3 +93,70 @@ Vec3& Vec3::operator=(const Vec3& a)
 
 	return *this;
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------------ Matrix ------------------------------------ //
+////////////////////////////////////////////////////////////////////////////////
+
+string Matrix::str() const
+{
+	std::stringstream str;
+	for (int i = 0; i < 16; i += 4) {
+		str << "[ ";
+		for (int j = 0; j < 4; j++)
+			str << matrix[i+j] << ' ';
+		str << "]\n";
+	}
+	return str.str();
+}
+
+Matrix Matrix::operator*(const Matrix& m) const
+{
+	GLdouble out[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	for (int i = 0; i < 16; i += 4)
+		for (int j = 0; j < 4; j++)
+			for (int k = 0; k < 4; k++)
+				out[i+j] += matrix[j+4*k] * m[i+k];
+
+	return Matrix(out);
+}
+
+Matrix Matrix::operator*(const GLdouble m[16]) const
+{
+	GLdouble out[] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	for (int i = 0; i < 16; i += 4)
+		for (int j = 0; j < 4; j++)
+			for (int k = 0; k < 4; k++)
+				out[i+j] += matrix[j+4*k] * m[i+k];
+
+	return Matrix(out);
+}
+
+Matrix& Matrix::operator*=(const Matrix& m)
+{
+	*this = *this * m;
+	return *this;
+}
+
+Matrix& Matrix::operator*=(const GLdouble m[16])
+{
+	*this = *this * m;
+	return *this;
+}
+
+Matrix& Matrix::operator=(const Matrix& m)
+{
+	for (int i = 0; i < 16; i++)
+		matrix[i] = m[i];
+	return *this;
+}
+
+Matrix& Matrix::operator=(const GLdouble m[16])
+{
+	for (int i = 0; i < 16; i++)
+		matrix[i] = m[i];
+	return *this;
+}
+

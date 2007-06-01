@@ -164,16 +164,12 @@ void Camera::setFocus(const Vec3 &p, double dist)
 		d.normalize();
 		d *= dist;
 
-		Vec3 side = Vec3(0,1,0) ^ d;
-		Vec3 up = d ^ side;
-		up.normalize();
-		up *= 10;
-
 		theta = 0;
 		phi = -0.19740;
 
+		up.normalize();
 		lookat = p;
-		pos = playerShip->getPos() + d + up;
+		pos = playerShip->getPos() + d + up * 10;
 	}
 	// In this mode the camera follows the ship as though
 	// it's attached to it by a string.
