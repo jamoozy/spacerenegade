@@ -12,19 +12,20 @@ using std::string;
 class Ship : public Object
 {
 protected:
-	Vec3 direction;
-
-	// "Why store both degrees AND radians?" you may ask.  Because
-	// cmath works in radians and OpenGL works in degrees.
-	Vec3 degpyr; // Pitch/Yaw/Roll are x/y/z resp. in degrees
-	Vec3 radpyr; // like degpyr but in radians.
+	// This is an orthonormal rotation matrix that describes the
+	// orientation of the ship.  With this matrix you can do
+	// pitch, roll, and yaw all "correctly" (i.e. as you'd
+	// expect them to look if you were really flying around in
+	// a spaceship) and you can easily get the orientation of
+	// the ship by selecting good values.
+	Matrix lcs;  // Local Coordinate System.
 
 	double fuel; // Amount of fuel left.
 	double ammo; // Amount of ammo left.
 
 	Ship(char *modelName, double fuel, double ammo);
 
-	void recompdir(); // Recompute the direction based on pyr
+	virtual void recompdir(); // Recompute the direction based on pyr
 
 public:
 	virtual ~Ship();
@@ -37,21 +38,22 @@ public:
 
 	virtual string getType() const { return "Ship"; };
 
-	Vec3 getDir() const { return direction; };
+	Vec3 getDir() const { return Vec3(lcs[8],lcs[9],lcs[10]); };
+	Vec3 getUp() const { return Vec3(lcs[4],lcs[5],lcs[6]); };
 
 	virtual void draw();
 	virtual void hits(Object *o);
 
 	// Movement.
-	virtual void accelerate()   { velocity += direction * roa(); };
-	virtual void decelerate()   { velocity -= direction * rod(); };
+	virtual void accelerate()   { velocity += getDir() * roa(); };
+	virtual void decelerate()   { velocity -= getDir() * rod(); };
 	virtual void stabilize();
 	virtual void pitchBack();
 	virtual void pitchForward();
 	virtual void yawLeft();
 	virtual void yawRight();
-	virtual void rollLeft()  {};
-	virtual void rollRight() {};
+	virtual void rollLeft();
+	virtual void rollRight();
 
 	// Status stuff.
 	virtual double maxHlth() const { return 1000; };
@@ -78,6 +80,7 @@ class PShip : public Ship
 	//int lightTime;
 	GLTexture skymap;
 	bool skymapLoaded;
+	virtual void recompdir();
 
 public:
 	PShip();

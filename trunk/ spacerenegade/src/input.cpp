@@ -356,6 +356,12 @@ void handleTacticalInput()
 			playerShip->pitchBack();
 		if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
 			playerShip->pitchForward();
+
+		// Roll.
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_W))
+			playerShip->rollLeft();
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_R))
+			playerShip->rollRight();
 	}
 }
 

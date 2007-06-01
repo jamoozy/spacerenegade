@@ -9,6 +9,11 @@
 #include "environment.h"
 #include "weapon.h"
 #include "ship.h"
+#include "camera.h"
+
+using std::cout;
+using std::cerr;
+using std::endl;
 
 extern OctTree *env;
 
@@ -24,8 +29,14 @@ GLvoid glDrawCube();
 ////////////////////////////////////////////////////////////////////////////////
 
 Ship::Ship(char* modelName, double fuel, double ammo) : Object(modelName),
-	direction(0,0,1), degpyr(0,0,0), radpyr(0,0,0),
-	fuel(fuel), ammo(ammo) {}
+	fuel(fuel), ammo(ammo)
+{
+	GLdouble m[] = {1,0,0,0,
+	                0,1,0,0,
+	                0,0,1,0,
+	                0,0,0,1};
+	lcs = m;
+}
 
 Ship::~Ship() {}
 
@@ -40,9 +51,7 @@ void Ship::draw()
 	glTranslated(position.x(), position.y(), position.z());
 	
 	// direction rotation
-	glRotated(degpyr.z(),  0,0,1);
-	glRotated(degpyr.y(),  0,1,0);
-	glRotated(degpyr.x(),  1,0,0);
+	glMultMatrixd(lcs.array());
 
 	// Set color to purple.
 	glColor3f(.7,0,.8);
@@ -60,8 +69,8 @@ void Ship::hits(Object *o)
 
 void Ship::recompdir()
 {
-	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
-	degpyr = radpyr * (180 / M_PI);
+//	direction = Vec3(sin(radpyr.y()) * cos(radpyr.x()), -sin(radpyr.x()), cos(radpyr.y()) * cos(radpyr.x()));
+//	degpyr = radpyr * (180 / M_PI);
 }
 
 void Ship::stabilize()
@@ -74,28 +83,63 @@ void Ship::stabilize()
 
 void Ship::pitchBack()
 {
-	radpyr -= Vec3(rot(),0,0);
+	GLdouble m[] = {1,0,0,0,
+	                0,cos(rot()),-sin(rot()),0,
+	                0,sin(rot()),cos(rot()),0,
+	                0,0,0,1};
+	lcs *= m;
 	recompdir();
 }
 
 void Ship::pitchForward()
 {
-	radpyr += Vec3(rot(),0,0);
+	GLdouble m[] = {1,0,0,0,
+	                0,cos(rot()),sin(rot()),0,
+	                0,-sin(rot()),cos(rot()),0,
+	                0,0,0,1};
+	lcs *= m;
 	recompdir();
 }
 
 void Ship::yawLeft()
 {
-	radpyr += Vec3(0,rot(),0);
+	GLdouble m[] = {cos(rot()),0,-sin(rot()),0,
+	                0,1,0,0,
+	                sin(rot()),0,cos(rot()),0,
+	                0,0,0,1};
+	lcs *= m;
 	recompdir();
 }
 
 void Ship::yawRight()
 {
-	radpyr -= Vec3(0,rot(),0);
+	GLdouble m[] = {cos(rot()),0,sin(rot()),0,
+	                0,1,0,0,
+	                -sin(rot()),0,cos(rot()),0,
+	                0,0,0,1};
+	lcs *= m;
 	recompdir();
 }
 
+void Ship::rollLeft()
+{
+	GLdouble m[] = {cos(rot()),-sin(rot()),0,0,
+	                sin(rot()),cos(rot()),0,0,
+					0,0,1,0,
+	                0,0,0,1};
+	lcs *= m;
+	recompdir();
+}
+
+void Ship::rollRight()
+{
+	GLdouble m[] = {cos(rot()),sin(rot()),0,0,
+	                -sin(rot()),cos(rot()),0,0,
+					0,0,1,0,
+	                0,0,0,1};
+	lcs *= m;
+	recompdir();
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +156,12 @@ PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo())
 // Deconstructor: file is a pointer, so delete it
 PShip::~PShip() {}
 
+void PShip::recompdir()
+{
+	Ship::recompdir();
+	Camera::getCamera()->setUp(getUp());
+}
+
 // Draws the ship.
 void PShip::draw()
 {
@@ -126,23 +176,16 @@ void PShip::draw()
 	if (skymapLoaded) 
 	{
 		glPushMatrix();
-		// Set properties of the material of the sky map
-		GLfloat mat_amb_diff[] = { 0.0, 0.0, 0.0, 1.0 };
-		GLfloat mat_emission[] = { 1.0, 1.0, 1.0, 1.0 };
-//		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mat_amb_diff);
-//		glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
 
-		// Draw the skymap
 		skymap.Use();
 		glScaled(2000, 2000, 2000);
 		glDrawCube();
+
 		glPopMatrix();
 	}
 
 	// direction rotation
-	glRotated(degpyr.z(),  0,0,1);
-	glRotated(degpyr.y(),  0,1,0);
-	glRotated(degpyr.x(),  1,0,0);
+	glMultMatrixd(lcs.array());
 
 	if (modelLoaded)
 	{
@@ -260,11 +303,13 @@ void PShip::rollLeft()
 //	fuel -= 0.2;
 //	radpyr += Vec3(0, 0, rot);
 //	recompdir();
+	Ship::rollLeft();
 }
 
 //
 void PShip::rollRight()
 {
+	Ship::rollRight();
 //	fuel -= 0.2;
 //	radpyr -= Vec3(0, 0, rot);
 //	recompdir();
