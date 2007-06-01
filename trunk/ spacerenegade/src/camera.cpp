@@ -169,6 +169,9 @@ void Camera::setFocus(const Vec3 &p, double dist)
 		up.normalize();
 		up *= 10;
 
+		theta = 0;
+		phi = -0.19740;
+
 		lookat = p;
 		pos = playerShip->getPos() + d + up;
 	}
@@ -189,7 +192,7 @@ void Camera::setFocus(const Vec3 &p, double dist)
 		pos = lookat + (look * (-dist));
 	}
 	else
-		cerr << "Got a funny value for Camera Mode!" << endl;
+		cerr << "Got a funny value for Camera Mode: " << _mode << endl;
 }
 
 // Alter the camera as needed and put its changes into effect.
