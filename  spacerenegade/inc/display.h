@@ -33,6 +33,7 @@ void resize(int w, int h);
 // Display functions.
 void display();
 void displayStartScreen();
+void displayTacticalPaused();
 void displayTactical();
 void adjustGlobalLighting();
 void drawHUD();
