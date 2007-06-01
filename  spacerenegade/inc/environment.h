@@ -54,7 +54,7 @@ struct Leaf : public Node
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
 	virtual void remove(Object* o);
-	virtual Vec3 center() { return (maxBound + minBount) / 2; };
+	virtual Vec3 center() const { return (maxBound + minBound) / 2; };
 };
 
 // ------------- top level part we interact with.
