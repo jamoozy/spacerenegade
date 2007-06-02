@@ -131,6 +131,9 @@ void resize(int w, int h)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void displayMissionBriefing() // (Gum)
+{
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -149,6 +152,9 @@ void display()
 				displayTacticalPaused();
 			else
 				displayTactical();
+			break;
+		case MISSION_BOARD:
+			displayMissionBoard();
 			break;
 		case GAME_OVER:
 			displayGameOver();
@@ -321,6 +327,16 @@ void drawMiniMap()
 	}//for
 }
 
+void displayMissionBoard()
+{
+	// Clear the screen and the depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	menu->draw(GL_RENDER);
+
+	glutSwapBuffers();
+}
+
 void displayGameOver()
 {
 	// Clear the screen and the depth buffer.
@@ -462,6 +478,44 @@ void initTactical()
 	adjustGlobalLighting();
 
 	glutPostRedisplay();
+}
+
+void initMissionBoard() //(Gum)
+{
+	// Setting this ensures all the right display
+	// and input functions are called.
+	screenState = MISSION_BOARD;
+
+	// Set up the nice (0,0) -> (w,h) window for drawing
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, screen_width, 0, screen_height);
+
+	// Turn off transparancies.
+	glBlendFunc(GL_ONE, GL_ZERO);
+
+	// set basic matrix mode
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+
+	// Set up OpenGL for picking.
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glRenderMode(GL_RENDER);
+
+	// Create the appropriate menu.
+	if (menu) delete menu;
+	menu = new Menu(screenState);
+
+	// Schedule a re-draw.
+	glutPostRedisplay();
+}
+
+void initPlanet()
+{
+	// set up view for when player lands on a planet
 }
 
 void initGameOver()

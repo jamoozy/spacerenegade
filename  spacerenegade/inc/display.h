@@ -7,7 +7,7 @@
 
 #include <string>
 
-enum { START_SCREEN, TACTICAL, MISSION, GAME_OVER };
+enum { START_SCREEN, TACTICAL, MISSION_BOARD, GAME_OVER };
 
 class Color
 {
@@ -40,11 +40,14 @@ void drawHUD();
 void drawMeters();
 void drawMiniMap();
 void displayGameOver();
+void displayMissionBoard();
 
 // Initializations.
 void initStartScreen();
 void initTactical();
 void initGameOver();
+void initPlanet();
+void initMissionBoard();
 
 #endif
 
