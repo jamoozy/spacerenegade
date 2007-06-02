@@ -1,15 +1,13 @@
-#include <GL/glut.h>
-//#include "GLTexture.h"
-#include "Model_3DS.h"
-#include <cmath>
 #ifdef WIN32
 	#include <process.h>
 #endif
 #include <iostream>
+#include <GL/glut.h>
+#include <cmath>
+#include "Model_3DS.h"
 #include "environment.h"
-#include "weapon.h"
-#include "ship.h"
 #include "camera.h"
+#include "ship.h"
 
 using std::cout;
 using std::cerr;
@@ -28,8 +26,8 @@ GLvoid glDrawCube();
 // ----------------------- General-Purpose Ship ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Ship::Ship(char* modelName, double fuel, double ammo) :
-	Object(modelName), fuel(fuel), ammo(ammo)
+Ship::Ship(char* modelName, Weapon *weapon, double fuel) :
+	Object(modelName), weapon(weapon), fuel(fuel)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -138,7 +136,7 @@ void Ship::rollRight()
 ////////////////////////////////////////////////////////////////////////////////
 
 // Makes a new, boring ship that just sits there.
-PShip::PShip() : Ship("./art/personalship.3DS", maxFuel(), maxAmmo())
+PShip::PShip(Weapon *weapon) : Ship("./art/personalship.3DS", weapon, maxFuel())
 {
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
@@ -166,6 +164,13 @@ void PShip::draw()
 		glPopMatrix();
 	}
 
+	glColor3f(1,0,0);
+	Vec3 temp = getDir() * 10;
+	glBegin(GL_LINES);
+	glVertex3d(0,0,0);
+	glVertex3d(temp.x(),temp.y(),temp.z());
+	glEnd();
+
 	// direction rotation
 	glMultMatrixd(lcs.array());
 
@@ -177,11 +182,6 @@ void PShip::draw()
 		//GLTexture tex3;
 		//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
 		//tex3.Use();  // Binds the targa for use
-		Vec3 temp = getDir() * 10;
-		glBegin(GL_LINES);
-		glVertex3d(0,0,0);
-		glVertex3d(temp.x(),temp.y(),temp.z());
-		glEnd();
 		model.Draw();  // Renders the model to the screen
 
 		//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
@@ -221,15 +221,6 @@ void PShip::hits(Object *o)
 	// This is a constant right now.  Later it will be a function of things,
 	// like hull strenth, shields, and stuff.
 	hurt(200);
-}
-
-void PShip::fire()
-{
-	--ammo;
-
-	// This deletes itself after 120 frames (~3s) or it hits something.
-	Weapon *w = new Weapon(this,120);
-	env->add(w);
 }
 
 // Adds to the ship's velocity.
