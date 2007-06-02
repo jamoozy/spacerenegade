@@ -1,26 +1,113 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "ship.h"
 #include "object.h"
 
 
-class Weapon : public Object
+class Ship;
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ----------------------------- Things to Shoot ---------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+/*******************************
+ * Super class of all things that can be shot (like bombs, missiles, lasers,
+ * etc.).  This is draw and has collision detection performed upon it (hence
+ * it extends Object).
+ ******************************/
+class Ammo : public Object
 {
 protected:
 	Ship *shooter;     // The person that shot me.
-	unsigned int ttl;  // Time to live in frames
-	bool killNextTick; // To avoid having hits() kill itself.
-	static const double WEAPON_SPEED;
-
+	int ticks;         // How many ticks this has been alive (compared
+	                   // against ttl()).
+	bool killNextTick; // To avoid having hits() kill itself,
+	                   // potentially causing a segfault.
 public:
-	Weapon(Ship *shooter, unsigned int ttl);
-	virtual ~Weapon();
-	virtual std::string getType() const { return "Weapon"; };
+	Ammo(Ship *shooter);
+	virtual ~Ammo() {};
+	virtual std::string getType() const { return "Ammo"; };
+
+	virtual void draw() { Object::draw(); };
+	virtual void hits(Object *o);
+
+	virtual double ttl() const { return 60; };   // Time to live in frames.
+	virtual double speed() const { return 1; };  // How fast this travels.
+	virtual int damage() const { return 5; }; // Amount of damage this does.
+};
+
+/**********************************
+ * A basic bullet.  It shoots.  Yay.
+ *************************/
+class Bullet : public Ammo
+{
+public:
+	Bullet(Ship *shooter) : Ammo(shooter) {}
+	virtual ~Bullet() {};
+	virtual std::string getType() const { return "Bullet"; };
 
 	virtual void draw();
+	virtual void hits(Object *o) { Ammo::hits(o); };
 
-	virtual void hits(Object *o);
+	virtual double ttl() const { return 120; };   // Time to live in frames.
+	virtual double speed() const { return 2; };   // How fast this travels.
+	virtual int damage() const { return 10; }; // Amount of damage this does.
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// --------------------------- Things to Shoot With ------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+/******************************
+ * This class represents Weapons.  Weapons are never visible and only add
+ * (or subtract in the case of bad weapons) from the functionality and
+ * abilities of the ship they are attached to.
+ *****************************/
+class Weapon
+{
+protected:
+//	Ammo type;   // The type of ammo this guy shoots.
+	double ammo; // Keeps track of how much ammo remains.
+
+public:
+	Weapon(double ammo) : ammo(ammo) {};
+	virtual ~Weapon() {};
+
+	virtual void fire(Ship *shooter) {};
+
+	// Constants that are functions to get the nice inheritence functionality.
+	virtual double rof() const { return 10; };   // Rate Of Fire in frames.
+	virtual double roh() const { return 10; };   // Rate Of Heating.
+	virtual double roc() const { return 1; };    // Rate Of Cooling.
+	virtual double ttr() const { return 1000; }; // Time To Recover from overheating.
+
+	virtual double maxHeat() const { return 100; };  // When it overheats and needs a rest.
+	virtual double wrnHeat() const { return 80; };   // When it looses efficiency?
+	virtual double maxAmmo() const { return 100; };  // Most ammo this can hold.
+	virtual double getAmmo() const { return ammo; }; // Amount of ammo this now has.
+};
+
+class Blaster : public Weapon
+{
+public:
+	Blaster() : Weapon(maxAmmo()) {};
+	virtual ~Blaster() {};
+
+	virtual void fire(Ship *shooter);
+
+	// Constants that are functions to get the nice inheritence functionality.
+	virtual double rof() const { return 10; };   // Rate Of Fire in frames.
+	virtual double roh() const { return 10; };   // Rate Of Heating.
+	virtual double roc() const { return 1; };    // Rate Of Cooling.
+	virtual double ttr() const { return 1000; }; // Time To Recover from overheating.
+
+	virtual double maxHeat() const { return 100; }; // When it overheats and needs a rest.
+	virtual double wrnHeat() const { return 80; };  // When it looses efficiency?
+	virtual double maxAmmo() const { return 100; }; // Most ammo this can hold.
 };
 
 #endif
+

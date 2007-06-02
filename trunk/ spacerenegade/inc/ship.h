@@ -5,6 +5,7 @@
 #include "Model_3DS.h"
 #include "object.h"
 #include "vec3.h"
+#include "weapon.h"
 
 using std::string;
 
@@ -20,10 +21,10 @@ protected:
 	// the ship by selecting good values.
 	Matrix lcs;  // Local Coordinate System.
 
-	double fuel; // Amount of fuel left.
-	double ammo; // Amount of ammo left.
+	Weapon *weapon; // What this ship shoots with.
+	double fuel;   // Amount of fuel left.
 
-	Ship(char *modelName, double fuel, double ammo);
+	Ship(char *modelName, Weapon *weapon, double fuel);
 
 	GLdouble pitchF[16];
 	GLdouble pitchB[16];
@@ -33,7 +34,7 @@ protected:
 	GLdouble rollR[16];
 
 public:
-	virtual ~Ship() {};
+	virtual ~Ship() { delete weapon; };
 
 	// Rate functions.
 	virtual double roa() const { return 0.005; }; // Rate of Acceleration
@@ -62,13 +63,13 @@ public:
 	// Status stuff.
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
-	virtual double maxAmmo() const { return 100; };
+	virtual double maxAmmo() const { return weapon->maxAmmo(); };
 	virtual double getHlth() const { return maxHlth() - damage; };
 	virtual double getFuel() const { return fuel; };
-	virtual double getAmmo() const { return ammo; };
+	virtual double getAmmo() const { return weapon->getAmmo(); };
 	virtual double hlthPcnt() const { return 1.0 - damage / maxHlth(); };
 	virtual double fuelPcnt() const { return fuel / maxFuel(); };
-	virtual double ammoPcnt() const { return ammo / maxAmmo(); };
+	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
 };
 
 
@@ -86,12 +87,12 @@ class PShip : public Ship
 	bool skymapLoaded;
 
 public:
-	PShip();
+	PShip(Weapon *weapon);
 	virtual ~PShip() {};
 	virtual string getType() const { return "PShip"; };
 	virtual void hits(Object *o);
 	virtual void draw();
-	virtual void fire();
+	virtual void fire() { weapon->fire(this); };
 
 	// Ship methods that need some restrictions put on them.
 	virtual void accelerate();
@@ -115,7 +116,6 @@ public:
 	// capacity of the ship and such.
 	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
-	virtual double maxAmmo() const { return 100; };
 };
 
 #endif

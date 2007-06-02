@@ -2,20 +2,42 @@
 #include "GL/glut.h"
 #include "environment.h"
 #include "vec3.h"
-#include "weapon.h"
-#include "object.h"
 #include "ship.h"
+#include "weapon.h"
 
 
-const double Weapon::WEAPON_SPEED = 1.4;
+extern OctTree *env;
 
-Weapon::Weapon(Ship *shooter, unsigned int ttl) :
-	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * Weapon::WEAPON_SPEED),
-	shooter(shooter), ttl(ttl), killNextTick(false) { radius = .2;}
 
-Weapon::~Weapon() {}
+////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------- Ammo ---------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
 
-void Weapon::draw()
+Ammo::Ammo(Ship *shooter) :
+	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * speed()),
+	shooter(shooter), ticks(0), killNextTick(false) { radius = .2;}
+
+void Ammo::hits(Object *o)
+{
+	if (o != shooter)
+	{
+		o->hurt(damage());
+		killNextTick = true;
+	}
+	else
+	{
+		// The hacky way not to hurt the shooter of this ammo piece.
+		o->hurt(-200);
+	}
+};
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// --------------------------------- Bullet --------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+void Bullet::draw()
 {
 	position += velocity;
 
@@ -28,20 +50,21 @@ void Weapon::draw()
 
 	glPopMatrix();
 
-	if (killNextTick || ttl-- == 0) delete this;
+	if (killNextTick || ticks++ >= ttl()) delete this;
 }
 
-void Weapon::hits(Object *o)
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------------ Blaster ----------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+void Blaster::fire(Ship *shooter)
 {
-	if (o != shooter)
-	{
-		o->hurt(10);
-		killNextTick = true;
-	}
-	else
-	{
-		// The hacky way not to hurt the shooter of this weapon.
-		o->hurt(-200);
-	}
+	--ammo;
+
+	// This deletes itself after 120 frames (~3s) or it hits something.
+	Bullet *b = new Bullet(shooter);
+	env->add(b);
 }
 
