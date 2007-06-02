@@ -2,6 +2,7 @@
 #define MISSION_H
 
 #include "objective.h"
+#include "object.h"
 
 class Mission
 {
@@ -24,13 +25,18 @@ public:
 	Mission();
 	virtual ~Mission();
 	Mission(int id); // probably only one or two missions in demo
-	bool isCompleted();
+	bool isCompleted() const { return isComplete; };
 	//bool hasFailed(); // won't use conditions in the demo
-	string getTitle();
-	string getBriefing();
-	int getReward();
+	string getTitle() const {return title; };
+	string getBriefing() const {return briefing; };
+	int getReward() const {return reward; };
 	//Objective getObjectives();
+	int getNumObjectives() const {return (sizeof objectives)/(sizeof *objectives);};
 	void getObjectives(Object **objs);
+
+	void acceptMission();
+	void displayMissionBriefing();
+	
 };
 
 #endif

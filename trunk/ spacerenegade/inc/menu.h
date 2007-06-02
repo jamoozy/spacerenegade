@@ -25,7 +25,7 @@ public:
 	virtual ~Button();
 
 	void Place(GLenum mode);
-	void DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b);
+	void drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b);
 
 	GLfloat getBuffer(){return border;}
 	string getTitle(){return title;}

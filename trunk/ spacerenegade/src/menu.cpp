@@ -5,6 +5,7 @@
 #include <cmath>
 #include "display.h"
 #include "menu.h"
+#include "mission.h"
 
 using std::string;
 using std::cout;
@@ -21,8 +22,6 @@ static GLfloat FONTWIDTH = 9; // We're using GLUT_BITMAP_9_BY_15
 static GLfloat FONTHEIGHT = 15; // We're using GLUT_BITMAP_9_BY_15
 
 void cleanup();
-
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // --------------------------- Button Definition ---------------------------- //
@@ -55,6 +54,22 @@ void Button::buttonPressed()
 		(*pressFunc)();
 }
 
+void Button::drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
+{
+	glPushMatrix();
+	glLoadIdentity();
+	glColor3f(r,g,b);
+	glRasterPos2i(x, y);
+	for(unsigned int i = 0, lines = 0; i < s.size(); i++) {
+		if (s.at(i) == '\n') {
+			lines++;
+			glRasterPos2i(x, y-(lines*15));
+		}
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
+	}
+	glPopMatrix();
+}
+
 void Button::Place(GLenum mode)
 {
 	GLfloat numOfLetters = title.length();
@@ -73,24 +88,8 @@ void Button::Place(GLenum mode)
 				(yPos) - border,
 				(xPos) + border + (numOfLetters * FONTWIDTH), 
 				(yPos) + border + (FONTHEIGHT));
-		DrawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
+		drawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
 	}
-}
-
-void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b)
-{
-	glPushMatrix();
-	glLoadIdentity();
-	glColor3f(r,g,b);
-	glRasterPos2i(x, y);
-	for(unsigned int i = 0, lines = 0; i < s.size(); i++) {
-		if (s.at(i) == '\n') {
-			lines++;
-			glRasterPos2i(x, y-(lines*15));
-		}
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
-	}
-	glPopMatrix();
 }
 
 
@@ -101,6 +100,7 @@ void Button::DrawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat 
 
 Menu::Menu(int type) : type(type)
 {
+	int height, NUM_MISSIONS; // replace with something more dynamic
 	switch (type)
 	{
 		case START_SCREEN:
@@ -119,16 +119,32 @@ Menu::Menu(int type) : type(type)
 			buttons[1] = Button("+", .1, miniMapX + 85, miniMapY - 90, 0, 0, .2, 2, NULL);
 			break;
 
-		case MISSION:
+		case MISSION_BOARD: // (Gum)
+			NUM_MISSIONS = 2; // replace with something more dynamic
+			height = 50;
+			numButtons = 2 + NUM_MISSIONS;
+
+			//draw the two main buttons
+			//buttons [0] = Button("Accept Mission", 5, 200, 500, .4,.5,.7, 1, acceptMission);
+			buttons [1] = Button("Exit", 5, 400, 500, .4,.5,.7, 1, initPlanet);
+
+			//draw mission titles
+			for (int i = 0; i < NUM_MISSIONS; i ++)
+			{
+				//Mission m = listOfAvailableMissions.get(i); // fix, obviously
+				//buttons[i + 2] = Button(m.getTitle(), 1, 100, height, .1,.1,.1, i+2, displayMissionBriefing);
+				height += 50;
+			}
+			// handle displaying briefing, objectives, and reward when mission title is clicked
 			break;
 
 		case GAME_OVER:
 			numButtons = 4;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("New Game", 5 , 500,450 , 0.8,0.2,0.1 , 1, initTactical);
-			buttons[1] = Button("Load Game",5 , 500,400 , 0.8,0.2,0.1 , 2, NULL);
-			buttons[2] = Button("Options",  5 , 500,350 , 0.8,0.2,0.1 , 3, NULL);
-			buttons[3] = Button("Quit",     5 , 500,300 , 0.8,0.2,0.1 , 4, cleanup);
+			buttons[0] = Button("New Game", 5 , 500,550 , 0.8,0.2,0.1 , 1, initTactical);
+			buttons[1] = Button("Load Game",5 , 500,500 , 0.8,0.2,0.1 , 2, NULL);
+			buttons[2] = Button("Options",  5 , 500,450 , 0.8,0.2,0.1 , 3, NULL);
+			buttons[3] = Button("Quit",     5 , 500,400 , 0.8,0.2,0.1 , 4, cleanup);
 			break;
 	}
 }
