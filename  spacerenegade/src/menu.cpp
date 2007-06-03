@@ -120,7 +120,7 @@ Menu::Menu(int type) : type(type)
 			break;
 
 		case MISSION_BOARD: // (Gum)
-			NUM_MISSIONS = 2; // replace with something more dynamic
+			NUM_MISSIONS = 2; // FIXME replace with something more dynamic
 			height = 50;
 			numButtons = 2 + NUM_MISSIONS;
 
@@ -141,10 +141,10 @@ Menu::Menu(int type) : type(type)
 		case GAME_OVER:
 			numButtons = 4;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("New Game", 5 , 500,550 , 0.8,0.2,0.1 , 1, initTactical);
-			buttons[1] = Button("Load Game",5 , 500,500 , 0.8,0.2,0.1 , 2, NULL);
-			buttons[2] = Button("Options",  5 , 500,450 , 0.8,0.2,0.1 , 3, NULL);
-			buttons[3] = Button("Quit",     5 , 500,400 , 0.8,0.2,0.1 , 4, cleanup);
+			buttons[0] = Button("New Game", 5 , 500,450 , 0.8,0.2,0.1 , 1, initTactical);
+			buttons[1] = Button("Load Game",5 , 500,400 , 0.8,0.2,0.1 , 2, NULL);
+			buttons[2] = Button("Options",  5 , 500,350 , 0.8,0.2,0.1 , 3, NULL);
+			buttons[3] = Button("Quit",     5 , 500,300 , 0.8,0.2,0.1 , 4, cleanup);
 			break;
 	}
 }
