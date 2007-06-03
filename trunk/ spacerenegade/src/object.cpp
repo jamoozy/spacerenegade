@@ -77,36 +77,26 @@ bool Object::collidesWith(Object *o)
 
 void Object::drawOnMiniMap(double r)
 {
-	GLdouble m[16];
-	
 	Vec3 lclPos = position - playerShip->getPos();
-	Vec3 cameraDir = Camera::getCamera()->getDir();
-	cameraDir.normalize();
-	//double rho = lclPos.norm();
-	//double pantaloons = atan(playerShip->getDir().y()/playerShip->getDir().x());
-	GLdouble theta = 0;
-	GLdouble phi = 0;
-	if(cameraDir.x() != 0)
-	//if(playerShip->getDir().x() != 0)
-		theta = 180 * atan(cameraDir.y()/cameraDir.x()) / M_PI;
-	if(cameraDir.norm() != 0)
-		phi = 180 * acos(cameraDir.z()/cameraDir.norm()) / M_PI;
 
-	// Use OpenGL to compute a Matrix and get it.
-	glPushMatrix();
-	glLoadIdentity();
-	glRotated(phi,0,0,1);
-	glRotated(theta,0,1,0);
-	glGetDoublev(GL_MODELVIEW_MATRIX, m);
-	Vec3 miniMapPos = m*lclPos;
-	glPopMatrix();
+	Vec3 normal = Camera::getCamera()->getDir();
+	Vec3 up = Camera::getCamera()->getUp();
+	Vec3 right = normal ^ up;
+	up = right ^ normal;
+	normal.normalize();
+	up.normalize();
+	right.normalize();
 
-	double zBright = (miniMapPos.z() + r) / (2*r);
-	double xShift = -85*((miniMapPos.x()) / r);
-	double yShift = 85*((miniMapPos.y()) / r);
+	// Find the projection of the object's position on the plane
+	// perpendicular to the player that intersects the player.
+	double z = -(lclPos * normal);
+	double y = lclPos * up;
+	double x = lclPos * right;
 
-	glColor3d(red*zBright, green*zBright, blue*zBright);
-	glCircle(miniMapX + xShift, miniMapY + yShift, 2, 5);
+	z /= r;
+
+	glColor3d(red * z, green * z, blue * z);
+	glCircle(miniMapX + x, miniMapY + y, 2, 5);
 	glPopMatrix();
 }
 
