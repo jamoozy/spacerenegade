@@ -11,55 +11,54 @@ using std::string;
 class Vec3
 {
 private:
-	double _x;
-	double _y;
-	double _z;
+	double vec[3];
 
 public:
 
 	// The constructor initializes the vector to the origin.
-	Vec3() : _x(0), _y(0), _z(0) {}
+	Vec3() { vec[0] = vec[1] = vec[2] = 0; };
 	// This constructor initializes the vector to another vector.
-	Vec3(const Vec3& a) : _x(a._x), _y(a._y), _z(a._z) {}
+	Vec3(const Vec3& a) { for (int i = 0; i < 3; i++) vec[i] = a.vec[i]; };
 	// This constructor initializes the vector to the given point.
-	Vec3(double a, double b, double c) : _x(a), _y(b), _z(c) {}
+	Vec3(double a, double b, double c) { vec[0] = a; vec[1] = b; vec[2] = c; };
 
 	// Coordinates of this object.
-	double x() const { return _x; };
-	double y() const { return _y; };
-	double z() const { return _z; };
+	double x() const { return vec[0]; };
+	double y() const { return vec[1]; };
+	double z() const { return vec[2]; };
+	const double *array() const { return vec; };
 
 	double norm() const  // The length of the vector
-	{ return sqrt(_x * _x + _y * _y + _z * _z); }
+	{ return sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]); }
 	void normalize();  // Maintain direction but make length 1
 
 	string str();  // String representation: [x, y, z]
 		
 	// Addition and Subtraction.
 	Vec3 operator+(const Vec3& a) const  // element-wise sum
-	{ return Vec3(a._x + _x, a._y + _y, a._z + _z); }
+	{ return Vec3(a.vec[0] + vec[0], a.vec[1] + vec[1], a.vec[2] + vec[2]); }
 	Vec3 operator-(const Vec3& a) const  // element-wise difference
-	{ return Vec3(_x - a._x, _y - a._y, _z - a._z); };
+	{ return Vec3(vec[0] - a.vec[0], vec[1] - a.vec[1], vec[2] - a.vec[2]); };
 	Vec3 operator+=(const Vec3& a); // element-wise sum
 	Vec3 operator-=(const Vec3& a); // element-wise difference
 
 	// Vector Multiplications.
 	const double operator*(const Vec3& a) const  // dot product
-	{ return _x * a._x + _y * a._y + _z * a._z; };
+	{ return vec[0] * a.vec[0] + vec[1] * a.vec[1] + vec[2] * a.vec[2]; };
 	Vec3 operator^(const Vec3& a) const  // cross product
-	{ return Vec3(_y * a._z - _z * a._y, _z * a._x - _x * a._z, _x * a._y - _y * a._x); };
+	{ return Vec3(vec[1] * a.vec[2] - vec[2] * a.vec[1], vec[2] * a.vec[0] - vec[0] * a.vec[2], vec[0] * a.vec[1] - vec[1] * a.vec[0]); };
 
 	// Scalar products and dividends.
 	Vec3 operator*(double a) const  // scalar product
-	{ return Vec3(_x * a, _y * a, _z * a); };
+	{ return Vec3(vec[0] * a, vec[1] * a, vec[2] * a); };
 	Vec3 operator/(double a) const // scalar dividend
-	{ return Vec3(_x / a, _y / a, _z / a); };
+	{ return Vec3(vec[0] / a, vec[1] / a, vec[2] / a); };
 	Vec3 operator*=(double a); // scalar product
 	Vec3 operator/=(double a); // scalar dividend
 
 	// Other.
 	Vec3 operator-() const  // Unary negation.
-	{ return Vec3(-_x, -_y, -_z); };
+	{ return Vec3(-vec[0], -vec[1], -vec[2]); };
 	Vec3& operator=(const Vec3& a);  // Assignment.
 };
 
@@ -73,6 +72,12 @@ public:
 	Matrix() { for (int i = 0; i < 16; i++) matrix[i] = 0; };
 	// Sets the matrix to the passed matrix.
 	Matrix(GLdouble m[16]) { for (int i = 0; i < 16; i++) matrix[i] = m[i]; };
+	// Sets the matrix to the passed values.
+//	Matrix(GLdouble a0, GLdouble a1, GLdouble a2, GLdouble a3,
+//		   GLdouble a4, GLdouble a5, GLdouble a6, GLdouble a7,
+//		   GLdouble a8, GLdouble a9, GLdouble a10, GLdouble a11,
+//		   GLdouble a12, GLdouble a13, GLdouble a14, GLdouble a15)
+//	{ for (int i = 0; i < 16; i++) matrix[i] = m[i]; };
 
 	// Access elements.
 	GLdouble operator[](int i) const // Access elements like an array.
