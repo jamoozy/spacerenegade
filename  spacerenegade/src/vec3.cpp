@@ -9,13 +9,13 @@
 // Make this vector's length 1.
 void Vec3::normalize()
 {
-	double norm = sqrt(_x * _x + _y * _y + _z * _z);
+	double norm = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
 
 	if (norm == 0) return;
 
-	_x /= norm;
-	_y /= norm;
-	_z /= norm;
+	vec[0] /= norm;
+	vec[1] /= norm;
+	vec[2] /= norm;
 }
 
 // Returns a string representation of this vector.
@@ -23,16 +23,16 @@ string Vec3::str()
 {
 	std::ostringstream rtn;
 	rtn.precision(5);
-	rtn << '[' << _x << ", " << _y << ", " << _z << ']';
+	rtn << '[' << vec[0] << ", " << vec[1] << ", " << vec[2] << ']';
 	return rtn.str();
 }
 
 // Add two vectors.
 Vec3 Vec3::operator+=(const Vec3& a)
 {
-	this->_x += a._x;
-	this->_y += a._y;
-	this->_z += a._z;
+	this->vec[0] += a.vec[0];
+	this->vec[1] += a.vec[1];
+	this->vec[2] += a.vec[2];
 
 	return *this;
 }
@@ -40,9 +40,9 @@ Vec3 Vec3::operator+=(const Vec3& a)
 // Subtract two vectors.
 Vec3 Vec3::operator-=(const Vec3& a)
 {
-	this->_x -= a._x;
-	this->_y -= a._y;
-	this->_z -= a._z;
+	this->vec[0] -= a.vec[0];
+	this->vec[1] -= a.vec[1];
+	this->vec[2] -= a.vec[2];
 
 	return *this;
 }
@@ -58,9 +58,9 @@ const Vec3 operator*(const GLdouble *m, const Vec3& v)
 // Multiply a vector by a scalar and return it.
 Vec3 Vec3::operator*=(const double a)
 {
-	this->_x *= a;
-	this->_y *= a;
-	this->_z *= a;
+	this->vec[0] *= a;
+	this->vec[1] *= a;
+	this->vec[2] *= a;
 
 	return *this;
 }
@@ -68,9 +68,9 @@ Vec3 Vec3::operator*=(const double a)
 // Multiply a vector by a scalar and return it.
 Vec3 Vec3::operator/=(const double a)
 {
-	this->_x /= a;
-	this->_y /= a;
-	this->_z /= a;
+	this->vec[0] /= a;
+	this->vec[1] /= a;
+	this->vec[2] /= a;
 
 	return *this;
 }
@@ -87,9 +87,9 @@ Vec3& Vec3::operator=(const Vec3& a)
 	if (this == &a)
 		return *this;
 
-	_x = a._x;
-	_y = a._y;
-	_z = a._z;
+	vec[0] = a.vec[0];
+	vec[1] = a.vec[1];
+	vec[2] = a.vec[2];
 
 	return *this;
 }
