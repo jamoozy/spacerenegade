@@ -21,12 +21,11 @@ protected:
 	double radius;   // Radius of the bounding sphere.
 	Vec3 position;
 	Vec3 velocity;
-	int damage;
+	double damage;
 	Model_3DS model;
 	bool modelLoaded;
 
 public:
-
 	Object(char *modelName);
 	Object(char *modelName,const Vec3& pos, const Vec3& v);
 	Object(char *modelName,double red, double green, double blue, double px, double py, double pz, double vx, double vy, double vz);
@@ -46,7 +45,7 @@ public:
 	Leaf *getResidence() { return leaf; };
 	void setResidence(Leaf *l) { leaf = l; };
 
-	void hurt(int d) { damage += d; };
+	virtual void hurt(double d) { damage += d; };
 	void push(Vec3 direction) { velocity += direction; };
 
 	bool collidesWith(Object *o);

@@ -6,6 +6,7 @@
 #include "object.h"
 #include "vec3.h"
 #include "weapon.h"
+#include "hull.h"
 
 using std::string;
 
@@ -22,9 +23,11 @@ protected:
 	Matrix lcs;  // Local Coordinate System.
 
 	Weapon *weapon; // What this ship shoots with.
+	Hull *hull;
+	Shield *shield;
 	double fuel;   // Amount of fuel left.
 
-	Ship(char *modelName, Weapon *weapon, double fuel);
+	Ship(char *modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel);
 
 	GLdouble pitchF[16];
 	GLdouble pitchB[16];
@@ -34,7 +37,7 @@ protected:
 	GLdouble rollR[16];
 
 public:
-	virtual ~Ship() { delete weapon; };
+	virtual ~Ship() { delete weapon; delete hull; delete shield; };
 
 	// Rate functions.
 	virtual double roa() const { return 0.005; }; // Rate of Acceleration
@@ -49,28 +52,30 @@ public:
 	Vec3 getLeft() const { return Vec3(lcs[0],lcs[1],lcs[2]); };
 
 	virtual void draw();
+	virtual void hurt(double d);
 
 	// Movement.
 	virtual void accelerate() { velocity += getDir() * roa(); };
 	virtual void decelerate() { velocity -= getDir() * rod(); };
 	virtual void stabilize();
-	virtual void pitchBack();
-	virtual void pitchForward();
-	virtual void yawLeft();
-	virtual void yawRight();
-	virtual void rollLeft();
-	virtual void rollRight();
+	virtual void pitchBack() { lcs *= pitchB; };
+	virtual void pitchForward() { lcs *= pitchF; };
+	virtual void yawLeft()   { lcs *= yawL; };
+	virtual void yawRight()  { lcs *= yawR; };
+	virtual void rollLeft()  { lcs *= rollL; };
+	virtual void rollRight() { lcs *= rollR; };
 
 	// Status stuff.
-	virtual double maxHlth() const { return 1000; };
+	virtual double maxHlth() const { return hull->maxHlth(); };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return weapon->maxAmmo(); };
-	virtual double getHlth() const { return maxHlth() - damage; };
+	virtual double getHlth() const { return hull->getHlth(); };
 	virtual double getFuel() const { return fuel; };
 	virtual double getAmmo() const { return weapon->getAmmo(); };
-	virtual double hlthPcnt() const { return 1.0 - damage / maxHlth(); };
+	virtual double hlthPcnt() const { return hull->hlthPcnt(); };
 	virtual double fuelPcnt() const { return fuel / maxFuel(); };
 	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
+	virtual double shldPcnt() const { return shield->hlthPcnt(); };
 };
 
 
@@ -88,7 +93,7 @@ class PShip : public Ship
 	bool skymapLoaded;
 
 public:
-	PShip(Weapon *weapon);
+	PShip(Weapon *weapon, Hull *hull, Shield *shield);
 	virtual ~PShip() {};
 	virtual string getType() const { return "PShip"; };
 	virtual void hits(Object *o);
@@ -115,7 +120,6 @@ public:
 
 	// Status of the ship. Later these will be affected by the
 	// capacity of the ship and such.
-	virtual double maxHlth() const { return 1000; };
 	virtual double maxFuel() const { return 10000; };
 };
 

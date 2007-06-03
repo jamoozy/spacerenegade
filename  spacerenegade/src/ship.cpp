@@ -26,8 +26,8 @@ GLvoid glDrawCube();
 // ----------------------- General-Purpose Ship ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Ship::Ship(char* modelName, Weapon *weapon, double fuel) :
-	Object(modelName), weapon(weapon), fuel(fuel)
+Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
+	Object(modelName), weapon(weapon), hull(hull), shield(shield), fuel(fuel)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -84,12 +84,20 @@ void Ship::draw()
 	// direction rotation
 	glMultMatrixd(lcs.array());
 
+	// Show the neat shield-bubble.
+	shield->draw();
+
 	// Set color to purple.
 	glColor3f(.7,0,.8);
 	glutWireCone(2,4,5,1);
 
 	glPopMatrix();
 
+}
+
+void Ship::hurt(double amt)
+{
+	hull->hurt(shield->hurt(amt));
 }
 
 void Ship::stabilize()
@@ -100,35 +108,6 @@ void Ship::stabilize()
 		velocity *= ros();
 }
 
-void Ship::pitchBack()
-{
-	lcs *= pitchB;
-}
-
-void Ship::pitchForward()
-{
-	lcs *= pitchF;
-}
-
-void Ship::yawLeft()
-{
-	lcs *= yawL;
-}
-
-void Ship::yawRight()
-{
-	lcs *= yawR;
-}
-
-void Ship::rollLeft()
-{
-	lcs *= rollL;
-}
-
-void Ship::rollRight()
-{
-	lcs *= rollR;
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +115,8 @@ void Ship::rollRight()
 ////////////////////////////////////////////////////////////////////////////////
 
 // Makes a new, boring ship that just sits there.
-PShip::PShip(Weapon *weapon) : Ship("./art/personalship.3DS", weapon, maxFuel())
+PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
+	Ship("./art/personalship.3DS", weapon, hull, shield, maxFuel())
 {
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
@@ -164,12 +144,8 @@ void PShip::draw()
 		glPopMatrix();
 	}
 
-	glColor3f(1,0,0);
-	Vec3 temp = getDir() * 10;
-	glBegin(GL_LINES);
-	glVertex3d(0,0,0);
-	glVertex3d(temp.x(),temp.y(),temp.z());
-	glEnd();
+	// Draw that neat shield-bubble around the ship.
+	shield->draw();
 
 	// direction rotation
 	glMultMatrixd(lcs.array());
@@ -226,68 +202,91 @@ void PShip::hits(Object *o)
 // Adds to the ship's velocity.
 void PShip::accelerate()
 {
-	--fuel;
-	Ship::accelerate();
+	if (fuel - 1 >= 0)
+	{
+		--fuel;
+		Ship::accelerate();
+	}
 }
 
 // Subtracts from the ship's velocity.
 void PShip::decelerate()
 {
-	--fuel;
-	Ship::decelerate();
+	if (fuel - 1 >= 0)
+	{
+		--fuel;
+		Ship::decelerate();
+	}
 }
 
 // Brings the velocity down to 0
 void PShip::stabilize()
 {
-	fuel -= 5;
-	Ship::stabilize();
+	if (fuel - 5 >= 0)
+	{
+		fuel -= 5;
+		Ship::stabilize();
+	}
 }
 
 // Tilt the nose up.
 void PShip::pitchBack()
 {
-	fuel -= 0.2;
-	Ship::pitchBack();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::pitchBack();
+	}
 }
 
 // Tilt the nose down.
 void PShip::pitchForward()
 {
-	fuel -= 0.2;
-	Ship::pitchForward();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::pitchForward();
+	}
 }
 
 // Turn left about the Y(up)-axis
 void PShip::yawLeft()
 {
-	fuel -= 0.2;
-	Ship::yawLeft();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::yawLeft();
+	}
 }
 
 // Turn right about the Y(up)-axis
 void PShip::yawRight()
 {
-	fuel -= 0.2;
-	Ship::yawRight();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::yawRight();
+	}
 }
 
-//
+// Roll to the left - changes orientation.
 void PShip::rollLeft()
 {
-//	fuel -= 0.2;
-//	radpyr += Vec3(0, 0, rot);
-//	recompdir();
-	Ship::rollLeft();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::rollLeft();
+	}
 }
 
-//
+// Roll to the right - changes orientation.
 void PShip::rollRight()
 {
-	Ship::rollRight();
-//	fuel -= 0.2;
-//	radpyr -= Vec3(0, 0, rot);
-//	recompdir();
+	if (fuel - 0.2 >= 0)
+	{
+		fuel -= 0.2;
+		Ship::rollRight();
+	}
 }
 
 // Draws the sky cube for the environment
