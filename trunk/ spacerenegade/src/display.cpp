@@ -276,6 +276,8 @@ void drawMeters()
 	glRecti(910, 575, 945, 575 + (int)(170 * playerShip->fuelPcnt()));
 	glColor3d(.8,.3,.3);
 	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->ammoPcnt()));
+	glColor3d(.7,.7,.1);
+	glRecti(800, 575, 835, 575 + (int)(170 * playerShip->shldPcnt()));
 
 	// Draw the tick marks
 	glColor3d(.9, .9, .9);
@@ -298,12 +300,23 @@ void drawMeters()
 	drawText(964, 550, "Hlth" , Color(1,1,1));
 	drawText(909, 550, "Fuel" , Color(1,1,1));
 	drawText(854, 550, "Ammo" , Color(1,1,1));
+	drawText(799, 550, "Shld" , Color(1,1,1));
 
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
-	stringstream stream(stringstream::in | stringstream::out);
-	stream << "ammo used: " << playerShip->getAmmo();
-	drawText(0,0, stream.str(), Color(1,1,1));
+	stringstream hstream(stringstream::in | stringstream::out);
+	hstream << "hlth left: " << playerShip->getHlth();
+	stringstream fstream(stringstream::in | stringstream::out);
+	fstream << "fuel left: " << playerShip->fuelPcnt();
+	stringstream astream(stringstream::in | stringstream::out);
+	astream << "ammo left: " << playerShip->getAmmo();
+	stringstream sstream(stringstream::in | stringstream::out);
+	sstream << "shld left: " << playerShip->shldPcnt();
+
+	drawText(0,45, hstream.str(), Color(1,1,1));
+	drawText(0,30, fstream.str(), Color(1,1,1));
+	drawText(0,15, astream.str(), Color(1,1,1));
+	drawText(0, 0, sstream.str(), Color(1,1,1));
 }
 
 void drawMiniMap()
@@ -429,7 +442,7 @@ void initTactical()
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
-	playerShip = new PShip(new Laser());
+	playerShip = new PShip(new Laser(), new BasicHull(), new BasicShield());
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 
