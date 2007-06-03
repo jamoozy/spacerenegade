@@ -151,6 +151,21 @@ void Camera::setFocus(const Vec3 &p)
 		theta += TWO_PI;
 }
 
+Vec3 Camera::getDir() const
+{
+	Vec3 temp = lookat - pos;
+	temp.normalize();
+	return temp;
+}
+
+Vec3 Camera::getUp() const
+{
+	if (_mode == CAMERA_MODE_LOOK)
+		return up;
+	else
+		return playerShip->getUp();
+}
+
 // Start looking at the point and remain "dist" away from it.
 void Camera::setFocus(const Vec3 &p, double dist)
 {

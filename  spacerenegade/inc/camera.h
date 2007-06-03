@@ -44,7 +44,8 @@ public:
 	void setFocus(const Vec3 &p);
 	void setFocus(const Vec3 &p, double dist);
 
-	Vec3 getDir() { return lookat - pos; };
+	Vec3 getDir() const;
+	Vec3 getUp() const;
 };
 
 void adjustCamera();
