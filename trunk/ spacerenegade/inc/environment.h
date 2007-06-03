@@ -13,13 +13,13 @@
 // --------- node / leaf / branch structures.
 struct Node
 {
-	Node();
-	virtual ~Node();
-	virtual void initLeaves();
+	Node() {};
+	virtual ~Node() {};
+	virtual void initLeaves() {};
 
-	virtual void update();
-	virtual bool isResident(Object* o) const;
-	virtual void add(Object* o);
+	virtual void update() {};
+	virtual bool isResident(Object* o) const { return false; };
+	virtual void add(Object* o) {};
 };
 
 struct Branch : public Node

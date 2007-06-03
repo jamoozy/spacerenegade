@@ -8,30 +8,6 @@ extern OctTree *env;
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// ------------------------------- Node Object ------------------------------ //
-////////////////////////////////////////////////////////////////////////////////
-
-// This really does nothing, actually ...
-Node::Node() {}
-
-// This, too, does nothing.
-void Node::initLeaves() {}
-
-// This does something very important ...
-Node::~Node() {}
-
-// Nothing to update.
-void Node::update() {}
-
-// This node can't be used, so it can contain nothing.
-bool Node::isResident(Object *o) const { return false; }
-
-// Does nothing...  Should be over-written.
-void Node::add(Object *o) {}
-
-
-
-////////////////////////////////////////////////////////////////////////////////
 // ------------------------------ Branch Object ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -378,9 +354,6 @@ bool Leaf::isResident(Object *o) const
 // Update all of the members of this leaf node.
 void Leaf::update()
 {
-//	using std::cout;
-//	using std::endl;
-
 //	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
