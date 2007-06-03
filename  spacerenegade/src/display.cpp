@@ -429,7 +429,7 @@ void initTactical()
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
-	playerShip = new PShip(new Blaster());
+	playerShip = new PShip(new Laser());
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 

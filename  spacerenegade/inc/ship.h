@@ -46,6 +46,7 @@ public:
 
 	Vec3 getDir() const { return Vec3(lcs[8],lcs[9],lcs[10]); };
 	Vec3 getUp() const { return Vec3(lcs[4],lcs[5],lcs[6]); };
+	Vec3 getLeft() const { return Vec3(lcs[0],lcs[1],lcs[2]); };
 
 	virtual void draw();
 
