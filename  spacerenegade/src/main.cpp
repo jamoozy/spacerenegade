@@ -21,12 +21,6 @@
 using std::cout;
 using std::endl;
 
-#define DEBUG_MODE 1
-#define PRINT_FPS 0
-#define LIMIT_FPS 1
-
-static int FPS;
-static int MSPF;
 
 #if (DEBUG_MODE)
 	int window;
@@ -37,9 +31,13 @@ OctTree *env;      // Jam: Collision detection of objects and the world
                    //      (environment) in general.
 Menu *menu;        // Gum: The current menu of buttons
 
+#if (PRINT_FPS || LIMIT_FPS)
+	int FPS;
+	int MSPF;
+#endif
 #if (PRINT_FPS)
-time_t last_time;
-int frames_this_second;
+	time_t last_time;
+	int frames_this_second;
 #endif
 
 
@@ -59,20 +57,24 @@ void cleanup()
 	exit(0);
 }
 
-// This is used to control the framerate.
-void doNextFrame(int value)
-{
-	glutPostRedisplay();
-	glutTimerFunc(MSPF, doNextFrame, 0);
-}
+#if (LIMIT_FPS)
+	// This is used to control the framerate.
+	void doNextFrame(int value)
+	{
+		glutPostRedisplay();
+		glutTimerFunc(MSPF, doNextFrame, 0);
+	}
+#endif
 
 // Main function
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 
-	FPS = 60;
-	MSPF = 17;
+	#if (PRINT_FPS || LIMIT_FPS)
+		FPS = 60;
+		MSPF = 17;
+	#endif
 
 	env = NULL;
 	playerShip = NULL;
@@ -116,6 +118,5 @@ int main(int argc, char **argv)
 	
 	glutMainLoop();
 	
-
 	return 0;
 }

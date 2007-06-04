@@ -80,6 +80,7 @@ void LaserBeam::draw()
 	glPushMatrix();
 
 	glTranslated(position.x(), position.y(), position.z());
+	glDisable(GL_TEXTURE_2D); // Gives full color, for some reason.
 	glColor3d(0.6,1.0,0.6);
 
 	glBegin(GL_TRIANGLE_STRIP);

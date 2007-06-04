@@ -1,4 +1,8 @@
 
+#define DEBUG_MODE 1
+#define PRINT_FPS 0
+#define LIMIT_FPS 1
+
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
