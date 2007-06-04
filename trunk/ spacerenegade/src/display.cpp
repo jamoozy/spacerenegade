@@ -21,6 +21,15 @@ using std::stringstream;
 	#define M_PI 3.14159265358979
 #endif
 
+#if (DEBUG_MODE)
+	extern int window;
+#endif
+#if (PRINT_FPS)
+	extern int FPS;
+	extern int MSPF;
+	extern time_t last_time;
+	extern int frames_this_second;
+#endif
 extern PShip *playerShip; // Jam: The player's ship, duh.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
@@ -177,7 +186,10 @@ void displayStartScreen()
 
 void displayTacticalPaused()
 {
+	glDisable(GL_LIGHTING);
 	drawText(512,384, "PAUSED", Color(1,1,1));
+	glutSwapBuffers();
+	glEnable(GL_LIGHTING);
 }
 
 void displayTactical()
@@ -185,6 +197,7 @@ void displayTactical()
 	#if (DEBUG_MODE)
 		glutSetWindow(window);
 	#endif
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -199,7 +212,7 @@ void displayTactical()
 	#if (PRINT_FPS)
 		if (last_time != time(NULL))
 		{
-			std::cout << ctime(&last_time) << "fps: " << frames_this_second << std::endl;
+			cout << ctime(&last_time) << "fps: " << frames_this_second << endl;
 			last_time = time(NULL);
 			frames_this_second = 0;
 		}
@@ -247,6 +260,7 @@ void drawHUD()
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
+	glDisable(GL_TEXTURE_2D);  // Gives us full-range colors for some reason.
 
 	drawMeters();
 	drawMiniMap();
@@ -378,14 +392,14 @@ void initStartScreen()
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
 
-	// Turn off transparancies.
-	glBlendFunc(GL_ONE, GL_ZERO);
+	// Turn off lighting
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_TEXTURE_2D);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	glClearColor(0.0, 0.0, 0.0, 1.0);
 
 	// Set up OpenGL for picking.
 	glRenderMode(GL_SELECT);
@@ -406,12 +420,8 @@ void initTactical()
 
 	paused = false;
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
-	glClearIndex(0);
-	glClearDepth(1);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	drawText(512,350 , "Loading..." , Color(1,0,0));
 	glutSwapBuffers();
@@ -504,8 +514,10 @@ void initMissionBoard() //(Gum)
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
 
-	// Turn off transparancies.
-	glBlendFunc(GL_ONE, GL_ZERO);
+	// Restor colorability.
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_TEXTURE_2D);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -540,8 +552,10 @@ void initGameOver()
 	glLoadIdentity();
 	gluOrtho2D(0,screen_width , 0,screen_height);
 
-	// Turn off transparancies.
-	glBlendFunc(GL_ONE, GL_ZERO);
+	// Turn off lighting
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_TEXTURE_2D);
 
 	// Clear and reset everything.
 	glMatrixMode(GL_MODELVIEW);
