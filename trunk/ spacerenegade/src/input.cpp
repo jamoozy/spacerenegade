@@ -294,7 +294,7 @@ void tacticalSpecialKeys(int key, int x, int y)
 
 		case GLUT_KEY_F11:
 			cout << "Kill the player!" << endl;
-			playerShip->hurt(1000);
+			playerShip->hurt(999999);
 			break;
 
 		case GLUT_KEY_F12:
