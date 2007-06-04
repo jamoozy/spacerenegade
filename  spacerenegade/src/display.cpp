@@ -81,7 +81,7 @@ double rr(double max, double min)
 }
 
 // Draw some text somewhere.
-void drawText(GLint x, GLint y, string s, Color c)
+void drawText(GLint x, GLint y, string s, Color c, bool center)
 {
 	// Make the nice, easy-to-use (0,0) -> (w,h) screen coords.
 	glMatrixMode(GL_PROJECTION);
@@ -95,6 +95,11 @@ void drawText(GLint x, GLint y, string s, Color c)
 	glLoadIdentity();
 
 	glColor4d(c.r(), c.g(), c.b(), c.a());
+	if (center)
+	{
+		x -= s.length() * 4.5;
+		y += 7;
+	}
 	glRasterPos2i(x, y);
 	for(unsigned int i = 0, lines = 0; i < s.size(); i++)
 	{
@@ -187,7 +192,7 @@ void displayStartScreen()
 void displayTacticalPaused()
 {
 	glDisable(GL_LIGHTING);
-	drawText(512,384, "PAUSED", Color(1,1,1));
+	drawText(512,384, "PAUSED", Color(1,1,1), true);
 	glutSwapBuffers();
 	glEnable(GL_LIGHTING);
 }
@@ -311,10 +316,10 @@ void drawMeters()
 	glEnd();
 
 	// The labels of the meters
-	drawText(964, 550, "Hlth" , Color(1,1,1));
-	drawText(909, 550, "Fuel" , Color(1,1,1));
-	drawText(854, 550, "Ammo" , Color(1,1,1));
-	drawText(799, 550, "Shld" , Color(1,1,1));
+	drawText(964, 550, "Hlth" , Color(1,1,1), false);
+	drawText(909, 550, "Fuel" , Color(1,1,1), false);
+	drawText(854, 550, "Ammo" , Color(1,1,1), false);
+	drawText(799, 550, "Shld" , Color(1,1,1), false);
 
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
@@ -327,10 +332,10 @@ void drawMeters()
 	stringstream sstream(stringstream::in | stringstream::out);
 	sstream << "shld left: " << playerShip->shldPcnt();
 
-	drawText(0,45, hstream.str(), Color(1,1,1));
-	drawText(0,30, fstream.str(), Color(1,1,1));
-	drawText(0,15, astream.str(), Color(1,1,1));
-	drawText(0, 0, sstream.str(), Color(1,1,1));
+	drawText(0,45, hstream.str(), Color(1,1,1), false);
+	drawText(0,30, fstream.str(), Color(1,1,1), false);
+	drawText(0,15, astream.str(), Color(1,1,1), false);
+	drawText(0, 0, sstream.str(), Color(1,1,1), false);
 }
 
 void drawMiniMap()
@@ -369,7 +374,7 @@ void displayGameOver()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawText(500,500 , "GAME OVER", Color(1,1,1));
+	drawText(500,500 , "GAME OVER", Color(1,1,1), false);
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
@@ -423,7 +428,7 @@ void initTactical()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawText(512,350 , "Loading..." , Color(1,0,0));
+	drawText(512,384 , "Loading..." , Color(1,0,0), true);
 	glutSwapBuffers();
 
 	// Set up the octtree, making it ready for objects to populate it.

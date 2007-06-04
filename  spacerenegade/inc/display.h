@@ -30,7 +30,7 @@ public:
 
 // Util-type functions.
 double rr(double max, double min);
-void drawText(GLint x, GLint y, std::string s, Color c);
+void drawText(GLint x, GLint y, std::string s, Color c, bool color);
 void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side);
 void resize(int w, int h);
 
