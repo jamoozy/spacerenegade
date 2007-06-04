@@ -194,8 +194,10 @@ void PShip::draw()
 
 void PShip::hits(Object *o)
 {
-	// This is a constant right now.  Later it will be a function of things,
-	// like hull strenth, shields, and stuff.
+	Object::hits(o);
+
+	// This is a constant right now.  Later it will be a function
+	// different of things like hull strength and shields.
 	hurt(200);
 }
 

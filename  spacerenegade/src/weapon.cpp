@@ -89,13 +89,9 @@ void LaserBeam::draw()
 	glVertex3dv(A.array());
 	glVertex3dv(D.array());
 	glVertex3dv(B.array());
-	glEnd();
-	glBegin(GL_TRIANGLE_STRIP);
-	glVertex3dv(B.array());
-	glVertex3dv(C.array());
 	glVertex3dv(E.array());
+	glVertex3dv(C.array());
 	glVertex3dv(D.array());
-	glVertex3dv(B.array());
 	glEnd();
 
 	glPopMatrix();

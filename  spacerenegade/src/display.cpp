@@ -445,14 +445,14 @@ void initTactical()
 	{
 		Vec3 pos(rr(125,-125), rr(125,-125), rr(125,-125));//-20,0,250-(20*i));//
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));//0,0,-0.1);//
-		next = new Asteroid(pos, vel);
+		next = new Asteroid(5, pos, vel);
 		env->add(next);
 	}
 
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
 	// the environment should have taken care of it already.
-	playerShip = new PShip(new Laser(), new BasicHull(), new BasicShield());
+	playerShip = new PShip(new Blaster(), new BasicHull(), new BasicShield());
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
 
