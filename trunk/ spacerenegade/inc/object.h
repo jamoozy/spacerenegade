@@ -48,7 +48,7 @@ public:
 	virtual void hurt(double d) { damage += d; };
 	void push(Vec3 direction) { velocity += direction; };
 
-	bool collidesWith(Object *o);
+	virtual bool collidesWith(Object *o);
 	void drawOnMiniMap(double r);
 	virtual void hits(Object *o);
 

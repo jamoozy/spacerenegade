@@ -97,11 +97,24 @@ void Object::drawOnMiniMap(double r)
 
 	glColor3d(red * zBrightness, green * zBrightness, blue * zBrightness);
 	glCircle(miniMapX + x, miniMapY + y, 2, 5);
-	glPopMatrix();
 }
 
 void Object::hits(Object *o)
 {
-	// TODO: Put PM's collision code here.
+	// Find the unit vector between the 2 objects.
+	Vec3 diff = o->getPos() - position;
+	diff.normalize();
+
+	// Find the "speed" that this object hit the other by using
+	// the velocity vector and dot product.
+	double s = diff * velocity;
+
+	// This means this one is travelling away from the other.
+	if (s < 0) return;
+
+	// That should map directly to the force vector...
+	Vec3 force = s * diff;
+	velocity -= force;
+	o->push(force);
 }
 
