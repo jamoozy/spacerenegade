@@ -433,8 +433,8 @@ void initTactical()
 	Asteroid *next;
 	for (int i = 0; i < 100; i++)
 	{
-		Vec3 pos(rr(125,-125), rr(125,-125), rr(125,-125));
-		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));
+		Vec3 pos(rr(125,-125), rr(125,-125), rr(125,-125));//-20,0,250-(20*i));//
+		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));//0,0,-0.1);//
 		next = new Asteroid(pos, vel);
 		env->add(next);
 	}

@@ -93,9 +93,9 @@ void Object::drawOnMiniMap(double r)
 	double y = lclPos * up;
 	double x = lclPos * right;
 
-	z /= r;
+	double zBrightness = 1 - sqrt((x*x) + (y*y) + (z*z))/r;//1 - ((z + r) / (2 * r));
 
-	glColor3d(red * z, green * z, blue * z);
+	glColor3d(red * zBrightness, green * zBrightness, blue * zBrightness);
 	glCircle(miniMapX + x, miniMapY + y, 2, 5);
 	glPopMatrix();
 }
