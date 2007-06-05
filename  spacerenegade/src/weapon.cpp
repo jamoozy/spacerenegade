@@ -125,3 +125,56 @@ void Laser::fire(Ship *shooter)
 	env->add(b);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------------- Tractor Beams ---------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+void BasicTractorBeam::draw(Ship *ship)
+{
+	if (on)
+	{
+		Vec3 a = ship->getLeft() - 2.4142 * ship->getUp();
+		Vec3 b = 2.4142 * ship->getLeft() - ship->getUp();
+		Vec3 c = 2.4142 * ship->getLeft() + ship->getUp();
+		Vec3 d = ship->getLeft() + 2.4142 * ship->getUp();
+		Vec3 e = -a;
+		Vec3 f = -b;
+		Vec3 g = -c;
+		Vec3 h = -d;
+
+		Vec3 A = range() * a / 3 + range() * ship->getDir();
+		Vec3 B = range() * b / 3 + range() * ship->getDir();
+		Vec3 C = range() * c / 3 + range() * ship->getDir();
+		Vec3 D = range() * d / 3 + range() * ship->getDir();
+		Vec3 E = range() * e / 3 + range() * ship->getDir();
+		Vec3 F = range() * f / 3 + range() * ship->getDir();
+		Vec3 G = range() * g / 3 + range() * ship->getDir();
+		Vec3 H = range() * h / 3 + range() * ship->getDir();
+
+		glDisable(GL_TEXTURE_2D);
+		glEnable(GL_BLEND);
+		glColor4d(1,0,0,0.5);
+		glBegin(GL_QUAD_STRIP);
+		glVertex3dv(a.array());
+		glVertex3dv(A.array());
+		glVertex3dv(b.array());
+		glVertex3dv(B.array());
+		glVertex3dv(c.array());
+		glVertex3dv(C.array());
+		glVertex3dv(d.array());
+		glVertex3dv(D.array());
+		glVertex3dv(e.array());
+		glVertex3dv(E.array());
+		glVertex3dv(f.array());
+		glVertex3dv(F.array());
+		glVertex3dv(g.array());
+		glVertex3dv(G.array());
+		glVertex3dv(h.array());
+		glVertex3dv(H.array());
+		glVertex3dv(a.array());
+		glVertex3dv(A.array());
+		glEnd();
+		glDisable(GL_BLEND);
+	}
+}
+

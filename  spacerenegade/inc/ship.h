@@ -25,6 +25,7 @@ protected:
 	Weapon *weapon; // What this ship shoots with.
 	Hull *hull;
 	Shield *shield;
+	TractorBeam *tractorBeam;
 	double fuel;   // Amount of fuel left.
 
 	Ship(char *modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel);
@@ -37,7 +38,7 @@ protected:
 	GLdouble rollR[16];
 
 public:
-	virtual ~Ship() { delete weapon; delete hull; delete shield; };
+	virtual ~Ship() { delete weapon; delete hull; delete shield; delete tractorBeam; };
 
 	// Rate functions.
 	virtual double roa() const { return 0.005; }; // Rate of Acceleration
@@ -53,6 +54,9 @@ public:
 
 	virtual void draw();
 	virtual void hurt(double d);
+
+	// Special?
+	void toggleTractorBeam() { tractorBeam->toggle(); };
 
 	// Movement.
 	virtual void accelerate() { velocity += getDir() * roa(); };

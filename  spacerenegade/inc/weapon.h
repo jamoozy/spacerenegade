@@ -157,5 +157,39 @@ public:
 	virtual double maxAmmo() const { return 100; };  // Most ammo this can hold.
 };
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------------- Tractor Beams ---------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+class TractorBeam
+{
+protected:
+	bool on;
+	TractorBeam() : on(false) {};
+
+public:
+	virtual ~TractorBeam() {};
+	virtual void draw(Ship *ship) = 0;
+
+	virtual void activate() { on = true; };
+	virtual void deactivate() { on = false; };
+	virtual void toggle() { on = !on; };
+	virtual bool activated() { return on; };
+
+	virtual double range() { return 10; };
+	virtual double strength() { return 10; };
+};
+
+class BasicTractorBeam : public TractorBeam
+{
+public:
+	BasicTractorBeam() : TractorBeam() {};
+	virtual ~BasicTractorBeam() {};
+
+	virtual void draw(Ship *ship);
+};
+
 #endif
 

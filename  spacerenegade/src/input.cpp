@@ -270,6 +270,11 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 		case 'V':
 			Camera::getCamera()->toggleDefault();
 			break;
+
+		case 'z':
+		case 'Z':
+			playerShip->toggleTractorBeam();
+			break;
 	}
 }
 
