@@ -102,6 +102,7 @@ public:
 	virtual string getType() const { return "PShip"; };
 	virtual void hits(Object *o);
 	virtual void draw();
+	void drawReticle();
 	virtual void fire() { weapon->fire(this); };
 
 	// Ship methods that need some restrictions put on them.

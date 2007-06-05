@@ -154,12 +154,8 @@ void PShip::draw()
 
 	if (modelLoaded)
 	{
+		drawReticle();
 		glColor3d(1,1,1);
-		// Drawing function
-		// You can also build a texture with a single color and use it
-		//GLTexture tex3;
-		//tex3.BuildColorTexture(255, 0, 0);  // Builds a solid red texture
-		//tex3.Use();  // Binds the targa for use
 		model.Draw();  // Renders the model to the screen
 
 		//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
@@ -192,6 +188,37 @@ void PShip::draw()
 	}
 
 	glPopMatrix();
+}
+
+void PShip::drawReticle()
+{
+	glDisable(GL_TEXTURE_2D);
+	glColor3f(0,1,0);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(-2,-2,50);
+	glVertex3f( 2,-2,50);
+	glVertex3f( 2, 2,50);
+	glVertex3f(-2, 2,50);
+	glVertex3f(-2,-2,50);
+	glEnd();
+//	glBegin(GL_LINE_STRIP);
+//	glVertex3f(-2,-2,40);
+//	glVertex3f( 2,-2,40);
+//	glVertex3f( 2, 2,40);
+//	glVertex3f(-2, 2,40);
+//	glVertex3f(-2,-2,40);
+//	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex3f( 0, 3,50);
+	glVertex3f( 0,-3,50);
+	glVertex3f(-3, 0,50);
+	glVertex3f( 3, 0,50);
+//	glVertex3f( 0, 3,40);
+//	glVertex3f( 0,-3,40);
+//	glVertex3f(-3, 0,40);
+//	glVertex3f( 3, 0,40);
+	glEnd();
 }
 
 void PShip::hits(Object *o)
