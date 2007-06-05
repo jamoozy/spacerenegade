@@ -91,8 +91,8 @@ void Object::drawOnMiniMap(double r)
 	// Find the projection of the object's position on the plane
 	// perpendicular to the player that intersects the player.
 	double z = -(lclPos * normal);
-	double y = lclPos * up;
-	double x = lclPos * right;
+	double y = (85/r) * (lclPos * up);
+	double x = (85/r) * (lclPos * right);
 
 	double zBrightness = 1 - sqrt((x*x) + (y*y) + (z*z))/r;//1 - ((z + r) / (2 * r));
 
