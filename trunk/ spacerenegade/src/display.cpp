@@ -10,6 +10,7 @@
 #include "input.h"
 #include "camera.h"
 #include "asteroid.h"
+#include "planet.h"
 #include "menu.h"
 
 using std::cout;
@@ -166,6 +167,9 @@ void display()
 				displayTacticalPaused();
 			else
 				displayTactical();
+			break;
+		case PLANET:
+			displayPlanet();
 			break;
 		case MISSION_BOARD:
 			displayMissionBoard();
@@ -369,6 +373,17 @@ void displayMissionBoard()
 	glutSwapBuffers();
 }
 
+void displayPlanet()
+{
+	// Clear the screen and the depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	menu->draw(GL_RENDER);
+
+	glutSwapBuffers();
+
+}
+
 void displayGameOver()
 {
 	// Clear the screen and the depth buffer.
@@ -453,6 +468,13 @@ void initTactical()
 		next = new Asteroid(5, pos, vel);
 		env->add(next);
 	}
+
+	// (Gum)
+	// Placing one planet in the environment
+	Planet *planet;
+	Vec3 pos (20, 20, 80); // Random or static position?
+	planet = new Planet(40, pos); // radius too big? too small?
+	env->add(planet);
 
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
@@ -545,7 +567,35 @@ void initMissionBoard() //(Gum)
 
 void initPlanet()
 {
-	// set up view for when player lands on a planet
+	screenState = PLANET;
+
+	// Set up the nice (0,0) -> (w,h) window for drawing
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(0, screen_width, 0, screen_height);
+
+	// Restor colorability.
+	glDisable(GL_LIGHTING);
+	glDisable(GL_COLOR_MATERIAL);
+	glDisable(GL_TEXTURE_2D);
+
+	// set basic matrix mode
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClearColor(0.0, 0.0, 0.0, 1.0);
+
+	// Set up OpenGL for picking.
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glRenderMode(GL_RENDER);
+
+	// Create the appropriate menu.
+	if (menu) delete menu;
+	menu = new Menu(screenState);
+
+	// Schedule a re-draw.
+	glutPostRedisplay();
 }
 
 void initGameOver()

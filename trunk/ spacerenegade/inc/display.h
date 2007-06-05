@@ -11,7 +11,7 @@
 
 #include <string>
 
-enum { START_SCREEN, TACTICAL, MISSION_BOARD, GAME_OVER };
+enum { START_SCREEN, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
 
 class Color
 {
@@ -45,6 +45,7 @@ void drawMeters();
 void drawMiniMap();
 void displayGameOver();
 void displayMissionBoard();
+void displayPlanet();
 
 // Initializations.
 void initStartScreen();
