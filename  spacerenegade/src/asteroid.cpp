@@ -101,7 +101,6 @@ void Asteroid::draw()
 		else
 		{
 			Material *m = new Material(position, velocity);
-			cout << "Material at " << m->getPos().str() << endl;
 			env->add(m);
 		}
 		delete this;
