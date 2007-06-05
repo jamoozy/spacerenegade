@@ -119,6 +119,13 @@ Menu::Menu(int type) : type(type)
 			buttons[1] = Button("+", .1, miniMapX + 85, miniMapY - 90, 0, 0, .2, 2, NULL);
 			break;
 
+		case PLANET:
+			numButtons = 2;
+			buttons = new Button[numButtons];
+			buttons[0] = Button("Mission Board", 5 , 500,450 , 1,1,1 , 1, initMissionBoard);
+			buttons[1] = Button("Leave",5 , 500, 400 , .1,.1,.1 , 2, initTactical); // need another function to move ship away from planet
+			break;
+
 		case MISSION_BOARD: // (Gum)
 			NUM_MISSIONS = 2; // FIXME replace with something more dynamic
 			height = 50;

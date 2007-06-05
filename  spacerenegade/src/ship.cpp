@@ -8,6 +8,8 @@
 #include "environment.h"
 #include "camera.h"
 #include "ship.h"
+#include "planet.h"
+#include "display.h"
 
 using std::cout;
 using std::cerr;
@@ -228,6 +230,12 @@ void PShip::hits(Object *o)
 	// This is a constant right now.  Later it will be a function
 	// different of things like hull strength and shields.
 	if (o->shouldHurt(this)) hurt(200);
+		else
+			if (o->canLandOn())
+			{
+				Planet *p = dynamic_cast<Planet*> (o);
+				landOn(p);
+			}
 }
 
 // Adds to the ship's velocity.
@@ -363,3 +371,7 @@ GLvoid glDrawCube()
 	glEnd();
 }
 
+void PShip::landOn (Planet *planet)
+{
+	initPlanet();
+}

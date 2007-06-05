@@ -11,6 +11,7 @@
 #include "input.h"
 #include "camera.h"
 #include "asteroid.h"
+#include "planet.h"
 #include "globals.h"
 #include "ship.h"
 #include "environment.h"

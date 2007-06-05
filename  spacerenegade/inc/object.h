@@ -52,6 +52,7 @@ public:
 	void drawOnMiniMap(double r);
 	virtual void hits(Object *o);
 	virtual bool shouldHurt(Object *o) { return false; };
+	virtual bool canLandOn() { return false; };
 
 	virtual double maxHlth() const { return 100; };
 };
