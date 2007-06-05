@@ -49,6 +49,7 @@ public:
 
 	virtual void draw();
 	virtual void hits(Object *o) { Ammo::hits(o); };
+	virtual bool shouldHurt(Object *o) { return o != (Object*)shooter; };
 
 	virtual double ttl() const { return 120; };   // Time to live in frames.
 	virtual double speed() const { return 2; };   // How fast this travels.

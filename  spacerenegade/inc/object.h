@@ -51,6 +51,7 @@ public:
 	virtual bool collidesWith(Object *o);
 	void drawOnMiniMap(double r);
 	virtual void hits(Object *o);
+	virtual bool shouldHurt(Object *o) { return false; };
 
 	virtual double maxHlth() const { return 100; };
 };

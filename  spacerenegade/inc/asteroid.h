@@ -23,6 +23,7 @@ public:
 
 	virtual void draw();
 	virtual void hits(Object *o);
+	virtual bool shouldHurt(Object *o) { return o->getType() != "Asteroid"; };
 	virtual int maxHealth() const { return 10; }
 };
 

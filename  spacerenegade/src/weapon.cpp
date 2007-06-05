@@ -24,11 +24,6 @@ void Ammo::hits(Object *o)
 		o->hurt(damage());
 		killNextTick = true;
 	}
-	else
-	{
-		// The hacky way not to hurt the shooter of this ammo piece.
-		o->hurt(-200);
-	}
 };
 
 
