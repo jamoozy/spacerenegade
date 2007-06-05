@@ -27,7 +27,8 @@ GLvoid glDrawCube();
 ////////////////////////////////////////////////////////////////////////////////
 
 Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
-	Object(modelName), weapon(weapon), hull(hull), shield(shield), fuel(fuel)
+	Object(modelName), weapon(weapon), hull(hull), shield(shield),
+	tractorBeam(new BasicTractorBeam), fuel(fuel)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -146,6 +147,7 @@ void PShip::draw()
 
 	// Draw that neat shield-bubble around the ship.
 	shield->draw();
+	tractorBeam->draw(this);
 
 	// direction rotation
 	glMultMatrixd(lcs.array());

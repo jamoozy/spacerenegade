@@ -20,7 +20,8 @@ extern GLfloat miniMapX;
 extern GLfloat miniMapY;
 
 // Create a new obect at the origin that does not move.
-Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
+Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1),
+	radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
