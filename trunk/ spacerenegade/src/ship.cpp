@@ -198,7 +198,7 @@ void PShip::hits(Object *o)
 
 	// This is a constant right now.  Later it will be a function
 	// different of things like hull strength and shields.
-	hurt(200);
+	if (o->shouldHurt(this)) hurt(200);
 }
 
 // Adds to the ship's velocity.
