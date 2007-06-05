@@ -3,6 +3,7 @@
 #include "GL/glut.h"
 #include "display.h"
 #include "environment.h"
+#include "buildcomponent.h"
 #include "asteroid.h"
 
 using std::cout;
@@ -97,6 +98,12 @@ void Asteroid::draw()
 				env->add(a);
 			}
 		}
+		else
+		{
+			Material *m = new Material(position, velocity);
+			cout << "Material at " << m->getPos().str() << endl;
+			env->add(m);
+		}
 		delete this;
 	}
 }
@@ -105,3 +112,4 @@ void Asteroid::hits(Object *o)
 {
 	Object::hits(o);
 }
+
