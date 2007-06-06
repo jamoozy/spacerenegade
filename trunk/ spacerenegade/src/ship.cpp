@@ -29,8 +29,8 @@ GLvoid glDrawCube();
 ////////////////////////////////////////////////////////////////////////////////
 
 Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
-	Object(modelName,1,1,0), weapon(weapon), hull(hull), shield(shield),
-	tractorBeam(new BasicTractorBeam), fuel(fuel)
+	Object(modelName,1,1,1), weapon(weapon), hull(hull), shield(shield),
+	tractorBeam(new BasicTractorBeam()), fuel(fuel)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -71,7 +71,6 @@ Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double f
 	// Initialize the local coordinate system to identity.
 	GLdouble m[] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 	lcs = m;
-
 }
 
 // This shouldn't ever be called.  But just in case ...
@@ -123,6 +122,11 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 {
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
+
+	alGenBuffers(1, &soundBuffer);
+	alGenSources(1, &soundSource);
+	alSourcei(soundSource, AL_BUFFER, soundBuffer);
+	alSourcePlay(soundSource);
 }
 
 // Draws the ship.
@@ -228,15 +232,14 @@ void PShip::hits(Object *o)
 	Object::hits(o);
 
 	// This is a constant right now.  Later it will be a function
-	// different of things like hull strength and shields.
-	if (o->shouldHurt(this)) 
+	// of different things like hull strength and shields.
+	if (o->shouldHurt(this))
 		hurt(200);
-	else
-		if (o->canLandOn())
-		{
-			Planet *p = dynamic_cast<Planet*> (o);
-			landOn(p);
-		}
+	else if (o->canLandOn())
+	{
+		Planet *p = dynamic_cast<Planet*> (o);
+		landOn(p);
+	}
 }
 
 // Adds to the ship's velocity.
