@@ -13,7 +13,7 @@ using std::endl;
 extern OctTree *env;
 
 // Creates a new stationary Asteroid at the origin.
-Asteroid::Asteroid(double radius) : Object("art/asteroid.3DS"),
+Asteroid::Asteroid(double radius) : Object("art/asteroid.3DS",1,1,1),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
 { setRadius(radius); }
@@ -27,7 +27,7 @@ Asteroid::Asteroid(double radius, double px, double py, double pz, double vx, do
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double radius, const Vec3& pos, const Vec3& v) :
-	Object("art/asteroid.3DS", pos, v),
+	Object("art/asteroid.3DS", pos, v,1,1,1),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
 { setRadius(radius); }

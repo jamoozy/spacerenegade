@@ -125,7 +125,7 @@ void Leaf::initLeaves()
 	Vec3 center((maxBound+minBound)/2);
 	double diff = maxBound.x() - center.x() + 1;
 
-	Object anchor("");
+	Object anchor("",1,1,1);
 
 	anchor.setAt(center+Vec3(-diff,-diff,-diff));
 	env->add(&anchor);
@@ -440,7 +440,7 @@ void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs, int
 {
 	double radius2 = radius * radius;
 
-	Object o("");
+	Object o("",1,1,1);
 	o.setAt(pos);
 	head->add(&o);
 

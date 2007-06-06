@@ -29,7 +29,7 @@ GLvoid glDrawCube();
 ////////////////////////////////////////////////////////////////////////////////
 
 Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
-	Object(modelName), weapon(weapon), hull(hull), shield(shield),
+	Object(modelName,1,1,0), weapon(weapon), hull(hull), shield(shield),
 	tractorBeam(new BasicTractorBeam), fuel(fuel)
 {
 	// This big messy thing is the initialization of pitchF et al.
