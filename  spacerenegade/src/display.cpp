@@ -354,21 +354,25 @@ void drawMiniMap()
 	vector<Object*> objs;
 	//Object *objs[400];
 	int numbObjs = 0;
-	double num = 125*125+125*125+125*125;
-	double radius = sqrt(num);
+	double num = 0;
+	
 
 	glColor3d(.3, .3, .9);
 	glCircle(miniMapX, miniMapY, 85, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
-	//if(zoom == 0)
-		env->getArea(playerShip->getPos(), radius, objs, numbObjs);
-//	else if(zoom == 2)
-//		zoom2x->getArea(playerShip->getPos(), radius * 2, objs, numbObjs);
-//	else if(zoom == 1)
-//		zoomx->getArea(playerShip->getPos(), radius * 4, objs, numbObjs);
-//	else
-//		cout << "Zoom out of range!" << endl;
+	if(zoom == 0)
+		num = 75*75+75*75+75*75;
+	else if(zoom == 2)
+		num = 100*100+100*100+100*100; 
+	else if(zoom == 1)
+		num = 125*125+125*125+125*125;
+	else
+		cout << "Zoom out of range!" << endl;
+
+	double radius = sqrt(num);
+
+	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
 	cout << numbObjs << endl;
 	for(int i = 0; i < objs.size(); i++)
 	{
