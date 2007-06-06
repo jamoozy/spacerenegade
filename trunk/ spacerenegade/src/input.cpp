@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include <iostream>
+#include <cmath>
 #include "environment.h"
 #include "globals.h"
 #include "camera.h"
@@ -20,6 +21,7 @@ extern OctTree *env;
 extern int screen_width;
 extern int screen_height;
 extern bool paused;
+extern int zoom;
 
 
 
@@ -273,7 +275,8 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 
 		case 'z':
 		case 'Z':
-			playerShip->toggleTractorBeam();
+			zoom = ((zoom + 1) % 3);
+			//playerShip->toggleTractorBeam();
 			break;
 	}
 }
