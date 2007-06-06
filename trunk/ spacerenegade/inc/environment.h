@@ -5,6 +5,8 @@
 #include "object.h"
 #include "vec3.h"
 
+using std::vector;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // --------------------------- Object Storage ------------------------------ //
@@ -72,7 +74,8 @@ public:
 	void add(Object* o);
 	void checkCollisions();
 	void update();
-	void getArea(const Vec3& pos, double radius, Object **objs, int& numObjs);
+	//void getArea(const Vec3& pos, double radius, Object **objs, int& numObjs);
+	void getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs);
 };
 
 #endif
