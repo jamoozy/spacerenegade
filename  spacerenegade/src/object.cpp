@@ -20,7 +20,7 @@ extern GLfloat miniMapX;
 extern GLfloat miniMapY;
 
 // Create a new obect at the origin that does not move.
-Object::Object(char *modelName) : leaf(NULL), red(1), green(1), blue(1),
+Object::Object(char *modelName, double red, double green, double blue) : leaf(NULL), red(red), green(green), blue(blue),
 	radius(4.0), position(0,0,0), velocity(0,0,0), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
@@ -36,8 +36,8 @@ Object::Object(char *modelName, double red, double green, double blue, double px
 }
 
 // Creates a new object at the given point with the given velocity.
-Object::Object(char *modelName, const Vec3& pos, const Vec3& v) :
-	leaf(NULL), red(1), green(1), blue(1), radius(4.0), position(pos), velocity(v), damage(0)
+Object::Object(char *modelName, const Vec3& pos, const Vec3& v, double red, double green, double blue) :
+	leaf(NULL), red(red), green(green), blue(blue), radius(4.0), position(pos), velocity(v), damage(0)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
@@ -93,10 +93,15 @@ void Object::drawOnMiniMap(double r)
 	double z = -(lclPos * normal);
 	double y = (85/r) * (lclPos * up);
 	double x = (85/r) * (lclPos * right);
+	double alpha = 0;
 
 	double zBrightness = 1 - sqrt((x*x) + (y*y) + (z*z))/r;//1 - ((z + r) / (2 * r));
+	if(z <= 0)
+		alpha = 1;
+	else
+		alpha = 0;
 
-	glColor4d(red * zBrightness, green * zBrightness, blue * zBrightness,.5 - (z/125));
+	glColor4d(red * zBrightness, green * zBrightness, blue * zBrightness,alpha);
 	glCircle(miniMapX + x, miniMapY + y, 2, 5);
 }
 

@@ -14,7 +14,7 @@ extern OctTree *env;
 ////////////////////////////////////////////////////////////////////////////////
 
 Ammo::Ammo(Ship *shooter) :
-	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * speed()),
+	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * speed(),1,0,0),
 	shooter(shooter), ticks(0), killNextTick(false) { radius = .2; }
 
 void Ammo::hits(Object *o)

@@ -14,7 +14,7 @@ extern OctTree *env;
 
 // Creates a new planet at the given point
 Planet::Planet(double radius, const Vec3& pos) :
-	Object("art/felix.3DS", pos, Vec3()) // temporary model for now, add textures later?
+	Object("art/felix.3DS", pos, Vec3(),0,1,0) // temporary model for now, add textures later?
 { setRadius(radius); }
 
 // Scale this down.  Allows for smaller planets.
