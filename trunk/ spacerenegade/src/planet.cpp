@@ -13,16 +13,9 @@ using std::endl;
 extern OctTree *env;
 
 // Creates a new planet at the given point
-Planet::Planet(double radius, const Vec3& pos) :
-	Object("art/felix.3DS", pos, Vec3(),0,1,0) // temporary model for now, add textures later?
+Planet::Planet(const Vec3& pos, double radius) :
+	Object("art/spacestation_v1.3DS", pos, Vec3(),0,1,0) // temporary model for now, add textures later?
 { setRadius(radius); }
-
-// Scale this down.  Allows for smaller planets.
-void Planet::setRadius(double r)
-{
-	model.scale = r/5;
-	radius = r;
-}
 
 // Draw this planet.
 void Planet::draw()

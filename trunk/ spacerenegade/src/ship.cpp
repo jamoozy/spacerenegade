@@ -229,13 +229,14 @@ void PShip::hits(Object *o)
 
 	// This is a constant right now.  Later it will be a function
 	// different of things like hull strength and shields.
-	if (o->shouldHurt(this)) hurt(200);
-		else
-			if (o->canLandOn())
-			{
-				Planet *p = dynamic_cast<Planet*> (o);
-				landOn(p);
-			}
+	if (o->shouldHurt(this)) 
+		hurt(200);
+	else
+		if (o->canLandOn())
+		{
+			Planet *p = dynamic_cast<Planet*> (o);
+			landOn(p);
+		}
 }
 
 // Adds to the ship's velocity.

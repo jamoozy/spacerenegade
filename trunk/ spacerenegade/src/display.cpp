@@ -489,8 +489,8 @@ void initTactical()
 	// (Gum)
 	// Placing one planet in the environment
 	Planet *planet;
-	Vec3 pos (20, 20, 80); // Random or static position?
-	planet = new Planet(40, pos); // radius too big? too small?
+	Vec3 pos (20, 20, 20); // Random or static position?
+	planet = new Planet(pos, 25); // radius too big? too small?
 	env->add(planet);
 
 	// Jam:
@@ -584,6 +584,7 @@ void initMissionBoard() //(Gum)
 
 void initPlanet()
 {
+	cerr << "One small step for man";
 	screenState = PLANET;
 
 	// Set up the nice (0,0) -> (w,h) window for drawing

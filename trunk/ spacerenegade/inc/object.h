@@ -37,6 +37,7 @@ public:
 	virtual void draw() { position += velocity; };
 	virtual void setAt(const Vec3& pos) { position = pos; };
 	virtual void setAt(double x, double y, double z) { position = Vec3(x,y,z); };
+	virtual void setRadius(double r) { radius = r; };
 	virtual Vec3 getVel() const { return velocity; };                // Get current velocity.
 	virtual Vec3 getPos() const { return position; };                // Get current position.
 	virtual Vec3 getNextPos() const { return position + velocity; }; // Get position at next frame (assumes constant velocity).

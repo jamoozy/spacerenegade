@@ -9,10 +9,8 @@ class Planet : public Object
 {
 private:
 
-	void setRadius(double r);
-
 public:
-	Planet(double radius, const Vec3& pos);
+	Planet(const Vec3& pos, double radius);
 	virtual ~Planet() {};
 	virtual std::string getType() const { return "Planet"; };
 
