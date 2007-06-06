@@ -33,6 +33,9 @@ using std::stringstream;
 #endif
 extern PShip *playerShip; // Jam: The player's ship, duh.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
+extern OctTree *zoom2x;
+extern OctTree *zoomx;
+
                           //      (environment) in general.
 extern Menu *menu;        // Gum: The current menu of buttons
 
@@ -41,6 +44,7 @@ int screen_height = IMAGE_HEIGHT;
 
 int screenState;
 bool paused;
+int zoom = 0;
 GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
@@ -355,7 +359,14 @@ void drawMiniMap()
 	glCircle(miniMapX, miniMapY, 85, 20);
 
 	//const Vec3& pos, double radius, Object **objs, int& numObjs);
-	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
+	if(zoom == 0)
+		env->getArea(playerShip->getPos(), radius, objs, numbObjs);
+	else if(zoom == 2)
+		zoom2x->getArea(playerShip->getPos(), radius, objs, numbObjs);
+	else if(zoom == 1)
+		zoomx->getArea(playerShip->getPos(), radius, objs, numbObjs);
+	else
+		cout << "Zoom out of range!" << endl;
 
 	for(int i = 0; i < numbObjs; i++)
 	{
@@ -449,6 +460,9 @@ void initTactical()
 	// Set up the octtree, making it ready for objects to populate it.
 	if (env) delete env;
 	env = new OctTree(3);
+	zoom2x = new OctTree(2);
+	zoomx = new OctTree(1);
+
 
 	// Jam:
 	// You may be asking yourself "Why not just put the call to initLeaves()
@@ -458,6 +472,8 @@ void initTactical()
 	// env variable is not yet initialized, causing a segfault when the
 	// memory is accessed illegally by the leaves.  Therefore this stays here.
 	env->initLeaves();
+	zoom2x->initLeaves();
+	zoomx->initLeaves();
 
 	// Populate the world with some asteroids.
 	Asteroid *next;
@@ -467,6 +483,8 @@ void initTactical()
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));//0,0,-0.1);//
 		next = new Asteroid(5, pos, vel);
 		env->add(next);
+		zoom2x->add(next);
+		zoomx->add(next);
 	}
 
 	// (Gum)
@@ -475,6 +493,8 @@ void initTactical()
 	Vec3 pos (20, 20, 80); // Random or static position?
 	planet = new Planet(40, pos); // radius too big? too small?
 	env->add(planet);
+	zoom2x->add(planet);
+	zoomx->add(planet);
 
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
@@ -482,6 +502,8 @@ void initTactical()
 	playerShip = new PShip(new Blaster(), new BasicHull(), new BasicShield());
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
+	zoom2x->add(playerShip);
+	zoomx->add(playerShip);
 
 	#if (PRINT_FPS)
 		last_time = 0;

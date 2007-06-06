@@ -28,8 +28,10 @@ using std::endl;
 #endif
 
 PShip *playerShip;  // Jam: The player's ship, duh.
-OctTree *env;      // Jam: Collision detection of objects and the world
-                   //      (environment) in general.
+OctTree *env;		// Jam: Collision detection of objects and the world
+					//      (environment) in general.
+OctTree *zoom2x;
+OctTree *zoomx;
 Menu *menu;        // Gum: The current menu of buttons
 
 #if (PRINT_FPS || LIMIT_FPS)
