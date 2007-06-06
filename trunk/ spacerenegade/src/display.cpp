@@ -43,7 +43,7 @@ int screen_height = IMAGE_HEIGHT;
 
 int screenState;
 bool paused;
-int zoom = 0;
+int zoom = 1;
 GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 

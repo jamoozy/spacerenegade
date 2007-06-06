@@ -96,7 +96,7 @@ void Object::drawOnMiniMap(double r)
 
 	double zBrightness = 1 - sqrt((x*x) + (y*y) + (z*z))/r;//1 - ((z + r) / (2 * r));
 
-	glColor3d(red * zBrightness, green * zBrightness, blue * zBrightness);
+	glColor4d(red * zBrightness, green * zBrightness, blue * zBrightness,.5 - (z/125));
 	glCircle(miniMapX + x, miniMapY + y, 2, 5);
 }
 
