@@ -368,12 +368,12 @@ void drawMiniMap()
 	else if(zoom == 1)
 		num = 125*125+125*125+125*125;
 	else
-		cout << "Zoom out of range!" << endl;
+		drawText(500, 100, "Zoom out of range!", Color(1,.3,.3), false);
 
 	double radius = sqrt(num);
 
 	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
-	cout << numbObjs << endl;
+//	cout << numbObjs << endl;
 	for(int i = 0; i < objs.size(); i++)
 	{
 		objs[i]->drawOnMiniMap(radius);
