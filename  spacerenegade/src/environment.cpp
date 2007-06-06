@@ -1,9 +1,11 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include "environment.h"
 #include "vec3.h"
 
 using namespace std;
+//using  std::vector;
 extern OctTree *env;
 
 
@@ -434,7 +436,7 @@ void OctTree::update()
 	head->update();
 }
 
-void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObjs)
+void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs)
 {
 	double radius2 = radius * radius;
 
@@ -449,7 +451,7 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 
 	for (unsigned int i = 0; i < l->data.size(); i++){
 		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2){
-			objs[numObjs++] = l->data[i];
+			objs.push_back(l->data[i]);
 		}//if
 	}//for
 
@@ -457,7 +459,7 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 		if (l->checkedNeighbors[i] != NULL){
 			for (unsigned int j = 0; j < l->checkedNeighbors[i]->data.size(); j++){
 				if ((l->checkedNeighbors[i]->data[j]->getPos() - pos) * (l->checkedNeighbors[i]->data[j]->getPos() - pos) < radius2){
-					objs[numObjs++] = l->checkedNeighbors[i]->data[j];
+					objs.push_back(l->checkedNeighbors[i]->data[j]);
 				}//if
 			}//for
 		}//if
@@ -467,7 +469,7 @@ void OctTree::getArea(const Vec3& pos, double radius, Object **objs, int& numObj
 		if (l->unCheckedNeighbors[i] != NULL){
 			for (unsigned int j = 0; j < l->unCheckedNeighbors[i]->data.size(); j++){
 				if ((l->unCheckedNeighbors[i]->data[j]->getPos() - pos) * (l->unCheckedNeighbors[i]->data[j]->getPos() - pos) < radius2){
-					objs[numObjs++] = l->unCheckedNeighbors[i]->data[j];
+					objs.push_back(l->unCheckedNeighbors[i]->data[j]);
 				}//if
 			}//for
 		}//if
