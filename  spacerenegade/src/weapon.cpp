@@ -17,6 +17,13 @@ Ammo::Ammo(Ship *shooter) :
 	Object("", shooter->getPos(), shooter->getVel() + shooter->getDir() * speed(),1,0,0),
 	shooter(shooter), ticks(0), killNextTick(false) { radius = .2; }
 
+void Ammo::update()
+{
+	position += velocity;
+
+	if (killNextTick || ticks++ >= ttl()) delete this;
+}
+
 void Ammo::hits(Object *o)
 {
 	if (o != shooter)
@@ -37,19 +44,19 @@ Bullet::Bullet(Ship *shooter) : Ammo(shooter)
 	velocity = shooter->getVel() + shooter->getDir() * speed();
 };
 
-void Bullet::draw()
+void Bullet::draw(int pass)
 {
-	position += velocity;
+	// Only draw on the first pass.
+	if (pass == 1)
+	{
+		glPushMatrix();
 
-	glPushMatrix();
+		glTranslated(position.x(), position.y(), position.z());
+		glColor3d(0.8,0,0);
+		glutSolidCube(.5);
 
-	glTranslated(position.x(), position.y(), position.z());
-	glColor3d(0.8,0,0);
-	glutSolidCube(.5);
-
-	glPopMatrix();
-
-	if (killNextTick || ticks++ >= ttl()) delete this;
+		glPopMatrix();
+	}
 }
 
 
@@ -68,30 +75,30 @@ LaserBeam::LaserBeam(Ship *shooter) : Ammo(shooter)
 	E = 10 * shooter->getDir();
 };
 
-void LaserBeam::draw()
+void LaserBeam::draw(int pass)
 {
-	position += velocity;
+	// Only draw on the 1st pass, not the 2nd.
+	if (pass == 1)
+	{
+		glPushMatrix();
 
-	glPushMatrix();
+		glTranslated(position.x(), position.y(), position.z());
+		glDisable(GL_TEXTURE_2D); // Gives full color, for some reason.
+		glColor3d(0.6,1.0,0.6);
 
-	glTranslated(position.x(), position.y(), position.z());
-	glDisable(GL_TEXTURE_2D); // Gives full color, for some reason.
-	glColor3d(0.6,1.0,0.6);
+		glBegin(GL_TRIANGLE_STRIP);
+		glVertex3dv(B.array());
+		glVertex3dv(C.array());
+		glVertex3dv(A.array());
+		glVertex3dv(D.array());
+		glVertex3dv(B.array());
+		glVertex3dv(E.array());
+		glVertex3dv(C.array());
+		glVertex3dv(D.array());
+		glEnd();
 
-	glBegin(GL_TRIANGLE_STRIP);
-	glVertex3dv(B.array());
-	glVertex3dv(C.array());
-	glVertex3dv(A.array());
-	glVertex3dv(D.array());
-	glVertex3dv(B.array());
-	glVertex3dv(E.array());
-	glVertex3dv(C.array());
-	glVertex3dv(D.array());
-	glEnd();
-
-	glPopMatrix();
-
-	if (killNextTick || ticks++ >= ttl()) delete this;
+		glPopMatrix();
+	}
 }
 
 

@@ -54,7 +54,8 @@ public:
 	Vec3 getUp() const { return Vec3(lcs[4],lcs[5],lcs[6]); };
 	Vec3 getLeft() const { return Vec3(lcs[0],lcs[1],lcs[2]); };
 
-	virtual void draw();
+	virtual void update();
+	virtual void draw(int pass);
 	virtual void hurt(double d);
 
 	// Special?
@@ -105,7 +106,7 @@ public:
 	virtual ~PShip() {};
 	virtual string getType() const { return "PShip"; };
 	virtual void hits(Object *o);
-	virtual void draw();
+	virtual void draw(int pass);
 	void drawReticle();
 	virtual void fire();
 

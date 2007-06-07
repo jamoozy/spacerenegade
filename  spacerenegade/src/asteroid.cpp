@@ -47,8 +47,8 @@ Vec3 Asteroid::randPos() const
 				position.z() + ((2.0*rand()/RAND_MAX)-1)*radius);
 }
 
-// Draw this asteroid.
-void Asteroid::draw()
+// Update the asteroid's internal state.
+void Asteroid::update()
 {
 	// Make sure this asteroid doesn't travel out of the bounding box
 	// of the environment.
@@ -63,27 +63,7 @@ void Asteroid::draw()
 	position += velocity;
 	angle += avelocity;
 
-	glPushMatrix();
-
-	//glColor3f(0.0f,1.0f,0.0f);
-	glTranslated(position.x(), position.y(), position.z());
-	glRotated(angle.x(),  1.0,0.0,0.0);
-	glRotated(angle.y(),  0.0,1.0,0.0);
-	
-	if (modelLoaded)
-	{
-		glColor3f(1,1,1);
-		//glutWireSphere(5,4,2);
-		model.Draw();
-	}
-	else
-	{
-		glColor3f(1,1,1);
-		glutWireSphere(5,16,8);
-	} 
-
-	glPopMatrix();
-
+	// Destroy myself if I have no health left.
 	if (damage >= maxHealth())
 	{
 		// If this is still big enough, add small asteroids.
@@ -104,6 +84,34 @@ void Asteroid::draw()
 			env->add(m);
 		}
 		delete this;
+	}
+}
+
+// Draw this asteroid.
+void Asteroid::draw(int pass)
+{
+	if (pass == 1)
+	{
+		glPushMatrix();
+
+		//glColor3f(0.0f,1.0f,0.0f);
+		glTranslated(position.x(), position.y(), position.z());
+		glRotated(angle.x(),  1.0,0.0,0.0);
+		glRotated(angle.y(),  0.0,1.0,0.0);
+		
+		if (modelLoaded)
+		{
+			glColor3f(1,1,1);
+			//glutWireSphere(5,4,2);
+			model.Draw();
+		}
+		else
+		{
+			glColor3f(1,1,1);
+			glutWireSphere(5,16,8);
+		} 
+
+		glPopMatrix();
 	}
 }
 

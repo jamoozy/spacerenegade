@@ -20,6 +20,7 @@ struct Node
 	virtual void initLeaves() {};
 
 	virtual void update() {};
+	virtual void draw(int pass) {};
 	virtual bool isResident(Object* o) const { return false; };
 	virtual void add(Object* o) {};
 };
@@ -34,6 +35,7 @@ struct Branch : public Node
 	virtual void initLeaves();
 
 	virtual void update();
+	virtual void draw(int pass);
 	virtual int getIndex(Object* o) const;
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
@@ -53,6 +55,7 @@ struct Leaf : public Node
 	virtual void initLeaves();
 
 	virtual void update();
+	virtual void draw(int pass);
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
 	virtual void remove(Object* o);
@@ -74,7 +77,7 @@ public:
 	void add(Object* o);
 	void checkCollisions();
 	void update();
-	//void getArea(const Vec3& pos, double radius, Object **objs, int& numObjs);
+	void draw(int pass);
 	void getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs);
 };
 

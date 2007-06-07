@@ -14,7 +14,8 @@ public:
 	virtual ~Planet() {};
 	virtual std::string getType() const { return "Planet"; };
 
-	virtual void draw();
+	virtual void update() {};
+	virtual void draw(int pass);
 	virtual void hits(Object *o);
 	virtual bool canLandOn() { return true; };
 };

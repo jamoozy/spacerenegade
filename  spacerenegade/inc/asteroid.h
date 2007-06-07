@@ -21,7 +21,8 @@ public:
 	virtual ~Asteroid() {};
 	virtual std::string getType() const { return "Asteroid"; };
 
-	virtual void draw();
+	virtual void update();
+	virtual void draw(int pass);
 	virtual void hits(Object *o);
 	virtual bool shouldHurt(Object *o) { return o->getType() != "Asteroid"; };
 	virtual int maxHealth() const { return 10; }

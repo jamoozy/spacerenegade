@@ -73,11 +73,15 @@ Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double f
 	lcs = m;
 }
 
-// This shouldn't ever be called.  But just in case ...
-void Ship::draw()
+void Ship::update()
 {
 	position += velocity;
+	shield->update();
+}
 
+// This shouldn't ever be called.  But just in case ...
+void Ship::draw(int pass)
+{
 	glPushMatrix();
 
 	//move
@@ -86,15 +90,19 @@ void Ship::draw()
 	// direction rotation
 	glMultMatrixd(lcs.array());
 
-	// Show the neat shield-bubble.
-	shield->draw();
-
-	// Set color to purple.
-	glColor3f(.7,0,.8);
-	glutWireCone(2,4,5,1);
-
+	if (pass == 1)
+	{
+		// Set color to purple.
+		glColor3f(.7,0,.8);
+		glutWireCone(2,4,5,1);
+	}
+	else
+	{
+		// Show the neat shield-bubble.
+		shield->draw();
+		tractorBeam->draw(this);
+	}
 	glPopMatrix();
-
 }
 
 void Ship::hurt(double amt)
@@ -134,17 +142,14 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 }
 
 // Draws the ship.
-void PShip::draw()
+void PShip::draw(int pass)
 {
-	position += velocity;
-
 	glPushMatrix();
 
-	//move
 	glTranslated(position.x(), position.y(), position.z());
-	
+
 	// Render the skymap
-	if (skymapLoaded) 
+	if (pass == 1 && skymapLoaded) 
 	{
 		glPushMatrix();
 
@@ -155,46 +160,51 @@ void PShip::draw()
 		glPopMatrix();
 	}
 
-	// Draw that neat shield-bubble around the ship.
-	shield->draw();
-	tractorBeam->draw(this);
-
 	// direction rotation
 	glMultMatrixd(lcs.array());
 
-	if (modelLoaded)
+	if (pass == 1)
 	{
-		drawReticle();
-		glColor3d(1,1,1);
-		model.Draw();  // Renders the model to the screen
+		if (modelLoaded)
+		{
+			drawReticle();
+			glColor3d(1,1,1);
+			model.Draw();  // Renders the model to the screen
 
-		//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
-		//GLfloat pos[3] = {3.0f,1.0f,-1.5f};
+			//GLfloat lightColor[] = {0.0f,0.0f,0.0f};
+			//GLfloat pos[3] = {3.0f,1.0f,-1.5f};
 
-		//if (lightRnotL)
-		//{
-		//	lightColor[2] = 1.0f;
-		//	pos[0] = -3.0f;
-		//}
-		//else
-		//{
-		//	lightColor[0] = 1.0f;
-		//}
-		//if (lightTime++ > 40) { lightRnotL = !lightRnotL; lightTime = 0; }
+			//if (lightRnotL)
+			//{
+			//	lightColor[2] = 1.0f;
+			//	pos[0] = -3.0f;
+			//}
+			//else
+			//{
+			//	lightColor[0] = 1.0f;
+			//}
+			//if (lightTime++ > 40) { lightRnotL = !lightRnotL; lightTime = 0; }
 
-		//glColor3fv(lightColor);
-		//glLightfv(GL_LIGHT1, GL_POSITION, pos);
-		//glLightfv(GL_LIGHT1, GL_AMBIENT,  lightColor);
-		//glLightfv(GL_LIGHT1, GL_DIFFUSE,  lightColor);
-		//glLightfv(GL_LIGHT1, GL_SPECULAR, lightColor);
-		//glTranslatef(pos[0],pos[1],pos[2]);
-		//glutSolidCube(0.2);
+			//glColor3fv(lightColor);
+			//glLightfv(GL_LIGHT1, GL_POSITION, pos);
+			//glLightfv(GL_LIGHT1, GL_AMBIENT,  lightColor);
+			//glLightfv(GL_LIGHT1, GL_DIFFUSE,  lightColor);
+			//glLightfv(GL_LIGHT1, GL_SPECULAR, lightColor);
+			//glTranslatef(pos[0],pos[1],pos[2]);
+			//glutSolidCube(0.2);
+		}
+		else
+		{
+			// Set color to purple.
+			glColor3f(.7,0,.8);
+			glutWireCone(2,4,5,1);
+		}
 	}
 	else
 	{
-		// Set color to purple.
-		glColor3f(.7,0,.8);
-		glutWireCone(2,4,5,1);
+		// Draw that neat shield-bubble around the ship.
+		shield->draw();
+		tractorBeam->draw(this);
 	}
 
 	glPopMatrix();
