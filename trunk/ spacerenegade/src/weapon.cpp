@@ -136,28 +136,22 @@ void Laser::fire(Ship *shooter)
 // ------------------------------- Tractor Beams ---------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-void BasicTractorBeam::draw(Ship *ship)
+BasicTractorBeam::BasicTractorBeam() : TractorBeam(),
+	a(-1, -2.4142, 0), b(-2.4142, -1, 0), c(-2.4142,  1, 0), d(-1,  2.4142, 0), 
+	e( 2,  2.4142, 0), f( 2.4142,  1, 0), g( 2.4142, -1, 0), h( 1, -2.4142, 0),
+	A(a * (range()/2) + Vec3(0,0,range())),
+	B(b * (range()/2) + Vec3(0,0,range())),
+	C(c * (range()/2) + Vec3(0,0,range())),
+	D(d * (range()/2) + Vec3(0,0,range())),
+	E(e * (range()/2) + Vec3(0,0,range())),
+	F(f * (range()/2) + Vec3(0,0,range())),
+	G(g * (range()/2) + Vec3(0,0,range())),
+	H(h * (range()/2) + Vec3(0,0,range())) {}
+
+void BasicTractorBeam::draw()
 {
 	if (on)
 	{
-		Vec3 a = ship->getLeft() - 2.4142 * ship->getUp();
-		Vec3 b = 2.4142 * ship->getLeft() - ship->getUp();
-		Vec3 c = 2.4142 * ship->getLeft() + ship->getUp();
-		Vec3 d = ship->getLeft() + 2.4142 * ship->getUp();
-		Vec3 e = -a;
-		Vec3 f = -b;
-		Vec3 g = -c;
-		Vec3 h = -d;
-
-		Vec3 A = range() * a / 3 + range() * ship->getDir();
-		Vec3 B = range() * b / 3 + range() * ship->getDir();
-		Vec3 C = range() * c / 3 + range() * ship->getDir();
-		Vec3 D = range() * d / 3 + range() * ship->getDir();
-		Vec3 E = range() * e / 3 + range() * ship->getDir();
-		Vec3 F = range() * f / 3 + range() * ship->getDir();
-		Vec3 G = range() * g / 3 + range() * ship->getDir();
-		Vec3 H = range() * h / 3 + range() * ship->getDir();
-
 		glDisable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glColor4d(1,0,0,0.5);

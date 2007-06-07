@@ -172,7 +172,7 @@ protected:
 
 public:
 	virtual ~TractorBeam() {};
-	virtual void draw(Ship *ship) = 0;
+	virtual void draw() = 0;
 
 	virtual void activate() { on = true; };
 	virtual void deactivate() { on = false; };
@@ -185,11 +185,14 @@ public:
 
 class BasicTractorBeam : public TractorBeam
 {
+	Vec3 a,b,c,d,e,f,g,h;
+	Vec3 A,B,C,D,E,F,G,H;
+
 public:
-	BasicTractorBeam() : TractorBeam() {};
+	BasicTractorBeam();
 	virtual ~BasicTractorBeam() {};
 
-	virtual void draw(Ship *ship);
+	virtual void draw();
 };
 
 #endif
