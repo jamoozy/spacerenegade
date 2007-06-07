@@ -2,7 +2,8 @@
 #include <string>
 #include <cmath>
 #include <vector>
-#include "GL/glut.h"
+#include <GL/glut.h>
+#include <AL/alut.h>
 #include "display.h"
 #include "ship.h"
 #include "environment.h"
@@ -46,6 +47,9 @@ bool paused;
 int zoom = 1;
 GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
+
+// Sound variables.
+ALuint boomBuffer, boomSource;
 
 struct perspectiveData 
 {
@@ -238,8 +242,11 @@ void displayTactical()
 
 	glutSwapBuffers();
 
-	if (playerShip->hlthPcnt() <= 0)
+	if (playerShip->hlthPcnt() <= 0) {
+		if (boomBuffer != AL_NONE)
+			alSourcePlay(boomSource);
 		initGameOver();
+	}
 }
 
 void adjustGlobalLighting()
@@ -454,6 +461,15 @@ void initTactical()
 {
 	screenState = TACTICAL; 
 
+	// Load the player death sound.
+	if ((boomBuffer = alutCreateBufferFromFile("art/boom.wav")) == AL_NONE) {
+		cout << "No buffer returned!" << endl;
+		cout << alutGetErrorString(alutGetError()) << endl;
+	} else {
+		alGenSources(1, &boomSource);
+		alSourcei(boomSource, AL_BUFFER, boomBuffer);
+	}
+
 	paused = false;
 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -583,7 +599,7 @@ void initMissionBoard() //(Gum)
 
 void initPlanet()
 {
-	cerr << "One small step for man";
+	cerr << "One small step for man" << endl;
 	screenState = PLANET;
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
