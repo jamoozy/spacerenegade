@@ -240,6 +240,7 @@ void startScreenKeyboard(unsigned char key, int x, int y)
 	{
 		case 'q':
 		case 'Q':
+		case 27:  // Esc
 			cleanup();
 			break;
 
@@ -262,6 +263,7 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 			break;
 		case 'q':
 		case 'Q':
+		case 27:  // Esc
 			cleanup();
 			break;
 		case 'p':
@@ -331,6 +333,7 @@ void gameOverKeyboard(unsigned char key, int x, int y)
 	{
 		case 'q':
 		case 'Q':
+		case 27:  // Esc
 			cleanup();
 			break;
 
