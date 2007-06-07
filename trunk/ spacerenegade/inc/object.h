@@ -34,7 +34,8 @@ public:
 	virtual ~Object();
 	virtual std::string getType() const { return "Object"; };
 
-	virtual void draw() { position += velocity; };
+	virtual void update() { position += velocity; };
+	virtual void draw(int pass) { };
 	virtual void setAt(const Vec3& pos) { position = pos; };
 	virtual void setAt(double x, double y, double z) { position = Vec3(x,y,z); };
 	virtual void setRadius(double r) { radius = r; };

@@ -79,6 +79,12 @@ void Branch::update()
 		kids[i]->update();
 }
 
+void Branch::draw(int pass)
+{
+	for (int i = 0; i < 8; i++)
+		kids[i]->draw(pass);
+}
+
 // Gets the index of the child the passed object is in.
 int Branch::getIndex(Object *o) const
 {
@@ -345,18 +351,11 @@ Leaf::~Leaf()
 bool Leaf::isResident(Object *o) const
 {
 	return (this == o->getResidence());
-
-//	for (unsigned int i = 0; i < data.size(); i++)
-//		if (data[i] == o)
-//			return true;
-//
-//	return false;
 }
 
 // Update all of the members of this leaf node.
 void Leaf::update()
 {
-//	cout << "entered Leaf::update()" << endl;
 	for (unsigned int i = 0; i < data.size(); i++)
 	{
 		if (data[i]->checkResidence())
@@ -380,10 +379,16 @@ void Leaf::update()
 					}
 				}
 			}
-		data[i]->draw();
+			data[i]->update();
 		}
 	}
-//	cout << "leaving Leaf::update()" << endl;
+}
+
+void Leaf::draw(int pass)
+{
+	for (unsigned int i = 0; i < data.size(); i++)
+		if (data[i] != NULL)
+			data[i]->draw(pass);
 }
 
 // Add the given object to this Leaf.  If it's already
@@ -434,6 +439,11 @@ void OctTree::add(Object* o)
 void OctTree::update()
 {
 	head->update();
+}
+
+void OctTree::draw(int pass)
+{
+	head->draw(pass);
 }
 
 void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs)

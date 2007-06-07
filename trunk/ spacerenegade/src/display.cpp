@@ -237,8 +237,12 @@ void displayTactical()
 	#endif
 
 	env->update();
+	glDisable(GL_BLEND);
+	env->draw(1);   // 1st pass.
+	glEnable(GL_BLEND);  // Enable transparency.
+	env->draw(2);   // 2nd (transparency) pass.
 
-	drawHUD();
+	drawHUD();      // Keep on transparency for the HUD.
 
 	glutSwapBuffers();
 
@@ -276,7 +280,6 @@ void drawHUD()
 
 	// Enable transparency, disable the lighting and deptch checking,
 	// and draw the HUD here.
-	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
 	glDisable(GL_TEXTURE_2D);  // Gives us full-range colors for some reason.
@@ -291,7 +294,6 @@ void drawHUD()
 	// Set parameters back to tactical.
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
 }
 
 void drawMeters()

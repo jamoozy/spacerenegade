@@ -51,6 +51,7 @@ protected:
 public:
 	virtual ~Shield() {};
 
+	virtual void update();
 	virtual void draw();
 	virtual double hurt(double amt); // Hurts the shield, returns what it could not absorb.
 

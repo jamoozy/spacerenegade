@@ -29,7 +29,8 @@ public:
 	virtual ~Ammo() {};
 	virtual std::string getType() const { return "Ammo"; };
 
-	virtual void draw() { Object::draw(); };
+	virtual void update();
+	virtual void draw(int pass) { Object::draw(pass); };
 	virtual void hits(Object *o);
 
 	virtual double ttl() const { return 60; };   // Time to live in frames.
@@ -47,7 +48,7 @@ public:
 	virtual ~Bullet() {};
 	virtual std::string getType() const { return "Bullet"; };
 
-	virtual void draw();
+	virtual void draw(int pass);
 	virtual void hits(Object *o) { Ammo::hits(o); };
 	virtual bool shouldHurt(Object *o) { return o != (Object*)shooter; };
 
@@ -69,7 +70,7 @@ public:
 	virtual ~LaserBeam() {};
 	virtual std::string getType() const { return "LaserBeam"; };
 
-	virtual void draw();
+	virtual void draw(int pass);
 	virtual void hits(Object *o) { Ammo::hits(o); };
 
 	virtual double ttl() const { return 20; };   // Time to live in frames.

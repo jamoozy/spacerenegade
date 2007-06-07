@@ -1,15 +1,21 @@
-#include "GL/glut.h"
+#include <GL/glut.h>
 #include "hull.h"
 
 
 
-
-void Shield::draw()
+void Shield::update()
 {
 	if (health + ror() > maxHlth())
 		health = maxHlth();
 	else
 		health += ror();
+}
+
+void Shield::draw()
+{
+	glDisable(GL_TEXTURE_2D);
+	glColor4d(1,1,0,hlthPcnt()/2);
+	glutSolidSphere(5, 32, 8);
 }
 
 double Shield::hurt(double amt)

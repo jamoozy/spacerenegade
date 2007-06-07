@@ -18,26 +18,29 @@ Planet::Planet(const Vec3& pos, double radius) :
 { setRadius(radius); }
 
 // Draw this planet.
-void Planet::draw()
+void Planet::draw(int pass)
 {
-	glPushMatrix();
-
-	//glColor3f(0.0f,1.0f,0.0f);
-	glTranslated(position.x(), position.y(), position.z());
-	
-	if (modelLoaded)
+	if (pass == 1)
 	{
-		glColor3f(1,1,1);
-		//glutWireSphere(5,4,2);
-		model.Draw();
+		glPushMatrix();
+
+		//glColor3f(0.0f,1.0f,0.0f);
+		glTranslated(position.x(), position.y(), position.z());
+		
+		if (modelLoaded)
+		{
+			glColor3f(1,1,1);
+			//glutWireSphere(5,4,2);
+			model.Draw();
+		}
+		else
+		{
+			glColor3f(1,1,1);
+			glutWireSphere(5,16,8);
+		} 
+
+		glPopMatrix();
 	}
-	else
-	{
-		glColor3f(1,1,1);
-		glutWireSphere(5,16,8);
-	} 
-
-	glPopMatrix();
 }
 
 void Planet::hits(Object *o)
