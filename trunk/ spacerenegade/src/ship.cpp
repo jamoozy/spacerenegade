@@ -123,10 +123,14 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
 
-	alGenBuffers(1, &soundBuffer);
-	alGenSources(1, &soundSource);
-	alSourcei(soundSource, AL_BUFFER, soundBuffer);
-	alSourcePlay(soundSource);
+	// Load the sound.
+	if ((oinkBuffer = alutCreateBufferFromFile("art/oink.wav")) == AL_NONE) {
+		cout << "No buffer returned!" << endl;
+		cout << alutGetErrorString(alutGetError()) << endl;
+	} else {
+		alGenSources(1, &oinkSource);
+		alSourcei(oinkSource, AL_BUFFER, oinkBuffer);
+	}
 }
 
 // Draws the ship.
@@ -225,6 +229,14 @@ void PShip::drawReticle()
 //	glVertex3f(-3, 0,40);
 //	glVertex3f( 3, 0,40);
 	glEnd();
+}
+
+void PShip::fire()
+{
+	if (oinkBuffer != AL_NONE)
+		alSourcePlay(oinkSource);
+
+	weapon->fire(this);
 }
 
 void PShip::hits(Object *o)
