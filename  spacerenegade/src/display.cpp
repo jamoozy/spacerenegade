@@ -101,7 +101,7 @@ void drawText(GLint x, GLint y, string s, Color c, bool center)
 	glColor4d(c.r(), c.g(), c.b(), c.a());
 	if (center)
 	{
-		x -= s.length() * 4.5;
+		x -= (GLint)(s.length() * 4.5);
 		y += 7;
 	}
 	glRasterPos2i(x, y);
@@ -373,8 +373,7 @@ void drawMiniMap()
 	double radius = sqrt(num);
 
 	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
-//	cout << numbObjs << endl;
-	for(int i = 0; i < objs.size(); i++)
+	for(unsigned int i = 0; i < objs.size(); i++)
 	{
 		objs[i]->drawOnMiniMap(radius);
 	}//for
