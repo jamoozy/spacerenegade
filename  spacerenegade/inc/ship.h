@@ -2,7 +2,7 @@
 #define SHIP_H
 
 #include <string>
-#include <AL/al.h>
+#include <AL/alut.h>
 #include "Model_3DS.h"
 #include "object.h"
 #include "vec3.h"
@@ -98,7 +98,7 @@ class PShip : public Ship
 	GLTexture skymap;
 	bool skymapLoaded;
 
-	ALuint soundBuffer, soundSource;
+	ALuint oinkBuffer, oinkSource;
 
 public:
 	PShip(Weapon *weapon, Hull *hull, Shield *shield);
@@ -107,7 +107,7 @@ public:
 	virtual void hits(Object *o);
 	virtual void draw();
 	void drawReticle();
-	virtual void fire() { weapon->fire(this); };
+	virtual void fire();
 
 	// Ship methods that need some restrictions put on them.
 	virtual void accelerate();
