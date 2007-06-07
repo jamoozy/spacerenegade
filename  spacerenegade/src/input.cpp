@@ -276,7 +276,11 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 		case 'z':
 		case 'Z':
 			zoom = ((zoom + 1) % 3);
-			//playerShip->toggleTractorBeam();
+			break;
+
+		case 'x':
+		case 'X':
+			playerShip->toggleTractorBeam();
 			break;
 	}
 }

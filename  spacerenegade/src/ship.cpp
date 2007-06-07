@@ -100,7 +100,7 @@ void Ship::draw(int pass)
 	{
 		// Show the neat shield-bubble.
 		shield->draw();
-		tractorBeam->draw(this);
+		tractorBeam->draw();
 	}
 	glPopMatrix();
 }
@@ -204,7 +204,7 @@ void PShip::draw(int pass)
 	{
 		// Draw that neat shield-bubble around the ship.
 		shield->draw();
-		tractorBeam->draw(this);
+		tractorBeam->draw();
 	}
 
 	glPopMatrix();
