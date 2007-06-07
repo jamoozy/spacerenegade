@@ -2,7 +2,7 @@
 #define SHIP_H
 
 #include <string>
-#include "al/al.h"
+#include <AL/al.h>
 #include "Model_3DS.h"
 #include "object.h"
 #include "vec3.h"

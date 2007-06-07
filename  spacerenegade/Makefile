@@ -16,7 +16,7 @@ GLUT = #/opt/glut-3.7
 
 INC_DIRS = -I$(INCDIR)
 
-GLLIBS = -lXext -lX11 -lm -lGL -lGLU -lpthread -lXmu -lglut -lopenal -lXi -L/usr/X11R6/lib \
+GLLIBS = -lXext -lX11 -lXmu -lm -lGL -lGLU -lglut -lopenal -lalut -lXi -L/usr/X11R6/lib \
 				$(LDLIBDIRS:%=-L%)  -L$(GLUT)/lib  -L.
 
 CCFLAGS = -g -Wall -Wno-deprecated 

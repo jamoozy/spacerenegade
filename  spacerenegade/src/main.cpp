@@ -8,6 +8,7 @@
 	#include <windows.h>
 #endif
 #include <GL/glut.h>
+#include <AL/alut.h>
 #include "input.h"
 #include "camera.h"
 #include "asteroid.h"
@@ -57,6 +58,7 @@ void cleanup()
 	Mouse::cleanUp();
 	if (env) delete env;
 	if (menu) delete menu;
+	alutExit();
 	exit(0);
 }
 
@@ -73,6 +75,7 @@ void cleanup()
 int main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
+	alutInit(&argc, argv);
 
 	#if (PRINT_FPS || LIMIT_FPS)
 		FPS = 60;
