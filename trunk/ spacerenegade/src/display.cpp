@@ -31,9 +31,11 @@ using std::vector;
 #if (PRINT_FPS)
 	extern int FPS;
 	extern int MSPF;
-	extern time_t last_time;
-	extern int frames_this_second;
+	time_t last_time;
+	int frames_this_second;
+	int frames_last_second;
 #endif
+
 extern PShip *playerShip; // Jam: The player's ship, duh.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
@@ -225,17 +227,6 @@ void displayTactical()
 	
 	handleTacticalInput();
 
-	#if (PRINT_FPS)
-		if (last_time != time(NULL))
-		{
-			cout << ctime(&last_time) << "fps: " << frames_this_second << endl;
-			last_time = time(NULL);
-			frames_this_second = 0;
-		}
-		else
-			frames_this_second++;
-	#endif
-
 	env->update();
 	glDisable(GL_BLEND);
 	env->draw(1);   // 1st pass.
@@ -352,6 +343,22 @@ void drawMeters()
 	drawText(0,30, fstream.str(), Color(1,1,1), false);
 	drawText(0,15, astream.str(), Color(1,1,1), false);
 	drawText(0, 0, sstream.str(), Color(1,1,1), false);
+
+	#if (PRINT_FPS)
+		if (last_time != time(NULL))
+		{
+			last_time = time(NULL);
+			frames_last_second = frames_this_second;
+			frames_this_second = 0;
+		}
+		else
+		{
+			frames_this_second++;
+		}
+		stringstream debug(stringstream::in | stringstream::out);
+		debug << ctime(&last_time) << "fps: " << frames_last_second;
+		drawText(800,30 , debug.str() , Color(1,1,1), false);
+	#endif
 }
 
 void drawMiniMap()
@@ -519,7 +526,7 @@ void initTactical()
 
 	#if (PRINT_FPS)
 		last_time = 0;
-		frames_this_second = FPS;
+		frames_this_second = frames_last_second = FPS;
 	#endif
 
 	// Perspective projection parameters

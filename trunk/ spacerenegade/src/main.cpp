@@ -39,11 +39,6 @@ Menu *menu;        // Gum: The current menu of buttons
 	int FPS;
 	int MSPF;
 #endif
-#if (PRINT_FPS)
-	time_t last_time;
-	int frames_this_second;
-#endif
-
 
 // Jam:
 // Put any deletes in here.  Make sure that the value is only deleted
