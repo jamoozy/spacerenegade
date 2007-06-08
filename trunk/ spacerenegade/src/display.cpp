@@ -129,7 +129,8 @@ void SoundFactory::play(const string &name)
 	{
 		if(sounds[i] == name)
 			found = true;
-		i++;
+		else
+			i++;
 	}
 
 	if(found)
