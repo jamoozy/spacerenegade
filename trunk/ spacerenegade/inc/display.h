@@ -9,9 +9,41 @@
 #define IMAGE_WIDTH 1024
 #define IMAGE_HEIGHT 768
 
+#include <AL/alut.h>
 #include <string>
+#include <vector>
+
+using std::vector;
+using std::string;
 
 enum { START_SCREEN, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
+
+class Sound
+{
+private:
+	string name;
+	ALuint buffer, source;
+
+public:
+	Sound();
+	Sound(string name);
+
+	void play();
+	bool operator==(const string& name);
+
+};
+
+class SoundFactory
+{
+private:
+	vector<Sound> sounds;
+	
+public:
+	SoundFactory();
+	SoundFactory(string *names, int length);
+
+	void play(const string& name);
+};
 
 class Color
 {

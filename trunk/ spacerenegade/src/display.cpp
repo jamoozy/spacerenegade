@@ -20,6 +20,7 @@ using std::cerr;
 using std::endl;
 using std::stringstream;
 using std::vector;
+using std::string;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -40,6 +41,7 @@ extern PShip *playerShip; // Jam: The player's ship, duh.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
 extern Menu *menu;        // Gum: The current menu of buttons
+extern SoundFactory *soundFactory;
 
 int screen_width = IMAGE_WIDTH;
 int screen_height = IMAGE_HEIGHT;
@@ -50,8 +52,9 @@ int zoom = 1;
 GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
-// Sound variables.
-ALuint boomBuffer, boomSource;
+// Sound names.
+string soundNames[2] = {"gunshot","hit"};
+
 
 struct perspectiveData 
 {
@@ -64,6 +67,74 @@ struct perspectiveData
 double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in the tactical screen.
 
 
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Sound Class ------------------------------------ //
+////////////////////////////////////////////////////////////////////////////////
+
+Sound::Sound()
+{
+
+}
+
+Sound::Sound(std::string name)
+:name(name)
+{
+	string directory = "art/" + name + ".wav";
+	// Load the sound.
+	if ((buffer = alutCreateBufferFromFile(directory.c_str())) == AL_NONE) {
+		cout << "No buffer returned!" << endl;
+		cout << alutGetErrorString(alutGetError()) << endl;
+	} else {
+		alGenSources(1, &source);
+		alSourcei(source, AL_BUFFER, buffer);
+	}
+}
+
+void Sound::play()
+{
+	if (buffer != AL_NONE)
+		alSourcePlay(source);
+}
+
+bool Sound::operator ==(const std::string &soundName)
+{
+	return (name.compare(soundName) == 0);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// --------------------- SoundFactory Class --------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+SoundFactory::SoundFactory()
+{
+
+}
+
+SoundFactory::SoundFactory(string *names, int length)
+{
+	//Sound sound = NULL;
+
+	for(int i = 0; i < length; i++)
+		sounds.push_back(Sound(names[i]));
+	
+}
+
+void SoundFactory::play(const string &name)
+{
+	int i = 0;
+	bool found = false;
+
+	while((i < sounds.size()) && !found)
+	{
+		if(sounds[i] == name)
+			found = true;
+		i++;
+	}
+
+	if(found)
+		sounds[i].play();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // ------------------------- Color Class ------------------------------------ //
@@ -238,8 +309,9 @@ void displayTactical()
 	glutSwapBuffers();
 
 	if (playerShip->hlthPcnt() <= 0) {
-		if (boomBuffer != AL_NONE)
-			alSourcePlay(boomSource);
+		//soundFactory.
+		//if (boomBuffer != AL_NONE)
+		//	alSourcePlay(boomSource);
 		initGameOver();
 	}
 }
@@ -470,7 +542,10 @@ void initTactical()
 {
 	screenState = TACTICAL; 
 
+
+	soundFactory = new SoundFactory(soundNames,2);
 	// Load the player death sound.
+	/*
 	if ((boomBuffer = alutCreateBufferFromFile("art/boom.wav")) == AL_NONE) {
 		cout << "No buffer returned!" << endl;
 		cout << alutGetErrorString(alutGetError()) << endl;
@@ -478,6 +553,7 @@ void initTactical()
 		alGenSources(1, &boomSource);
 		alSourcei(boomSource, AL_BUFFER, boomBuffer);
 	}
+	*/
 
 	paused = false;
 

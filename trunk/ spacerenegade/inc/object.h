@@ -1,6 +1,7 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <AL/alut.h>
 #include "Model_3DS.h"
 #include "vec3.h"
 
@@ -14,6 +15,8 @@ private:
 	double red;
 	double green;
 	double blue;
+
+	ALuint hitBuffer, hitSource;
 	
 	//double radius2;  // Radius squared.
 
@@ -47,7 +50,13 @@ public:
 	Leaf *getResidence() { return leaf; };
 	void setResidence(Leaf *l) { leaf = l; };
 
-	virtual void hurt(double d) { damage += d; };
+	virtual void hurt(double d) 
+	{ 
+		damage += d;
+	
+		if (hitBuffer != AL_NONE)
+			alSourcePlay(hitSource);
+	};
 	void push(Vec3 direction) { velocity += direction; };
 
 	virtual bool collidesWith(Object *o);

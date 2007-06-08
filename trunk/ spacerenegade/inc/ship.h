@@ -99,7 +99,7 @@ class PShip : public Ship
 	GLTexture skymap;
 	bool skymapLoaded;
 
-	ALuint oinkBuffer, oinkSource;
+	ALuint gunShotBuffer, gunShotSource;
 
 public:
 	PShip(Weapon *weapon, Hull *hull, Shield *shield);

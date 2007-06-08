@@ -25,6 +25,7 @@ Object::Object(char *modelName, double red, double green, double blue) : leaf(NU
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
+
 }
 
 // Creates a new object at the given point with the given velocity.
@@ -33,6 +34,7 @@ Object::Object(char *modelName, double red, double green, double blue, double px
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
+
 }
 
 // Creates a new object at the given point with the given velocity.
@@ -41,6 +43,7 @@ Object::Object(char *modelName, const Vec3& pos, const Vec3& v, double red, doub
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
+
 }
 
 // Does nothing (nothing to be done).
@@ -123,4 +126,6 @@ void Object::hits(Object *o)
 	velocity -= force;
 	o->push(force);
 }
+
+
 
