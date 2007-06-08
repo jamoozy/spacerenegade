@@ -112,19 +112,14 @@ SoundFactory::SoundFactory(string *names, int length)
 
 void SoundFactory::play(const string &name)
 {
-	int i = 0;
-	bool found = false;
-
-	while((i < sounds.size()) && !found)
+	for (unsigned int i = 0; i < sounds.size(); i++)
 	{
 		if(sounds[i] == name)
-			found = true;
-		else
-			i++;
+		{
+			sounds[i].play();
+			return;
+		}
 	}
-
-	if(found)
-		sounds[i].play();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -432,7 +427,6 @@ void drawMiniMap()
 
 	vector<Object*> objs;
 	//Object *objs[400];
-	int numbObjs = 0;
 	double num = 0;
 	
 
@@ -451,7 +445,7 @@ void drawMiniMap()
 
 	double radius = sqrt(num);
 
-	env->getArea(playerShip->getPos(), radius, objs, numbObjs);
+	env->getArea(playerShip->getPos(), radius, objs);
 	for(unsigned int i = 0; i < objs.size(); i++)
 	{
 		objs[i]->drawOnMiniMap(radius);
@@ -533,9 +527,7 @@ void initTactical()
 {
 	screenState = TACTICAL; 
 
-
 	soundFactory = new SoundFactory(soundNames,arrayLength);
-	// Load the player death sound.
 
 	paused = false;
 
