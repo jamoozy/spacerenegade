@@ -25,7 +25,7 @@ private:
 	ALuint buffer, source;
 
 public:
-	Sound();
+	Sound() {};
 	Sound(string name);
 
 	void play();
@@ -39,7 +39,7 @@ private:
 	vector<Sound> sounds;
 	
 public:
-	SoundFactory();
+	SoundFactory() {};
 	SoundFactory(string *names, int length);
 
 	void play(const string& name);

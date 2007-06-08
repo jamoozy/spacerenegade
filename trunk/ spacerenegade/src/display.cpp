@@ -72,19 +72,13 @@ double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in
 // ------------------------- Sound Class ------------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-Sound::Sound()
-{
-
-}
-
-Sound::Sound(std::string name)
-:name(name)
+Sound::Sound(std::string name) : name(name)
 {
 	string directory = "art/" + name + ".wav";
 	// Load the sound.
 	if ((buffer = alutCreateBufferFromFile(directory.c_str())) == AL_NONE) {
-		cout << "No buffer returned!" << endl;
-		cout << alutGetErrorString(alutGetError()) << endl;
+		cout << "ALUT Error for file " << directory << ": "
+			<< alutGetErrorString(alutGetError()) << endl;
 	} else {
 		alGenSources(1, &source);
 		alSourcei(source, AL_BUFFER, buffer);
@@ -106,11 +100,6 @@ bool Sound::operator ==(const std::string &soundName)
 ////////////////////////////////////////////////////////////////////////////////
 // --------------------- SoundFactory Class --------------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
-
-SoundFactory::SoundFactory()
-{
-
-}
 
 SoundFactory::SoundFactory(string *names, int length)
 {
