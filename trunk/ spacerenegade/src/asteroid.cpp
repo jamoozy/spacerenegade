@@ -66,6 +66,7 @@ void Asteroid::update()
 	// Destroy myself if I have no health left.
 	if (damage >= maxHealth())
 	{
+		soundFactory->play("explosion-asteroid");
 		// If this is still big enough, add small asteroids.
 		if (radius > 3)
 		{

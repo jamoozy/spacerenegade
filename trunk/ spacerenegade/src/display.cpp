@@ -53,7 +53,8 @@ GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
 // Sound names.
-string soundNames[2] = {"gunshot","hit"};
+#define arrayLength 4
+string soundNames[arrayLength] = {"gunshot","hit","explosion-asteroid","explosion-ship"};
 
 
 struct perspectiveData 
@@ -544,17 +545,8 @@ void initTactical()
 	screenState = TACTICAL; 
 
 
-	soundFactory = new SoundFactory(soundNames,2);
+	soundFactory = new SoundFactory(soundNames,arrayLength);
 	// Load the player death sound.
-	/*
-	if ((boomBuffer = alutCreateBufferFromFile("art/boom.wav")) == AL_NONE) {
-		cout << "No buffer returned!" << endl;
-		cout << alutGetErrorString(alutGetError()) << endl;
-	} else {
-		alGenSources(1, &boomSource);
-		alSourcei(boomSource, AL_BUFFER, boomBuffer);
-	}
-	*/
 
 	paused = false;
 

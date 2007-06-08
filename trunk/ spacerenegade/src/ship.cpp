@@ -77,6 +77,10 @@ void Ship::update()
 {
 	position += velocity;
 	shield->update();
+
+//	if (damage >= maxHealth())
+//		soundFactory->play("explosion-ship");
+		
 }
 
 // This shouldn't ever be called.  But just in case ...
@@ -244,9 +248,6 @@ void PShip::drawReticle()
 void PShip::fire()
 {
 	soundFactory->play("gunshot");
-	//if (gunShotBuffer != AL_NONE)
-	//	alSourcePlay(gunShotSource);
-
 	weapon->fire(this);
 }
 
