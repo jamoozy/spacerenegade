@@ -4,8 +4,10 @@
 #include <AL/alut.h>
 #include "Model_3DS.h"
 #include "vec3.h"
+#include "display.h"
 
 struct Leaf;
+extern SoundFactory *soundFactory;
 
 class Object
 {
@@ -54,8 +56,9 @@ public:
 	{ 
 		damage += d;
 	
-		if (hitBuffer != AL_NONE)
-			alSourcePlay(hitSource);
+		soundFactory->play("hit");
+		//if (hitBuffer != AL_NONE)
+		//	alSourcePlay(hitSource);
 	};
 	void push(Vec3 direction) { velocity += direction; };
 
