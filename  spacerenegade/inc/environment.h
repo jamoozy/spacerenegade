@@ -59,6 +59,9 @@ struct Leaf : public Node
 	virtual bool isResident(Object* o) const;
 	virtual void add(Object* o);
 	virtual void remove(Object* o);
+	virtual const Vec3& getMin() const { return minBound; };
+	virtual const Vec3& getMax() const { return maxBound; };
+	virtual Vec3 size() const { return (maxBound - minBound); };
 	virtual Vec3 center() const { return (maxBound + minBound) / 2; };
 };
 
@@ -66,6 +69,8 @@ struct Leaf : public Node
 class OctTree
 {
 	Node* head;
+	unsigned int gridDim;
+	Leaf**** grid;  // 3-dim array of Leaf pointers
 
 public:
 	static const double BOUND;
@@ -78,7 +83,7 @@ public:
 	void checkCollisions();
 	void update();
 	void draw(int pass);
-	void getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs);
+	void getArea(const Vec3& pos, double radius, vector<Object*>& objs);
 };
 
 #endif

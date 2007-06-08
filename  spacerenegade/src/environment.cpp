@@ -4,8 +4,11 @@
 #include "environment.h"
 #include "vec3.h"
 
-using namespace std;
-//using  std::vector;
+using std::vector;
+using std::cout;
+using std::cerr;
+using std::endl;
+
 extern OctTree *env;
 
 
@@ -57,14 +60,14 @@ Branch::Branch(int generation, int maxDepth, Vec3 split) : split(split)
 	}
 }
 
-// Tell all the child-nodes to initialize the leaves.
+// tell all the child-nodes to initialize the leaves.
 void Branch::initLeaves()
 {
 	for (int i = 0; i < 8; i++)
 		kids[i]->initLeaves();
 }
 
-// Delete the kids.
+// delete the kids.
 Branch::~Branch()
 {
 	for (int i = 0; i < 8; i++)
@@ -72,7 +75,7 @@ Branch::~Branch()
 			delete kids[i];
 }
 
-// Update all the children.
+// update all the children.
 void Branch::update()
 {
 	for (int i = 0; i < 8; i++)
@@ -422,13 +425,60 @@ void Leaf::remove(Object *o)
 
 const double OctTree::BOUND = 1000;
 
-OctTree::OctTree(int maxDepth) : head(new Branch(1, maxDepth, Vec3(0,0,0))) {}
+OctTree::OctTree(int maxDepth) : head(new Branch(1, maxDepth, Vec3(0,0,0))),
+	gridDim(static_cast<unsigned int>(pow(2.0,maxDepth+1))), grid(NULL) {}
 
-void OctTree::initLeaves() { head->initLeaves(); }
+void OctTree::initLeaves()
+{ 
+	head->initLeaves();
+
+	// Assume a cubic matrix and build a 3D array of elements containing
+	// pointers to each of the leaf nodes of this OctTree with the
+	// correct orientation relative to one another in space.
+	
+	// Set up the memory for the data structure.
+	grid = new Leaf***[gridDim];
+	for (unsigned int i = 0; i < gridDim; i++)
+	{
+		grid[i] = new Leaf**[gridDim];
+		for (unsigned int j = 0; j < gridDim; j++)
+			grid[i][j] = new Leaf*[gridDim];
+	}
+
+	// Populate the data structure.
+	Object o("",0,0,0);
+	double size = 2.0 * BOUND / gridDim;
+	for (unsigned int i = 0; i < gridDim; i++)
+		for (unsigned int j = 0; j < gridDim; j++)
+			for (unsigned int k = 0; k < gridDim; k++)
+			{
+				o.setAt(BOUND - ((i+0.5)*size),
+				        BOUND - ((j+0.5)*size),
+				        BOUND - ((k+0.5)*size));
+				head->add(&o);
+				grid[i][j][k] = o.getResidence();
+				o.getResidence()->remove(&o);
+			}
+}
 
 OctTree::~OctTree()
 {
+	// This deletes all the Branches, which delete all the Leafs, which
+	// delete all the Objects within those Leafs.
 	delete head;
+
+	// This deletes the memory allocated to the grid, NOT the Leaf
+	// objects the grid points to.
+	if (grid)
+	{
+		for (unsigned int i = 0; i < gridDim; i++)
+		{
+			for (unsigned int j = 0; j < gridDim; j++)
+				delete [] grid[i][j];
+			delete [] grid[i];
+		}
+		delete [] grid;
+	}
 }
 
 void OctTree::add(Object* o)
@@ -446,7 +496,7 @@ void OctTree::draw(int pass)
 	head->draw(pass);
 }
 
-void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs, int& numObjs)
+void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs)
 {
 	double radius2 = radius * radius;
 
@@ -457,35 +507,29 @@ void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs, int
 	Leaf *l = o.getResidence();
 	l->remove(&o);
 
-	numObjs = 0;   // Also serves as the numObjs slot in objs to assign a value.
+	// Find how many leaves in each direction we must traverse.  This
+	// assumes uniform size of all leaf nodes.
+	Vec3 negDepth(ceil((radius-(pos.x()-l->getMin().x()))/l->size().x()),
+	              ceil((radius-(pos.y()-l->getMin().y()))/l->size().y()),
+	              ceil((radius-(pos.z()-l->getMin().z()))/l->size().z()));
+	Vec3 posDepth(ceil((radius-(l->getMax().x()-pos.x()))/l->size().x()),
+	              ceil((radius-(l->getMax().y()-pos.y()))/l->size().y()),
+	              ceil((radius-(l->getMax().z()-pos.z()))/l->size().z()));
 
-	for (unsigned int i = 0; i < l->data.size(); i++){
-		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2){
+	for (unsigned int i = 0; i < l->data.size(); i++)
+		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2)
 			objs.push_back(l->data[i]);
-		}//if
-	}//for
 
-	for (int i = 0; i < 13; i++){
-		if (l->checkedNeighbors[i] != NULL){
-			for (unsigned int j = 0; j < l->checkedNeighbors[i]->data.size(); j++){
-				if ((l->checkedNeighbors[i]->data[j]->getPos() - pos) * (l->checkedNeighbors[i]->data[j]->getPos() - pos) < radius2){
+	for (int i = 0; i < 13; i++)
+		if (l->checkedNeighbors[i] != NULL)
+			for (unsigned int j = 0; j < l->checkedNeighbors[i]->data.size(); j++)
+				if ((l->checkedNeighbors[i]->data[j]->getPos() - pos) * (l->checkedNeighbors[i]->data[j]->getPos() - pos) < radius2)
 					objs.push_back(l->checkedNeighbors[i]->data[j]);
-				}//if
-			}//for
-		}//if
-	}//for
 
-	for (int i = 0; i < 13; i++){
-		if (l->unCheckedNeighbors[i] != NULL){
-			for (unsigned int j = 0; j < l->unCheckedNeighbors[i]->data.size(); j++){
-				if ((l->unCheckedNeighbors[i]->data[j]->getPos() - pos) * (l->unCheckedNeighbors[i]->data[j]->getPos() - pos) < radius2){
+	for (int i = 0; i < 13; i++)
+		if (l->unCheckedNeighbors[i] != NULL)
+			for (unsigned int j = 0; j < l->unCheckedNeighbors[i]->data.size(); j++)
+				if ((l->unCheckedNeighbors[i]->data[j]->getPos() - pos) * (l->unCheckedNeighbors[i]->data[j]->getPos() - pos) < radius2)
 					objs.push_back(l->unCheckedNeighbors[i]->data[j]);
-				}//if
-			}//for
-		}//if
-	}//for
-
-
-	//////  Jam:
-	//////  FIXME:  This is not yet fully done!
 }
+
