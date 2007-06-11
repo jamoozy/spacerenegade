@@ -18,6 +18,9 @@ extern GLfloat miniMapY;
 
 extern Menu *menu;
 
+extern vector<Mission*> missionsAvailable;
+extern vector<Mission*> missionsOn;
+
 static GLfloat FONTWIDTH = 9; // We're using GLUT_BITMAP_9_BY_15
 static GLfloat FONTHEIGHT = 15; // We're using GLUT_BITMAP_9_BY_15
 
@@ -106,10 +109,12 @@ Menu::Menu(int type) : type(type)
 		case START_SCREEN:
 			numButtons = 4;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("New Game", 5 , 500,450 , 0.6,0.8,0.2 , 1, initTactical);
+			buttons[0] = Button("New Game", 5 , 500,450 , 0.6,0.8,0.2 , 1, initNewGame);
 			buttons[1] = Button("Load Game",5 , 500,400 , 0.6,0.8,0.2 , 2, NULL);
 			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3, NULL);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.6,0.8,0.2 , 4, cleanup);
+			//buttons[4] = Button("TEST",     5 , 500,250 , 0.6,0.8,0.2 , 5, initPlanet);
+			//buttons[5] = Button("Game Over",     5 , 500,200 , 0.6,0.8,0.2 , 6, initGameOver);
 			break;
 
 		case TACTICAL:
@@ -122,25 +127,27 @@ Menu::Menu(int type) : type(type)
 		case PLANET:
 			numButtons = 2;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("Mission Board", 5 , 500,450 , 1,1,1 , 1, initMissionBoard);
-			buttons[1] = Button("Leave",5 , 500, 400 , .1,.1,.1 , 2, initTactical); // need another function to move ship away from planet
+			buttons[0] = Button("Mission Board", 5 , 500,450 , .3,.3,1 , 1, initMissionBoard);
+			buttons[1] = Button("Leave",5 , 500, 400 , .3,.3,1 , 2, initTactical);
 			break;
 
-		case MISSION_BOARD: // (Gum)
-			NUM_MISSIONS = 2; // FIXME replace with something more dynamic
-			height = 50;
+		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
+			NUM_MISSIONS = (int)missionsAvailable.size();
+			height = 700;
 			numButtons = 2 + NUM_MISSIONS;
 
+			buttons = new Button[numButtons];
 			//draw the two main buttons
-			//buttons [0] = Button("Accept Mission", 5, 200, 500, .4,.5,.7, 1, acceptMission);
-			buttons [1] = Button("Exit", 5, 400, 500, .4,.5,.7, 1, initPlanet);
+
+			buttons [0] = Button("Accept Mission", 5, 150, 300, .1,.7,.1, -1, NULL); // Accept Mission will have id -1 (See processHits)
+			buttons [1] = Button("Exit", 5, 500, 30, .4,.5,.7, 2, initPlanet);
 
 			//draw mission titles
 			for (int i = 0; i < NUM_MISSIONS; i ++)
 			{
-				//Mission m = listOfAvailableMissions.get(i); // fix, obviously
-				//buttons[i + 2] = Button(m.getTitle(), 1, 100, height, .1,.1,.1, i+2, displayMissionBriefing);
-				height += 50;
+				Mission *m = missionsAvailable[i];
+				buttons[i + 2] = Button(m->getTitle(), 1, 20, height, .1,.1,.1, (100 + i), NULL);
+				height -= 50;
 			}
 			// handle displaying briefing, objectives, and reward when mission title is clicked
 			break;
@@ -148,7 +155,7 @@ Menu::Menu(int type) : type(type)
 		case GAME_OVER:
 			numButtons = 4;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("New Game", 5 , 500,450 , 0.8,0.2,0.1 , 1, initTactical);
+			buttons[0] = Button("New Game", 5 , 500,450 , 0.8,0.2,0.1 , 1, initNewGame);
 			buttons[1] = Button("Load Game",5 , 500,400 , 0.8,0.2,0.1 , 2, NULL);
 			buttons[2] = Button("Options",  5 , 500,350 , 0.8,0.2,0.1 , 3, NULL);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.8,0.2,0.1 , 4, cleanup);
@@ -194,5 +201,23 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 	for(int i = 0; i < hits; i++)
 		for (int j = 0; j < numButtons; j++)
 			if (buffer[i*4 + 3] == buttons[j].getID())
-				buttons[j].buttonPressed();
+			{
+				if (buttons[j].getID() == -1) // Accept Mission button was pressed
+				{
+					missionsOn.push_back(selectedMission);
+
+					// missionsAvailable.erase(selectedMission);
+					// Remove selectedMission from available missions,
+					// there's definitely a more efficient way to do this
+					// than what I would hack out. (Gum)
+				}
+				else
+					if (buttons[j].getID() >= 100) // a displayMission button was pressed
+					{
+						selectedMission = missionsAvailable[buttons[j].getID() - 100];
+						selectedMission->displayMissionBriefing();
+					}
+					else
+						buttons[j].buttonPressed();
+			}
 }

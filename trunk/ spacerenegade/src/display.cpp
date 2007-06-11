@@ -14,6 +14,9 @@
 #include "asteroid.h"
 #include "planet.h"
 #include "menu.h"
+#include "mission.h"
+
+#include "objective.h"
 
 using std::cout;
 using std::cerr;
@@ -42,6 +45,8 @@ extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
 extern Menu *menu;        // Gum: The current menu of buttons
 extern SoundFactory *soundFactory;
+extern vector<Mission*> missionsAvailable;
+extern vector<Mission*> missionsOn;
 
 int screen_width = IMAGE_WIDTH;
 int screen_height = IMAGE_HEIGHT;
@@ -212,8 +217,12 @@ void resize(int w, int h)
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void displayMissionBriefing() // (Gum)
+void drawBox(int x1, int y1, int x2, int y2, double r, double g, double b) // (Gum)
 {
+	glColor3d(r,g,b);
+	glRecti(x1, y1, x2, y2);
+	glColor3d(0,0,0);
+	glRecti(x1 + 1, y1 + 1, x2 - 1, y2 - 1);
 }
 
 
@@ -267,6 +276,14 @@ void displayTacticalPaused()
 	glEnable(GL_LIGHTING);
 }
 
+void pause() // (Gum) Called when in a menu
+{
+	playerShip->stabilize();
+	glDisable(GL_LIGHTING);
+	glutSwapBuffers();
+	glEnable(GL_LIGHTING);
+}
+
 void displayTactical()
 {
 	#if (DEBUG_MODE)
@@ -291,6 +308,7 @@ void displayTactical()
 	env->draw(2);   // 2nd (transparency) pass.
 
 	drawHUD();      // Keep on transparency for the HUD.
+	drawObjectives();
 
 	glutSwapBuffers();
 
@@ -343,6 +361,25 @@ void drawHUD()
 	// Set parameters back to tactical.
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
+}
+void drawObjectives()
+{
+	// for debugging displaying of titles/missions, try replacing missionsOn with missionsAvailable
+	int height = 700;
+	for (int i = 0; i < (int)missionsOn.size(); i++)
+	{
+		Mission *m = missionsOn.at(i);
+		drawText(10, height, m->getTitle() , Color(1,1,1), false);
+		//std::cout << "a: " << m->getNumObjs() << std::endl;
+		for (int k = 0; k < m->getNumObjs(); k++)
+		{
+			height -= 30;
+			//Objective o = m->getObjective(k);
+			Objective o = m->getObjective(k);
+			drawText(20, height, o.getDescription() , Color(.5,.5,.5), false);
+		}
+		height -= 40;
+	}
 }
 
 void drawMeters()
@@ -457,6 +494,9 @@ void displayMissionBoard()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	drawBox(10, 400, 400, 750, .4,.8,.1);
+	drawBox(500, 400, 900, 750, .4,.8,.1);
+
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
@@ -523,9 +563,12 @@ void initStartScreen()
 	glutPostRedisplay();
 }
 
-void initTactical()
+// (Gum)
+// initNewGame sets up parameters for ship position/stats,
+// while initTactical sets up just graphics, to be used after leaving a planet
+void initNewGame()
 {
-	screenState = TACTICAL; 
+	//screenState = TACTICAL; 
 
 	soundFactory = new SoundFactory(soundNames,arrayLength);
 
@@ -566,6 +609,13 @@ void initTactical()
 	Vec3 pos (20, 20, 20); // Random or static position?
 	planet = new Planet(pos, 25); // radius too big? too small?
 	env->add(planet);
+
+	// (Gum)
+	// Creating list of available missions
+	Mission *m = new Mission(2);
+	missionsAvailable.push_back(new Mission(0));
+	missionsAvailable.push_back(new Mission(1));
+	
 
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting
@@ -619,10 +669,91 @@ void initTactical()
 	adjustGlobalLighting();
 
 	glutPostRedisplay();
+
+	initTactical();
 }
+
+
+
+
+
+
+
+void initTactical()
+{
+	bool leavingPlanet = (screenState == PLANET);
+	screenState = TACTICAL; 
+
+	paused = false;
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	drawText(512,384 , "Loading..." , Color(1,0,0), true);
+	glutSwapBuffers();
+
+	if (leavingPlanet)
+	{
+		playerShip->setAt(0,0,50);
+	}
+	//env->add(playerShip);
+
+	#if (PRINT_FPS)
+		last_time = 0;
+		frames_this_second = frames_last_second = FPS;
+	#endif
+
+	// Perspective projection parameters
+	pD.fieldOfView = 45.0;
+	pD.aspect      = (float)IMAGE_WIDTH/IMAGE_HEIGHT;
+	pD.nearPlane   = 0.1;
+	pD.farPlane    = 4000.0;
+
+	// Puts the blending function in a way that makes for nice
+	// HUD and menu transparency.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// setup context
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+
+	// Initialize the HUD projection matrix.  This makes for a
+	// speedier change between the HUD and the rest.
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, screen_width, 0, screen_height);
+	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
+	glPopMatrix();
+
+	// set basic matrix mode
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	// Color-ability.
+	glEnable(GL_COLOR_MATERIAL);
+
+	// Lights.
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	adjustGlobalLighting();
+
+	glutPostRedisplay();
+}
+
+
+
+
+
+
 
 void initMissionBoard() //(Gum)
 {
+	pause();
 	// Setting this ensures all the right display
 	// and input functions are called.
 	screenState = MISSION_BOARD;
@@ -658,7 +789,6 @@ void initMissionBoard() //(Gum)
 
 void initPlanet()
 {
-	cerr << "One small step for man" << endl;
 	screenState = PLANET;
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
@@ -666,7 +796,7 @@ void initPlanet()
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
 
-	// Restor colorability.
+	// Restore colorability.
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_TEXTURE_2D);
@@ -721,4 +851,3 @@ void initGameOver()
 	// Schedule a re-draw.
 	glutPostRedisplay();
 }
-

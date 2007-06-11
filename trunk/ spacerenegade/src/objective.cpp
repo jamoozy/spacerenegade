@@ -3,21 +3,20 @@
 #include "environment.h"
 #include "vec3.h"
 #include "objective.h"
-#include "bountyobjective.h"
 #include <string>
 using std::string;
-
-int bountiesKilled = 0;
 
 BountyObjective::BountyObjective()
 {
 	bountyId = 0;
 	num = 0;
+	bountiesKilled = 0;
 }
 
 BountyObjective::BountyObjective(int bountyId, int num) :
 	bountyId(bountyId), num(num)
 	{
+		bountiesKilled = 0;
 		// create listener
 	}
 
@@ -33,7 +32,7 @@ bool BountyObjective::isComplete()
 string BountyObjective::getDescription()
 {
 	string response;
-	string shipName = ""; //getShipName(bountyId);
+	string shipName = "SHIPNAME"; //getShipName(bountyId);
 	if (num == 1) // only one bounty
 	{
 		if (bountiesKilled == 1) // destroyed bounty
