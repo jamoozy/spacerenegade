@@ -10,10 +10,11 @@ private:
 	int id;
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
-	Objective *objectives;
+	BountyObjective *objectives;
 	int reward; // ex. 1000 credits
 
 	bool isComplete; // all objectives have been met, and player should go to finishPlanet
+	int numObjs; // number of objectives
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
 	// EventListener listens for objective-specific events (such as # of bounties killed)
 
@@ -32,10 +33,12 @@ public:
 	int getReward() const {return reward; };
 	//Objective getObjectives();
 	int getNumObjectives() const {return (sizeof objectives)/(sizeof *objectives);};
-	void getObjectives(Object **objs);
+	Objective getObjective(int i) {return objectives[i];};
+	//BountyObjective getObjective(int i) {return objectives[i];};
 
 	void acceptMission();
 	void displayMissionBriefing();
+	int getNumObjs() {return numObjs;};
 	
 };
 

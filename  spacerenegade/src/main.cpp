@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <vector>
 #ifdef WIN32
 	#include <windows.h>
 #endif
@@ -19,6 +20,7 @@
 #include "button.h"
 #include "display.h"
 #include "menu.h"
+#include "mission.h"
 
 using std::cout;
 using std::endl;
@@ -33,6 +35,8 @@ OctTree *env;		// Jam: Collision detection of objects and the world(environment)
 OctTree *zoom2x;
 OctTree *zoomx;
 Menu *menu;        // Gum: The current menu of buttons
+vector <Mission*> missionsOn;
+vector <Mission*> missionsAvailable;
 SoundFactory *soundFactory;
 
 #if (PRINT_FPS || LIMIT_FPS)
@@ -69,6 +73,7 @@ void cleanup()
 // Main function
 int main(int argc, char **argv)
 {
+
 	glutInit(&argc, argv);
 	alutInit(&argc, argv);
 
@@ -80,6 +85,7 @@ int main(int argc, char **argv)
 	env = NULL;
 	playerShip = NULL;
 	menu = NULL;
+
 
 	srand(time(NULL));
 

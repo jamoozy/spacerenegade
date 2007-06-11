@@ -246,7 +246,7 @@ void startScreenKeyboard(unsigned char key, int x, int y)
 
 		case 's':
 		case 'S':
-			initTactical();
+			initNewGame();
 			break;
 	}
 }
@@ -339,7 +339,7 @@ void gameOverKeyboard(unsigned char key, int x, int y)
 
 		case 's':
 		case 'S':
-			initTactical();
+			initNewGame();
 			break;
 	}
 }

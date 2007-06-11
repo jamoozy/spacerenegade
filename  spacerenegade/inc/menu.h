@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "mission.h"
 using std::string;
 
 class Button
@@ -47,6 +48,7 @@ private:
 	Button *buttons;
 	int numButtons;
 	int type;
+	Mission *selectedMission; // for clicking on missions, reading briefing, and accepting
 
 public:
 	Menu();

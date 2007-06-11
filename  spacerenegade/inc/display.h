@@ -65,6 +65,7 @@ double rr(double max, double min);
 void drawText(GLint x, GLint y, std::string s, Color c, bool color);
 void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side);
 void resize(int w, int h);
+void drawBox(int x1, int y1, int x2, int y2, double r, double g, double b); // (Gum)
 
 // Display functions.
 void display();
@@ -73,18 +74,22 @@ void displayTacticalPaused();
 void displayTactical();
 void adjustGlobalLighting();
 void drawHUD();
+void drawObjectives(); // (Gum)
 void drawMeters();
 void drawMiniMap();
 void displayGameOver();
 void displayMissionBoard();
 void displayPlanet();
+void pause(); // (Gum)
 
 // Initializations.
 void initStartScreen();
+void initNewGame();
 void initTactical();
 void initGameOver();
 void initPlanet();
 void initMissionBoard();
+
 
 #endif
 
