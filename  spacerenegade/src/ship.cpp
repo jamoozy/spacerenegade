@@ -80,7 +80,6 @@ void Ship::update()
 
 //	if (damage >= maxHealth())
 //		soundFactory->play("explosion-ship");
-		
 }
 
 // This shouldn't ever be called.  But just in case ...
@@ -216,8 +215,10 @@ void PShip::draw(int pass)
 
 void PShip::drawReticle()
 {
-	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);  // Give full color brightness.
 	glColor3f(0,1,0);
+
+	// The box.
 	glBegin(GL_LINE_STRIP);
 	glVertex3f(-2,-2,50);
 	glVertex3f( 2,-2,50);
@@ -225,23 +226,13 @@ void PShip::drawReticle()
 	glVertex3f(-2, 2,50);
 	glVertex3f(-2,-2,50);
 	glEnd();
-//	glBegin(GL_LINE_STRIP);
-//	glVertex3f(-2,-2,40);
-//	glVertex3f( 2,-2,40);
-//	glVertex3f( 2, 2,40);
-//	glVertex3f(-2, 2,40);
-//	glVertex3f(-2,-2,40);
-//	glEnd();
 
+	// The cross.
 	glBegin(GL_LINES);
 	glVertex3f( 0, 3,50);
 	glVertex3f( 0,-3,50);
 	glVertex3f(-3, 0,50);
 	glVertex3f( 3, 0,50);
-//	glVertex3f( 0, 3,40);
-//	glVertex3f( 0,-3,40);
-//	glVertex3f(-3, 0,40);
-//	glVertex3f( 3, 0,40);
 	glEnd();
 }
 
@@ -258,7 +249,9 @@ void PShip::hits(Object *o)
 	// This is a constant right now.  Later it will be a function
 	// of different things like hull strength and shields.
 	if (o->shouldHurt(this))
+	{
 		hurt(200);
+	}
 	else if (o->canLandOn())
 	{
 		Planet *p = dynamic_cast<Planet*> (o);

@@ -116,10 +116,13 @@ void Object::hits(Object *o)
 
 	// Find the "speed" that this object hit the other by using
 	// the velocity vector and dot product.
-	double s = diff * velocity;
+	double s = diff * getVel();
 
-	// This means this one is travelling away from the other.
-	if (s < 0) return;
+	// This means this one is travelling away from the other one
+	// OR
+	// The other one is travelling away faster than this one is
+	// chasing it (happens often when shooting).
+	if (s < 0 || s < o->getVel() * diff) return;
 
 	// That should map directly to the force vector...
 	Vec3 force = s * diff;
