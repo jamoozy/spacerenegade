@@ -481,6 +481,12 @@ OctTree::~OctTree()
 	}
 }
 
+Vec3 OctTree::indexOf(Leaf *l)
+{
+	
+	return Vec3(0,0,0);
+}
+
 void OctTree::add(Object* o)
 {
 	head->add(o);
