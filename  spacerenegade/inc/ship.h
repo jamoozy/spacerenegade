@@ -129,8 +129,6 @@ public:
 	// Status of the ship. Later these will be affected by the
 	// capacity of the ship and such.
 	virtual double maxFuel() const { return 10000; };
-
-	virtual void landOn(Planet *planet);
 };
 
 #endif

@@ -41,6 +41,7 @@ using std::string;
 #endif
 
 extern PShip *playerShip; // Jam: The player's ship, duh.
+extern Planet *planet;    // Jam: The planet to land on.
 extern OctTree *env;      // Jam: Collision detection of objects and the world
                           //      (environment) in general.
 extern Menu *menu;        // Gum: The current menu of buttons
@@ -276,12 +277,10 @@ void displayTacticalPaused()
 	glEnable(GL_LIGHTING);
 }
 
-void pause() // (Gum) Called when in a menu
+void pauseMenu() // (Gum) Called when in a menu
 {
 	playerShip->stabilize();
-	glDisable(GL_LIGHTING);
 	glutSwapBuffers();
-	glEnable(GL_LIGHTING);
 }
 
 void displayTactical()
@@ -317,6 +316,14 @@ void displayTactical()
 		//if (boomBuffer != AL_NONE)
 		//	alSourcePlay(boomSource);
 		initGameOver();
+	}
+
+	if (playerShip->collidesWith(planet))
+	{
+		// Jam:
+		// Put it here so that all the other state changes to openGL do
+		// not effect the state that the displayPlanet expects.
+		initPlanet();
 	}
 }
 
@@ -362,6 +369,7 @@ void drawHUD()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 }
+
 void drawObjectives()
 {
 	// for debugging displaying of titles/missions, try replacing missionsOn with missionsAvailable
@@ -605,7 +613,7 @@ void initNewGame()
 
 	// (Gum)
 	// Placing one planet in the environment
-	Planet *planet;
+	if (planet) delete planet;
 	Vec3 pos (20, 20, 20); // Random or static position?
 	planet = new Planet(pos, 25); // radius too big? too small?
 	env->add(planet);
@@ -673,12 +681,6 @@ void initNewGame()
 	initTactical();
 }
 
-
-
-
-
-
-
 void initTactical()
 {
 	bool leavingPlanet = (screenState == PLANET);
@@ -745,15 +747,9 @@ void initTactical()
 	glutPostRedisplay();
 }
 
-
-
-
-
-
-
 void initMissionBoard() //(Gum)
 {
-	pause();
+	pauseMenu();
 	// Setting this ensures all the right display
 	// and input functions are called.
 	screenState = MISSION_BOARD;

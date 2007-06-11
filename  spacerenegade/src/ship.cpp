@@ -246,16 +246,14 @@ void PShip::hits(Object *o)
 {
 	Object::hits(o);
 
-	// This is a constant right now.  Later it will be a function
-	// of different things like hull strength and shields.
+	// Jam:
+	// This check allows bullets NOT to hurt the ship they came from.
 	if (o->shouldHurt(this))
 	{
+		// Jam:
+		// This is a constant right now.  Later it will be a function
+		// of different things like hull strength and shields.
 		hurt(200);
-	}
-	else if (o->canLandOn())
-	{
-		Planet *p = dynamic_cast<Planet*> (o);
-		landOn(p);
 	}
 }
 
@@ -392,7 +390,3 @@ GLvoid glDrawCube()
 	glEnd();
 }
 
-void PShip::landOn (Planet *planet)
-{
-	initPlanet();
-}
