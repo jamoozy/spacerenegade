@@ -31,6 +31,7 @@ using std::endl;
 #endif
 
 PShip *playerShip;  // Jam: The player's ship, duh.
+Planet *planet;     // Jam: The planet to land on.
 OctTree *env;		// Jam: Collision detection of objects and the world(environment) in general.
 OctTree *zoom2x;
 OctTree *zoomx;
@@ -84,6 +85,7 @@ int main(int argc, char **argv)
 
 	env = NULL;
 	playerShip = NULL;
+	planet = NULL;
 	menu = NULL;
 
 

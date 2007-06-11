@@ -80,7 +80,7 @@ void drawMiniMap();
 void displayGameOver();
 void displayMissionBoard();
 void displayPlanet();
-void pause(); // (Gum)
+void pauseMenu(); // (Gum)
 
 // Initializations.
 void initStartScreen();
