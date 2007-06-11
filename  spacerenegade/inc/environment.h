@@ -76,8 +76,9 @@ public:
 	static const double BOUND;
 
 	OctTree(int maxDepth);
-	virtual ~OctTree();
 	void initLeaves();
+	virtual ~OctTree();
+	Vec3 indexOf(Leaf *l);
 
 	void add(Object* o);
 	void checkCollisions();
