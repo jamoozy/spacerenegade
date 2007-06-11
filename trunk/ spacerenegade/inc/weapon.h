@@ -49,7 +49,6 @@ public:
 	virtual std::string getType() const { return "Bullet"; };
 
 	virtual void draw(int pass);
-	virtual void hits(Object *o) { Ammo::hits(o); };
 	virtual bool shouldHurt(Object *o) { return o != (Object*)shooter; };
 
 	virtual double ttl() const { return 120; };   // Time to live in frames.
@@ -71,7 +70,6 @@ public:
 	virtual std::string getType() const { return "LaserBeam"; };
 
 	virtual void draw(int pass);
-	virtual void hits(Object *o) { Ammo::hits(o); };
 
 	virtual double ttl() const { return 20; };   // Time to live in frames.
 	virtual double speed() const { return 10; }; // How fast this travels.
@@ -185,6 +183,7 @@ public:
 
 class BasicTractorBeam : public TractorBeam
 {
+	// Points for the tractorbeam.
 	Vec3 a,b,c,d,e,f,g,h;
 	Vec3 A,B,C,D,E,F,G,H;
 
