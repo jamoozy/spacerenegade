@@ -483,8 +483,7 @@ OctTree::~OctTree()
 
 Vec3 OctTree::indexOf(Leaf *l)
 {
-	
-	return Vec3(0,0,0);
+	return (l->getMax() - OctTree::BOUND) / l->size();
 }
 
 void OctTree::add(Object* o)
@@ -515,12 +514,12 @@ void OctTree::getArea(const Vec3& pos, double radius, vector<Object*>& objs)
 
 	// Find how many leaves in each direction we must traverse.  This
 	// assumes uniform size of all leaf nodes.
-	Vec3 negDepth(ceil((radius-(pos.x()-l->getMin().x()))/l->size().x()),
-	              ceil((radius-(pos.y()-l->getMin().y()))/l->size().y()),
-	              ceil((radius-(pos.z()-l->getMin().z()))/l->size().z()));
-	Vec3 posDepth(ceil((radius-(l->getMax().x()-pos.x()))/l->size().x()),
-	              ceil((radius-(l->getMax().y()-pos.y()))/l->size().y()),
-	              ceil((radius-(l->getMax().z()-pos.z()))/l->size().z()));
+//	Vec3 negDepth(ceil((radius-(pos.x()-l->getMin().x()))/l->size().x()),
+//	              ceil((radius-(pos.y()-l->getMin().y()))/l->size().y()),
+//	              ceil((radius-(pos.z()-l->getMin().z()))/l->size().z()));
+//	Vec3 posDepth(ceil((radius-(l->getMax().x()-pos.x()))/l->size().x()),
+//	              ceil((radius-(l->getMax().y()-pos.y()))/l->size().y()),
+//	              ceil((radius-(l->getMax().z()-pos.z()))/l->size().z()));
 
 	for (unsigned int i = 0; i < l->data.size(); i++)
 		if ((l->data[i]->getPos() - pos) * (l->data[i]->getPos() - pos) < radius2)
