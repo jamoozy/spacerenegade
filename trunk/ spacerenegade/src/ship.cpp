@@ -144,6 +144,7 @@ void Ship::update()
 	position += velocity;
 	shield->update();
 	tractorBeam->update(this);
+
 	if(ai != NULL)
 		ai->update();
 
@@ -244,6 +245,13 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 	skymapLoaded = skymap.Load("./art/sky.bmp");
 
 	faction = playerFactionInfo;
+}
+
+void PShip::update()
+{
+	position += velocity;
+	shield->update();
+	tractorBeam->update(this);
 }
 
 // Draws the ship.

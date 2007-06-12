@@ -623,6 +623,7 @@ void initNewGame()
 	vector<Faction> friendly;
 	vector<Faction> neutral;
 	vector<Faction> enemy;
+
 	// Player Faction
 	friendly.push_back(PLAYER);
 	neutral.push_back(WHITE);
@@ -633,6 +634,7 @@ void initNewGame()
 	friendly.clear();
 	neutral.clear();
 	enemy.clear();
+
 	// Red Faction
 	friendly.push_back(RED);
 	neutral.push_back(WHITE);
@@ -643,6 +645,7 @@ void initNewGame()
 	friendly.clear();
 	neutral.clear();
 	enemy.clear();
+
 	// Blue Faction
 	friendly.push_back(BLUE);
 	neutral.push_back(WHITE);
@@ -653,6 +656,7 @@ void initNewGame()
 	friendly.clear();
 	neutral.clear();
 	enemy.clear();
+
 	// White Faction
 	friendly.push_back(WHITE);
 	neutral.push_back(RED);
@@ -663,6 +667,7 @@ void initNewGame()
 	friendly.clear();
 	neutral.clear();
 	enemy.clear();
+
 	// Other Faction
 	neutral.push_back(PLAYER);
 	neutral.push_back(RED);
@@ -772,6 +777,8 @@ void initTactical()
 {
 	bool leavingPlanet = (screenState == PLANET);
 	screenState = TACTICAL; 
+
+	playerShip->stop();
 	
 	ambientMusic.shiftMusic("music/02");
 
@@ -943,5 +950,25 @@ void initGameOver()
 
 	// Schedule a re-draw.
 	glutPostRedisplay();
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// --------------------------- Update the player ---------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+void refuelPlayer()
+{
+	playerShip->refuel();
+}
+
+void reloadPlayerAmmo()
+{
+	playerShip->reload();
+}
+
+void healPlayer()
+{
+	cout << "heal not implemented yet" << endl;
 }
 

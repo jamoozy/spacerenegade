@@ -129,10 +129,13 @@ Menu::Menu(int type) : type(type), selectedMission(NULL)
 			break;
 
 		case PLANET:
-			numButtons = 2;
+			numButtons = 5;
 			buttons = new Button[numButtons];
 			buttons[0] = Button("Mission Board", 5 , 500,450 , .3,.3,1 , 1, initMissionBoard);
-			buttons[1] = Button("Leave",5 , 500, 400 , .3,.3,1 , 2, initTactical);
+			buttons[1] = Button("Refuel",5 , 500, 400 , .3,.3,1 , 2, refuelPlayer);
+			buttons[2] = Button("More Ammo",5 , 500, 350 , .3,.3,1 , 3, reloadPlayerAmmo);
+			buttons[3] = Button("Heal",5 , 500, 300 , .3,.3,1 , 4, healPlayer);
+			buttons[4] = Button("Leave",5 , 500, 250 , .3,.3,1 , 5, initTactical);
 			break;
 
 		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
