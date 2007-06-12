@@ -239,11 +239,11 @@ void display()
 			displayStartScreen();
 			break;
 		case TACTICAL:
-			if (paused)
+			if (paused) {
 				displayTacticalPaused();
-			else
+			} else {
 				displayTactical();
-			break;
+			} break;
 		case PLANET:
 			displayPlanet();
 			break;
@@ -620,9 +620,7 @@ void initNewGame()
 
 	// (Gum)
 	// Creating list of available missions
-	Mission *m = new Mission(2);
 	missionsAvailable.push_back(new Mission(0));
-	missionsAvailable.push_back(new Mission(1));
 	
 
 	// Jam:
@@ -750,6 +748,7 @@ void initTactical()
 void initMissionBoard() //(Gum)
 {
 	pauseMenu();
+
 	// Setting this ensures all the right display
 	// and input functions are called.
 	screenState = MISSION_BOARD;

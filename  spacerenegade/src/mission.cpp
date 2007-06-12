@@ -50,6 +50,7 @@ Mission::Mission(int id) : id(id)
 
 Mission::~Mission()
 {
+	delete [] objectives;
 }
 
 void Mission::displayMissionBriefing()
