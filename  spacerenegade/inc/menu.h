@@ -49,6 +49,7 @@ private:
 	int numButtons;
 	int type;
 	Mission *selectedMission; // for clicking on missions, reading briefing, and accepting
+	bool remake;
 
 public:
 	Menu();
@@ -59,6 +60,7 @@ public:
 	void cleanProjection();
 	//int getNumButtons() {return numButtons;}
 	void processHits(GLint hits, GLuint buffer[]);
+	bool needsRefresh() { return remake; };
 };
 
 #endif

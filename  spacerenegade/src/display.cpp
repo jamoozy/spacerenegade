@@ -531,6 +531,11 @@ void displayMissionBoard()
 	drawBox(10, 400, 400, 750, .4,.8,.1);
 	drawBox(500, 400, 900, 750, .4,.8,.1);
 
+	if (menu->needsRefresh())
+	{
+		delete menu;
+		menu = new Menu(screenState);
+	}
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
