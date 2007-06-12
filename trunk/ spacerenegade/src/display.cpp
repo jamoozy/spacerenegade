@@ -547,31 +547,21 @@ void displayPlanet()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
-std::stringstream ss1;
-std::stringstream ss2;
-std::stringstream ss3;
-std::string str;
+	std::stringstream ss1;
+	std::stringstream ss2;
+	std::stringstream ss3;
+	std::string str;
 
-ss1 << 100 * playerShip->fuelPcnt();
-ss1 >> str;
+	ss1 << 100 * playerShip->fuelPcnt();
+	ss1 >> str;
 	drawText(600, 400, "Fuel:   " + str + "% remaining", Color(.4, 1, .4), false);
-ss2 << playerShip->getAmmo();
-ss2 >> str;
+	ss2 << playerShip->getAmmo();
+	ss2 >> str;
 	drawText(600, 350, "Ammo:   " + str + " bullets", Color(.4, 1, .4), false);
-ss3 << 100 * playerShip->hlthPcnt();
-ss3 >> str;
+	ss3 << 100 * playerShip->hlthPcnt();
+	ss3 >> str;
 	drawText(600, 300, "Health: " + str + "% armor", Color(.4, 1, .4), false);
-	/*virtual double maxHlth() const { return hull->maxHlth(); };
-	virtual double maxFuel() const { return 10000; };
-	virtual double maxAmmo() const { return weapon->maxAmmo(); };
-	virtual double getHlth() const { return hull->getHlth(); };
-	virtual double getFuel() const { return fuel; };
-	virtual double getAmmo() const { return weapon->getAmmo(); };
-	virtual double hlthPcnt() const { return hull->hlthPcnt(); };
-	virtual double fuelPcnt() const { return fuel / maxFuel(); };
-	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
-	virtual double shldPcnt() const { return shield->hlthPcnt(); };*/
+
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
@@ -891,6 +881,8 @@ void initTactical()
 void initMissionBoard() //(Gum)
 {
 	pauseMenu();
+
+	Keyboard::reset();
 
 	// Setting this ensures all the right display
 	// and input functions are called.
