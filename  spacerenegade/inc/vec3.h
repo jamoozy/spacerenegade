@@ -34,13 +34,17 @@ public:
 
 	string str();  // String representation: [x, y, z]
 		
-	// Addition and Subtraction.
+	// Addition and Subtraction by another Vec3.
 	Vec3 operator+(const Vec3& a) const  // element-wise sum
 	{ return Vec3(a.vec[0] + vec[0], a.vec[1] + vec[1], a.vec[2] + vec[2]); }
 	Vec3 operator-(const Vec3& a) const  // element-wise difference
 	{ return Vec3(vec[0] - a.vec[0], vec[1] - a.vec[1], vec[2] - a.vec[2]); };
 	Vec3 operator+=(const Vec3& a); // element-wise sum
 	Vec3 operator-=(const Vec3& a); // element-wise difference
+
+	// Addition and Subtraction by a scalar.
+	Vec3 operator-(double a) const
+	{ return Vec3(vec[0] - a, vec[1] - a, vec[2] - a); };
 
 	// Vector Multiplications.
 	const double operator*(const Vec3& a) const  // dot product
@@ -55,6 +59,10 @@ public:
 	{ return Vec3(vec[0] / a, vec[1] / a, vec[2] / a); };
 	Vec3 operator*=(double a); // scalar product
 	Vec3 operator/=(double a); // scalar dividend
+
+	// Bit-wise products and dividends.
+	Vec3 operator/(const Vec3& a)
+	{ return Vec3(vec[0] / a.vec[0], vec[1] / a.vec[1], vec[2] / a.vec[2]); };
 
 	// Other.
 	Vec3 operator-() const  // Unary negation.
