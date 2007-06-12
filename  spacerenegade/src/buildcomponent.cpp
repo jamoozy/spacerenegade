@@ -1,5 +1,21 @@
+#include <iostream>
 #include "GL/glut.h"
+#include "ship.h"
 #include "buildcomponent.h"
+
+using std::cout;
+using std::cerr;
+using std::endl;
+
+extern PShip *playerShip;
+
+
+void Material::update()
+{
+	position += velocity;
+
+	if (killNextTick) delete this;
+}
 
 void Material::draw(int pass)
 {
@@ -14,5 +30,15 @@ void Material::draw(int pass)
 
 		glPopMatrix();
 	}
+}
+
+void Material::hits(Object *o)
+{
+	if (o == playerShip)
+	{
+		// Add in the "you get this resource" part.
+	}
+	
+	killNextTick = true;
 }
 
