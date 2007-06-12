@@ -613,13 +613,14 @@ void initNewGame()
 
 	// (Gum)
 	// Placing one planet in the environment
-	if (planet) delete planet;
 	Vec3 pos (20, 20, 20); // Random or static position?
 	planet = new Planet(pos, 25); // radius too big? too small?
 	env->add(planet);
 
 	// (Gum)
 	// Creating list of available missions
+	missionsOn.clear();
+	missionsAvailable.clear();
 	missionsAvailable.push_back(new Mission(0));
 	missionsAvailable.push_back(new Mission(1));
 	
