@@ -3,7 +3,7 @@
 #include "GL/glut.h"
 #include "display.h"
 #include "environment.h"
-#include "buildcomponent.h"
+#include "material.h"
 #include "asteroid.h"
 #include "factionInfo.h"
 
