@@ -621,6 +621,7 @@ void initNewGame()
 	// (Gum)
 	// Creating list of available missions
 	missionsAvailable.push_back(new Mission(0));
+	missionsAvailable.push_back(new Mission(1));
 	
 
 	// Jam:
