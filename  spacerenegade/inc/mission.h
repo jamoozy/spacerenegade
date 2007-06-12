@@ -38,7 +38,6 @@ public:
 	void acceptMission();
 	void displayMissionBriefing();
 	int getNumObjs() {return numObjs;};
-	
 };
 
 #endif

@@ -188,7 +188,12 @@ void Menu::draw(GLenum mode)
 		buttons[i].Place(mode);
 
 	if (mode != GL_SELECT)
+	{
+		if (selectedMission != NULL)
+			selectedMission->displayMissionBriefing();
+
 		cleanProjection();
+	}
 }
 
 void Menu::cleanProjection()
@@ -237,7 +242,6 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 				else if (buttons[j].getID() >= 100) // a displayMission button was pressed
 				{
 					selectedMission = missionsAvailable[buttons[j].getID() - 100];
-					selectedMission->displayMissionBriefing();
 				}
 				else
 					buttons[j].buttonPressed();
