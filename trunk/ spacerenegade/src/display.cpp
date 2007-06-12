@@ -15,7 +15,6 @@
 #include "planet.h"
 #include "menu.h"
 #include "mission.h"
-
 #include "objective.h"
 
 using std::cout;
@@ -59,8 +58,8 @@ GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
 // Sound names.
-#define arrayLength 4
-string soundNames[arrayLength] = {"gunshot","hit","explosion-asteroid","explosion-ship"};
+string soundNames[5] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust"};
+Sound &ambientMusic = Sound();
 
 
 struct perspectiveData 
@@ -78,7 +77,7 @@ double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in
 // ------------------------- Sound Class ------------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-Sound::Sound(std::string name) : name(name)
+Sound::Sound(string name) : name(name)
 {
 	string directory = "art/" + name + ".wav";
 	// Load the sound.
@@ -97,9 +96,37 @@ void Sound::play()
 		alSourcePlay(source);
 }
 
-bool Sound::operator ==(const std::string &soundName)
+void Sound::stop()
+{
+	if (buffer != AL_NONE)
+		alSourceStop(source);
+}
+
+void Sound::setLooping()
+{
+	alSourcei(source, AL_LOOPING, AL_TRUE);
+}
+
+bool Sound::operator ==(const string &soundName)
 {
 	return (name.compare(soundName) == 0);
+}
+
+void Sound::shiftMusic(string newName)
+{
+	stop();
+	string directory = "art/" + newName + ".wav";
+	// Load the sound.
+	if ((buffer = alutCreateBufferFromFile(directory.c_str())) == AL_NONE) {
+		cout << "ALUT Error for file " << directory << ": "
+			<< alutGetErrorString(alutGetError()) << endl;
+	} else {
+		alGenSources(1, &source);
+		alSourcei(source, AL_BUFFER, buffer);
+	}
+	play();
+	setLooping();
+	
 }
 
 
@@ -107,11 +134,10 @@ bool Sound::operator ==(const std::string &soundName)
 // --------------------- SoundFactory Class --------------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-SoundFactory::SoundFactory(string *names, int length)
+SoundFactory::SoundFactory(string *names)
 {
-	//Sound sound = NULL;
 
-	for(int i = 0; i < length; i++)
+	for(int i = 0; i < names->size(); i++)
 		sounds.push_back(Sound(names[i]));
 	
 }
@@ -465,19 +491,13 @@ void drawMeters()
 
 void drawMiniMap()
 {
-	//GLfloat cx,GLfloat cy,GLfloat r,int side
-	
-	//playerShip->getPos
-
 	vector<Object*> objs;
-	//Object *objs[400];
 	double num = 0;
 	
 
 	glColor3d(.3, .3, .9);
 	glCircle(miniMapX, miniMapY, 85, 20);
 
-	//const Vec3& pos, double radius, Object **objs, int& numObjs);
 	if(zoom == 0)
 		num = 75*75+75*75+75*75;
 	else if(zoom == 2)
@@ -541,6 +561,8 @@ void initStartScreen()
 	// Setting this ensures all the right display
 	// and input functions are called.
 	screenState = START_SCREEN;
+	
+	ambientMusic.shiftMusic("music/01");
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
@@ -576,8 +598,7 @@ void initStartScreen()
 void initNewGame()
 {
 	//screenState = TACTICAL; 
-
-	soundFactory = new SoundFactory(soundNames,arrayLength);
+	soundFactory = new SoundFactory(soundNames);
 
 	paused = false;
 
@@ -683,6 +704,8 @@ void initTactical()
 {
 	bool leavingPlanet = (screenState == PLANET);
 	screenState = TACTICAL; 
+	
+	ambientMusic.shiftMusic("music/02");
 
 	paused = false;
 
@@ -787,6 +810,8 @@ void initPlanet()
 {
 	screenState = PLANET;
 
+	ambientMusic.shiftMusic("music/01");
+
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -820,6 +845,8 @@ void initPlanet()
 void initGameOver()
 {
 	screenState = GAME_OVER;
+
+	ambientMusic.shiftMusic("music/01");
 
 	// Set up the perspective;
 	glMatrixMode(GL_PROJECTION);

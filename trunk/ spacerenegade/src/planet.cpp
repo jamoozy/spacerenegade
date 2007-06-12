@@ -30,7 +30,6 @@ void Planet::draw(int pass)
 		if (modelLoaded)
 		{
 			glColor3f(1,1,1);
-			//glutWireSphere(5,4,2);
 			model.Draw();
 		}
 		else

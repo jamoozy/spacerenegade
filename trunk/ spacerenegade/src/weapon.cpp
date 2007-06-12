@@ -110,7 +110,7 @@ void LaserBeam::draw(int pass)
 void Blaster::fire(Ship *shooter)
 {
 	--ammo;
-
+	soundFactory->play("gunshot");
 	// This deletes itself after 120 frames (~3s) or it hits something.
 	Bullet *b = new Bullet(shooter);
 	env->add(b);

@@ -29,9 +29,16 @@ public:
 	Sound(string name);
 
 	void play();
+	void stop();
+	void setLooping();
+	string getName() const {return name;};
+
 	bool operator==(const string& name);
 
+	void shiftMusic(string name);
+
 };
+
 
 class SoundFactory
 {
@@ -40,7 +47,7 @@ private:
 	
 public:
 	SoundFactory() {};
-	SoundFactory(string *names, int length);
+	SoundFactory(string *names);
 
 	void play(const string& name);
 };

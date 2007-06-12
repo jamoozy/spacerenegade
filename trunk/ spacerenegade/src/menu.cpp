@@ -120,10 +120,12 @@ Menu::Menu(int type) : type(type), selectedMission(NULL)
 			break;
 
 		case TACTICAL:
-			numButtons = 2;
-			buttons = new Button[numButtons];
-			buttons[0] = Button("-", .1, miniMapX - 85, miniMapY - 90, 0, 0, .2, 1, NULL);
-			buttons[1] = Button("+", .1, miniMapX + 85, miniMapY - 90, 0, 0, .2, 2, NULL);
+			//	Sound sound("music");
+			//	sound.play();
+			//numButtons = 2;
+			//buttons = new Button[numButtons];
+			//buttons[0] = Button("-", .1, miniMapX - 85, miniMapY, 0, 0, .2, 1, NULL);
+			//buttons[1] = Button("+", .1, miniMapX + 85, miniMapY, 0, 0, .2, 2, NULL);
 			break;
 
 		case PLANET:
