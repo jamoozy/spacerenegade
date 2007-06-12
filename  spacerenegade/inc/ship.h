@@ -96,6 +96,9 @@ public:
 	virtual double fuelPcnt() const { return fuel / maxFuel(); };
 	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
 	virtual double shldPcnt() const { return shield->hlthPcnt(); };
+	virtual void addToFuel (int num) { fuel += num; };
+	virtual void addToHlth (int num) { hull->addToHlth(num); };
+	virtual void addToAmmo (int num) { weapon->addToAmmo(num); };
 	//virtual double explodeTime() const { return 
 };
 
@@ -113,6 +116,12 @@ private:
 	//int lightTime;
 	GLTexture skymap;
 	bool skymapLoaded;
+
+	int credits;
+
+	int fuelCost;
+	int hlthCost;
+	int ammoCost;
 
 public:
 	PShip(Weapon *weapon, Hull *hull, Shield *shield);
@@ -136,9 +145,17 @@ public:
 	virtual void pitchBack();
 	virtual void pitchForward();
 
-	void refuel() { fuel = maxFuel(); };
-	void reload() { weapon->reload(); };
-	void heal() { hull->heal(); };
+	void refuel();
+	void reload();
+	void heal();
+
+	int costToRefuel() { return fuelCost * (maxFuel() - fuel); };
+	int costToReload() { return ammoCost * (maxAmmo() - getAmmo()); };
+	int costToHeal() { return hlthCost * (maxHlth() - getHlth()); };
+
+	int getCredits() { return credits; };
+	void addToCredits(int c) { credits += c; };
+	bool canAfford(int c) { return (credits >= c); };
 
 	// Rate functions inherited from Ship. They act as inheritable constants
 	// for now, later they'll be based on engines and such.

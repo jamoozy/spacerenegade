@@ -25,6 +25,7 @@ public:
 	virtual double maxHlth() const { return 100; };
 	virtual double getHlth() const { return maxHlth() - damage; };
 	virtual double hlthPcnt() const  { return getHlth() / maxHlth(); };
+	virtual void addToHlth(int num) { damage -= num; };
 };
 
 class BasicHull : public Hull

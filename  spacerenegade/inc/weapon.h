@@ -114,6 +114,7 @@ public:
 	virtual double wrnHeat() const { return 80; };   // When it looses efficiency?
 	virtual double maxAmmo() const { return 100; };  // Most ammo this can hold.
 	virtual double getAmmo() const { return ammo; }; // Amount of ammo this now has.
+	virtual void addToAmmo(int num) { ammo += num; };// Called from planet view (Gum)
 };
 
 /********************************

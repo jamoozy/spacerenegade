@@ -547,20 +547,40 @@ void displayPlanet()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	
 	std::stringstream ss1;
 	std::stringstream ss2;
 	std::stringstream ss3;
+	std::stringstream ss4;
+	std::stringstream ss1a;
+	std::stringstream ss2a;
+	std::stringstream ss3a;
 	std::string str;
 
 	ss1 << 100 * playerShip->fuelPcnt();
 	ss1 >> str;
-	drawText(600, 400, "Fuel:   " + str + "% remaining", Color(.4, 1, .4), false);
+	drawText(600, 420, "Fuel:   " + str + "% remaining", Color(.4, 1, .4), false);
+	ss1a << playerShip->costToRefuel();
+	ss1a >> str;
+	drawText(600, 400, "Costs " + str + " credits to fully refuel", Color(.4, 1, .4), false);
+
 	ss2 << playerShip->getAmmo();
 	ss2 >> str;
-	drawText(600, 350, "Ammo:   " + str + " bullets", Color(.4, 1, .4), false);
+	drawText(600, 370, "Ammo:   " + str + " bullets", Color(.4, 1, .4), false);
+	ss2a << playerShip->costToReload();
+	ss2a >> str;
+	drawText(600, 350, "Costs " + str + " credits to fully reload", Color(.4, 1, .4), false);
+
 	ss3 << 100 * playerShip->hlthPcnt();
 	ss3 >> str;
-	drawText(600, 300, "Health: " + str + "% armor", Color(.4, 1, .4), false);
+	drawText(600, 320, "Health: " + str + "% armor remaining", Color(.4, 1, .4), false);
+	ss3a << playerShip->costToHeal();
+	ss3a >> str;
+	drawText(600, 300, "Costs " + str + " credits to fully heal", Color(.4, 1, .4), false);
+
+	ss4 << playerShip->getCredits();
+	ss4 >> str;
+	drawText(600, 250, "Money:  " + str + " credits", Color(.4, .4, 1), false);
 
 	menu->draw(GL_RENDER);
 
@@ -996,17 +1016,22 @@ void initGameOver()
 
 void refuelPlayer()
 {
-	playerShip->refuel();
+	//if (playerShip->canAfford(playerShip->costToRefuel()))
+		playerShip->refuel();
 }
 
 void reloadPlayerAmmo()
 {
-	playerShip->reload();
+	//if (playerShip->canAfford(playerShip->costToReload()))
+		playerShip->reload();
 }
 
 void healPlayer()
 {
-	soundFactory->play("heal");
-	playerShip->heal();
+	//if (playerShip->canAfford(playerShip->costToHeal()))
+	//{
+		soundFactory->play("heal");
+		playerShip->heal();
+	//}
 }
 
