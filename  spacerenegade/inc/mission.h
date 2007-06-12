@@ -2,6 +2,7 @@
 #define MISSION_H
 
 #include <string>
+#include <vector>
 #include "objective.h"
 #include "object.h"
 
@@ -13,7 +14,7 @@ private:
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
 	int numObjs; // number of objectives
-	BountyObjective **objectives;
+	std::vector<BountyObjective*> objectives;
 	int reward; // ex. 1000 credits
 	bool isComplete; // all objectives have been met, and player should go to finishPlanet
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
@@ -35,13 +36,13 @@ public:
 	string getBriefing() const    { return briefing; };
 	int getReward() const         { return reward; };
 	//Objective getObjectives();
-	int getNumObjectives() const  { return (sizeof objectives)/(sizeof *objectives);};
-	Objective *getObjective(int i) { return objectives[i];};
+	int getNumObjectives() const  { return objectives.size(); };
+	Objective* getObjective(int i) { return objectives.at(i);};
 	//BountyObjective getObjective(int i) {return objectives[i];};
 
 	void acceptMission();
 	void displayMissionBriefing();
-	int getNumObjs() {return numObjs;};
+	int getNumObjs() {return objectives.size();};
 };
 
 #endif

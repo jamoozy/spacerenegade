@@ -12,6 +12,8 @@
 #include "planet.h"
 #include "display.h"
 #include "factionInfo.h"
+#include "mission.h"
+#include "objective.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -26,6 +28,8 @@ extern OctTree *env;
 extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
 	*whiteFactionInfo, *otherFactionInfo;
 extern vector<Ship*> enemyShips;
+extern vector<Mission*> missionsAvailable;
+extern vector<Mission*> missionsOn;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -622,6 +626,7 @@ void BasicRedShip::destroy()
 {
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
+	missionsAvailable.at(0)->getObjective(0)->incrementKills();
 	delete this;
 }
 
@@ -798,6 +803,7 @@ void BasicBlueShip::destroy()
 {
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
+	missionsAvailable.at(1)->getObjective(0)->incrementKills();
 	delete this;
 }
 

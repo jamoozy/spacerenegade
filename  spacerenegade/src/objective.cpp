@@ -4,13 +4,14 @@
 #include "vec3.h"
 #include "objective.h"
 #include <string>
-using std::string;
+#include <sstream>
+using namespace std;
 
 BountyObjective::BountyObjective() :
-	bountyId(0), num(0), bountiesKilled(0) {}
+	shipName("SHIPNAME"), bountyId(0), num(0), bountiesKilled(0) {}
 
-BountyObjective::BountyObjective(int bountyId, int num) :
-	bountyId(bountyId), num(num), bountiesKilled(0) {}
+BountyObjective::BountyObjective(string targetShipNames, int bountyId, int num) :
+	shipName(targetShipNames), bountyId(bountyId), num(num), bountiesKilled(0) {}
 
 BountyObjective::~BountyObjective() {}
 
@@ -24,19 +25,27 @@ bool BountyObjective::isComplete()
 string BountyObjective::getDescription()
 {
 	string response;
-	string shipName = "SHIPNAME"; //getShipName(bountyId);
+	ostringstream oss;
+
+	//string shipName = "SHIPNAME"; //getShipName(bountyId);
 	if (num == 1) // only one bounty
 	{
 		if (bountiesKilled == 1) // destroyed bounty
-			response = shipName + " destroyed.";
+			oss << shipName << " destroyed.";
 		else // haven't destroyed bounty
-			response = shipName + " not yet destroyed.";
+			//oss << shipName << " not yet destroyed.";
+			oss << "Mission Complete!";
 	}
 	else // several bounties
 	{
-		response = bountiesKilled + " out of " + num;
-		response += " " + shipName + " destroyed.";
+		if(bountiesKilled < num)
+		{
+			oss << bountiesKilled << " out of " << num;
+			oss << response << " " << shipName << " destroyed.";
+		}
+		else
+			oss << "Mission Complete!";
 	}
-	return response;
+	return oss.str();
 }
 
