@@ -1,7 +1,7 @@
 #include <iostream>
 #include "GL/glut.h"
 #include "ship.h"
-#include "buildcomponent.h"
+#include "material.h"
 
 using std::cout;
 using std::cerr;
