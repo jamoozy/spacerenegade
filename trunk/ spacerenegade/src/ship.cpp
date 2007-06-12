@@ -247,6 +247,12 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 	skymapLoaded = skymap.Load("./art/sky.bmp");
 
 	faction = playerFactionInfo;
+
+	credits = 10000;
+	
+	fuelCost = 1;
+	hlthCost = 10;
+	ammoCost = 5;
 }
 
 void PShip::update()
@@ -346,6 +352,51 @@ void PShip::drawReticle()
 	glVertex3f(-3, 0,50);
 	glVertex3f( 3, 0,50);
 	glEnd();
+}
+
+
+void PShip::refuel() 
+{ 
+	if (canAfford(costToRefuel()))
+	{
+		credits -= costToRefuel(); 
+		fuel = maxFuel(); 
+	}
+	else // only has partial credits
+	{
+		int num = credits / fuelCost;
+		fuel += num;
+		credits -= num * fuelCost;
+	}
+}
+
+void PShip::reload() 
+{ 
+	if (canAfford(costToReload()))
+	{
+		credits -= costToReload(); 
+		weapon->reload(); 
+	}
+	else // only has partial credits
+	{
+		int num = credits / ammoCost;
+		addToAmmo(num);
+		credits -= num * ammoCost;
+	}
+}
+void PShip::heal() 
+{ 
+	if (canAfford(costToHeal()))
+	{
+		credits -= costToHeal(); 
+		hull->heal();
+	}
+	else // only has partial credits
+	{
+		int num = credits / hlthCost;
+		addToHlth(num);
+		credits -= num * hlthCost;
+	}
 }
 
 void PShip::fire()
