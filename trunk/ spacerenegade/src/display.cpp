@@ -383,8 +383,8 @@ void drawObjectives()
 		{
 			height -= 30;
 			//Objective o = m->getObjective(k);
-			Objective o = m->getObjective(k);
-			drawText(20, height, o.getDescription() , Color(.5,.5,.5), false);
+			Objective *o = m->getObjective(k);
+			drawText(20, height, o->getDescription() , Color(.5,.5,.5), false);
 		}
 		height -= 40;
 	}
@@ -623,7 +623,6 @@ void initNewGame()
 	missionsAvailable.clear();
 	missionsAvailable.push_back(new Mission(0));
 	missionsAvailable.push_back(new Mission(1));
-	
 
 	// Jam:
 	// Initialize the player's ship.  Don't delete it, because deleting

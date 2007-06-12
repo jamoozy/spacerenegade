@@ -29,8 +29,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 			title = "Help Crooky get his revenge!";
 			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plzkthxbai."; // insert \n's?
 			numObjs = 1;
-			objectives = new BountyObjective[numObjs];
-			objectives[0] = BountyObjective(0, 5);
+			objectives = new BountyObjective*[numObjs];
+			objectives[0] = new BountyObjective(0, 5);
 
 			reward = 1000;
 			isComplete = false;
@@ -40,8 +40,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 			title = "Help Bumbum get his revenge!";
 			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plzkthxbai."; // insert \n's?
 			numObjs = 1;
-			objectives = new BountyObjective[numObjs];
-			objectives[0] = BountyObjective(1, 10);
+			objectives = new BountyObjective*[numObjs];
+			objectives[0] = new BountyObjective(1, 10);
 
 			reward = 2000;
 			isComplete = false;
@@ -51,7 +51,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 
 Mission::~Mission()
 {
-	cout << "giggety" << endl;
+	for (int i = 0; i < numObjs; i++)
+		delete objectives[i];
 	delete [] objectives;
 }
 

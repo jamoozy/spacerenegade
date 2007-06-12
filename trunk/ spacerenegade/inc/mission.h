@@ -11,7 +11,7 @@ private:
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
 	int numObjs; // number of objectives
-	BountyObjective *objectives;
+	BountyObjective **objectives;
 	int reward; // ex. 1000 credits
 	bool isComplete; // all objectives have been met, and player should go to finishPlanet
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
@@ -25,14 +25,14 @@ public:
 	Mission();
 	virtual ~Mission();
 	Mission(int id); // probably only one or two missions in demo
-	bool isCompleted() const { return isComplete; };
+	bool isCompleted() const      { return isComplete; };
 	//bool hasFailed(); // won't use conditions in the demo
-	string getTitle() const {return title; };
-	string getBriefing() const {return briefing; };
-	int getReward() const {return reward; };
+	string getTitle() const       { return title; };
+	string getBriefing() const    { return briefing; };
+	int getReward() const         { return reward; };
 	//Objective getObjectives();
-	int getNumObjectives() const {return (sizeof objectives)/(sizeof *objectives);};
-	Objective getObjective(int i) {return objectives[i];};
+	int getNumObjectives() const  { return (sizeof objectives)/(sizeof *objectives);};
+	Objective *getObjective(int i) { return objectives[i];};
 	//BountyObjective getObjective(int i) {return objectives[i];};
 
 	void acceptMission();
