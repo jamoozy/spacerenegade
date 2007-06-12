@@ -24,16 +24,21 @@ public:
 
 	// Coordinates of this object.
 	double x() const { return vec[0]; };
+	void setX(double newX) { vec[0] = newX; };
 	double y() const { return vec[1]; };
+	void setY(double newY) { vec[1] = newY; };
 	double z() const { return vec[2]; };
+	void setZ(double newZ) { vec[2] = newZ; };
 	const double *array() const { return vec; };
 
 	double norm() const  // The length of the vector
 	{ return sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]); }
 	void normalize();  // Maintain direction but make length 1
-
+	double distance(const Vec3& pos) const; // Find the distance from this Vec3 to pos
+	double angleBetween(const Vec3& b) const; // Find the angle between this and a, in radians
+	Vec3 Vec3::rotate(double angle, double x, double y, double z); // Find the rotation of this vec angle radiance CCW about the specified vector
 	string str();  // String representation: [x, y, z]
-		
+
 	// Addition and Subtraction by another Vec3.
 	Vec3 operator+(const Vec3& a) const  // element-wise sum
 	{ return Vec3(a.vec[0] + vec[0], a.vec[1] + vec[1], a.vec[2] + vec[2]); }
@@ -68,6 +73,10 @@ public:
 	Vec3 operator-() const  // Unary negation.
 	{ return Vec3(-vec[0], -vec[1], -vec[2]); };
 	Vec3& operator=(const Vec3& a);  // Assignment.
+	bool operator==(const Vec3& a) const // Equality
+	{ return ((vec[0] == a.vec[0]) && (vec[1] == a.vec[1]) && (vec[2] == a.vec[2])); };
+	bool operator!=(const Vec3& a) const // Inequality
+	{ return !(*this == a); };
 };
 
 class Matrix
@@ -92,6 +101,7 @@ public:
 	{ return matrix[i]; };
 	const GLdouble *array() const // Get the array of elements in the matrix.
 	{ return matrix; };
+	void set(int i, GLdouble a) { matrix[i] = a; };
 
 	Matrix operator*(const Matrix& m) const;
 	Matrix operator*(const GLdouble m[16]) const;

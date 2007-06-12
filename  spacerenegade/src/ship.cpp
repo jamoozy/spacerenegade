@@ -4,25 +4,74 @@
 #include <iostream>
 #include <GL/glut.h>
 #include <cmath>
+#include <vector>
 #include "Model_3DS.h"
 #include "environment.h"
 #include "camera.h"
 #include "ship.h"
 #include "planet.h"
 #include "display.h"
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
-extern OctTree *env;
+#include "factionInfo.h"
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
 #endif
 
-class GLUquadric {};
-GLvoid glDrawCube();
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::vector;
+
+extern OctTree *env;
+extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
+	*whiteFactionInfo, *otherFactionInfo;
+
+#ifndef M_PI
+	#define M_PI 3.14159265358979
+#endif
+
+// Draws the sky cube for the environment
+GLvoid glDrawCube()
+{
+	glBegin(GL_QUADS);
+	// Front Face
+	glNormal3f( 0.0f, 0.0f, 0.5f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+	// Back Face
+	glNormal3f( 0.0f, 0.0f,-0.5f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	// Top Face
+	glNormal3f( 0.0f, 0.5f, 0.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+	// Bottom Face
+	glNormal3f( 0.0f,-0.5f, 0.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+	// Right Face
+	glNormal3f( 0.5f, 0.0f, 0.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+	// Left Face
+	glNormal3f(-0.5f, 0.0f, 0.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glEnd();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // ----------------------- General-Purpose Ship ----------------------------- //
@@ -30,7 +79,7 @@ GLvoid glDrawCube();
 
 Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
 	Object(modelName,1,1,1), weapon(weapon), hull(hull), shield(shield),
-	tractorBeam(new BasicTractorBeam()), fuel(fuel)
+	tractorBeam(new BasicTractorBeam()), fuel(fuel), ai(NULL)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -73,14 +122,33 @@ Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double f
 	lcs = m;
 }
 
+// Calculate the number of radians the ship has rotated, counterclockwise.
+// For example, if the up vector of the ship is (-1, 0, 0), this will return
+// pi/2.  If it is (0, -1, 0), this will return pi.  If it is (1, 0, 0), 
+// it will return pi * 3/2
+double Ship::getRadiansRotated() const
+{
+	Vec3 shipUp = getUp();
+	Vec3 worldUp(0, 1, 0);
+
+	double angle = shipUp.angleBetween(worldUp);
+	double crossProduct = (shipUp ^ worldUp).z();
+
+	if(crossProduct > 0)
+		angle += M_PI;
+	return angle;
+}
+
 void Ship::update()
 {
 	position += velocity;
 	shield->update();
 	tractorBeam->update(this);
+	if(ai != NULL)
+		ai->update();
 
-//	if (damage >= maxHealth())
-//		soundFactory->play("explosion-ship");
+	if (hull->getHlth() <= 0)
+		destroy();
 }
 
 // This shouldn't ever be called.  But just in case ...
@@ -90,7 +158,7 @@ void Ship::draw(int pass)
 
 	//move
 	glTranslated(position.x(), position.y(), position.z());
-	
+
 	// direction rotation
 	glMultMatrixd(lcs.array());
 
@@ -109,9 +177,49 @@ void Ship::draw(int pass)
 	glPopMatrix();
 }
 
+void Ship::fire()
+{
+	soundFactory->play("gunshot");
+	weapon->fire(this);
+}
+
 void Ship::hurt(double amt)
 {
 	hull->hurt(shield->hurt(amt));
+}
+
+void Ship::setDir(Vec3& newDir)
+{
+	Vec3 newLeft = getUp() ^ newDir;
+	if (newLeft == Vec3(0,0,0))
+		newLeft = getLeft();
+	Vec3 newUp = newDir ^ newLeft;
+
+	newDir.normalize();
+	newUp.normalize();
+	newLeft.normalize();
+
+	lcs.set(0,newLeft.x());
+	lcs.set(1,newLeft.y());
+	lcs.set(2,newLeft.z());
+
+	lcs.set(4,newUp.x());
+	lcs.set(5,newUp.y());
+	lcs.set(6,newUp.z());
+	
+	lcs.set(8,newDir.x());
+	lcs.set(9,newDir.y());
+	lcs.set(10,newDir.z());
+}
+
+void Ship::eliminateOldInertia()
+{
+	Vec3 currentVelocity = velocity;
+	currentVelocity.normalize();
+	Vec3 desiredDirection = getDir();
+	Vec3 diff = desiredDirection - currentVelocity;
+	diff.normalize();
+	velocity += diff * roa();
 }
 
 void Ship::stabilize()
@@ -132,8 +240,10 @@ void Ship::stabilize()
 PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 	Ship("./art/personalship.3DS", weapon, hull, shield, maxFuel())
 {
-	// Load variables 
+	// Load variables
 	skymapLoaded = skymap.Load("./art/sky.bmp");
+
+	faction = playerFactionInfo;
 }
 
 // Draws the ship.
@@ -144,7 +254,7 @@ void PShip::draw(int pass)
 	glTranslated(position.x(), position.y(), position.z());
 
 	// Render the skymap
-	if (pass == 1 && skymapLoaded) 
+	if (pass == 1 && skymapLoaded)
 	{
 		glPushMatrix();
 
@@ -248,6 +358,12 @@ void PShip::hits(Object *o)
 	}
 }
 
+void PShip::destroy()
+{
+	soundFactory->play("explosion-ship");
+	delete this;
+}
+
 // Adds to the ship's velocity.
 void PShip::accelerate()
 {
@@ -339,46 +455,159 @@ void PShip::rollRight()
 	}
 }
 
-// Draws the sky cube for the environment
-GLvoid glDrawCube()
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Basic Red Ship --------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Makes a new, boring ship that just sits there.
+BasicRedShip::BasicRedShip(Weapon *weapon, Hull *hull, Shield *shield) :
+	Ship("./art/basicredship.3DS", weapon, hull, shield, maxFuel())
 {
-	glBegin(GL_QUADS);
-	// Front Face
-	glNormal3f( 0.0f, 0.0f, 0.5f);					
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-	// Back Face
-	glNormal3f( 0.0f, 0.0f,-0.5f);					
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	// Top Face
-	glNormal3f( 0.0f, 0.5f, 0.0f);					
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-	// Bottom Face
-	glNormal3f( 0.0f,-0.5f, 0.0f);					
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-	// Right Face
-	glNormal3f( 0.5f, 0.0f, 0.0f);					
-	glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
-	glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
-	// Left Face
-	glNormal3f(-0.5f, 0.0f, 0.0f);					
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
-	glEnd();
+	ai = new ShipAI(this, redFactionInfo);
+	faction = redFactionInfo;
 }
 
+// Draws the ship.
+void BasicRedShip::draw(int pass)
+{
+	glPushMatrix();
+
+	// Draw the current path
+/*	glPushMatrix();
+	glColor3d(1.0, 0.0, 0.0);
+	vector<Vec3> currentPath = ai->getPath();
+	glBegin(GL_LINES);
+	for(int i = 0; i < static_cast<int>(currentPath.size()) - 1; i++)
+	{
+		Vec3 start = currentPath.at(i);
+		Vec3 end = currentPath.at(i + 1);
+		glVertex3d(start.x(), start.y(), start.z());
+		glVertex3d(end.x(), end.y(), end.z());
+	}
+	glEnd();
+	glPopMatrix();
+*/
+	glTranslated(position.x(), position.y(), position.z());
+
+	// direction rotation
+	glMultMatrixd(lcs.array());
+
+	if (pass == 1)
+	{
+		if (modelLoaded)
+		{
+			glColor3d(1,1,1);
+			model.Draw();  // Renders the model to the screen
+		}
+		else
+		{
+			// Set color to red.
+			glColor3f(1.0, 0.0, 0.0);
+			glutWireCone(2,4,5,1);
+		}
+	}
+	else
+	{
+		// Draw that neat shield-bubble around the ship.
+		shield->draw();
+		tractorBeam->draw();
+	}
+
+	glPopMatrix();
+}
+
+void BasicRedShip::fire()
+{
+	soundFactory->play("gunshot");
+	weapon->fire(this);
+}
+
+void BasicRedShip::hits(Object *o)
+{
+	Object::hits(o);
+
+	// Jam:
+	// This check allows bullets NOT to hurt the ship they came from.
+	if (o->shouldHurt(this))
+	{
+		// Jam:
+		// This is a constant right now.  Later it will be a function
+		// of different things like hull strength and shields.
+		hurt(200);
+	}
+	//cout << "Enemy ship hp: " << getHlth() << ", Shield: " << shield->getHlth() << endl;
+}
+
+void BasicRedShip::destroy()
+{
+	soundFactory->play("explosion-ship");
+	//cout << "Destroyed" << endl;
+	delete this;
+}
+
+// Note: AI has infinite fuel
+
+// Adds to the ship's velocity.
+void BasicRedShip::accelerate()
+{
+	//--fuel;
+	Ship::accelerate();
+}
+
+// Subtracts from the ship's velocity.
+void BasicRedShip::decelerate()
+{
+	//--fuel;
+	Ship::decelerate();
+}
+
+// Brings the velocity down to 0
+void BasicRedShip::stabilize()
+{
+	//fuel -= 5;
+	Ship::stabilize();
+}
+
+// Tilt the nose up.
+void BasicRedShip::pitchBack()
+{
+	//fuel -= 0.2;
+	Ship::pitchBack();
+}
+
+// Tilt the nose down.
+void BasicRedShip::pitchForward()
+{
+	//fuel -= 0.2;
+	Ship::pitchForward();
+}
+
+// Turn left about the Y(up)-axis
+void BasicRedShip::yawLeft()
+{
+	//fuel -= 0.2;
+	Ship::yawLeft();
+}
+
+// Turn right about the Y(up)-axis
+void BasicRedShip::yawRight()
+{
+	//fuel -= 0.2;
+	Ship::yawRight();
+}
+
+//
+void BasicRedShip::rollLeft()
+{
+//	fuel -= 0.2;
+//	radpyr += Vec3(0, 0, rot);
+//	recompdir();
+}
+
+//
+void BasicRedShip::rollRight()
+{
+//	fuel -= 0.2;
+//	radpyr -= Vec3(0, 0, rot);
+//	recompdir();
+}

@@ -5,32 +5,43 @@
 #include "environment.h"
 #include "buildcomponent.h"
 #include "asteroid.h"
+#include "factionInfo.h"
 
 using std::cout;
 using std::cerr;
 using std::endl;
 
 extern OctTree *env;
+extern FactionInfo *otherFactionInfo;
 
 // Creates a new stationary Asteroid at the origin.
 Asteroid::Asteroid(double radius) : Object("art/asteroid.3DS",1,1,1),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{ setRadius(radius); }
+{ 
+	setRadius(radius); 
+	faction = otherFactionInfo;
+}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double radius, double px, double py, double pz, double vx, double vy, double vz) :
 	Object("art/asteroid.3DS", 255, 255, 255, px, py, pz, vx, vy, vz),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{ setRadius(radius); }
+{ 
+	setRadius(radius); 
+	faction = otherFactionInfo;
+}
 
 // Creates a new asteroid at the given point with the given velocity.
 Asteroid::Asteroid(double radius, const Vec3& pos, const Vec3& v) :
 	Object("art/asteroid.3DS", pos, v,1,1,1),
 	angle(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0),
 	avelocity(rand()/(3.0 * RAND_MAX),rand()/(3.0 * RAND_MAX),0)
-{ setRadius(radius); }
+{ 
+	setRadius(radius); 
+	faction = otherFactionInfo;
+}
 
 // Scale this down.  Allows for smaller asteroids.
 void Asteroid::setRadius(double r)

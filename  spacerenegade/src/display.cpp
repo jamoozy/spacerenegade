@@ -15,6 +15,8 @@
 #include "planet.h"
 #include "menu.h"
 #include "mission.h"
+#include "factionInfo.h"
+
 #include "objective.h"
 
 using std::cout;
@@ -47,6 +49,10 @@ extern Menu *menu;        // Gum: The current menu of buttons
 extern SoundFactory *soundFactory;
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
+BasicRedShip *enemy1;
+
+FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
+	*whiteFactionInfo, *otherFactionInfo;
 
 int screen_width = IMAGE_WIDTH;
 int screen_height = IMAGE_HEIGHT;
@@ -137,7 +143,7 @@ void Sound::shiftMusic(string newName)
 SoundFactory::SoundFactory(string *names)
 {
 
-	for(int i = 0; i < names->size(); i++)
+	for(unsigned int i = 0; i < names->size(); i++)
 		sounds.push_back(Sound(names[i]));
 	
 }
@@ -220,7 +226,7 @@ void drawText(GLint x, GLint y, string s, Color c, bool center)
 
 void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side)
 {
- 
+
     glBegin(GL_POLYGON);
     for (int i = 0; i < side; i++)
 	{
@@ -238,7 +244,7 @@ void resize(int w, int h)
 	pD.aspect = (float)w / (float)h;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	
+
 	// This one gives nice frustum for 2D
 	glFrustum(-0.1 * pD.aspect, 0.1 * pD.aspect, -0.1, 0.1, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
@@ -325,7 +331,7 @@ void displayTactical()
 	adjustCamera();
 
 	adjustGlobalLighting();
-	
+
 	handleTacticalInput();
 
 	env->update();
@@ -494,7 +500,7 @@ void drawMiniMap()
 {
 	vector<Object*> objs;
 	double num = 0;
-	
+
 
 	glColor3d(.3, .3, .9);
 	glCircle(miniMapX, miniMapY, 85, 20);
@@ -502,7 +508,7 @@ void drawMiniMap()
 	if(zoom == 0)
 		num = 75*75+75*75+75*75;
 	else if(zoom == 2)
-		num = 100*100+100*100+100*100; 
+		num = 100*100+100*100+100*100;
 	else if(zoom == 1)
 		num = 125*125+125*125+125*125;
 	else
@@ -613,6 +619,61 @@ void initNewGame()
 	if (env) delete env;
 	env = new OctTree(3);
 
+	// Set Up Faction Information
+	vector<Faction> friendly;
+	vector<Faction> neutral;
+	vector<Faction> enemy;
+	// Player Faction
+	friendly.push_back(PLAYER);
+	neutral.push_back(WHITE);
+	neutral.push_back(OTHER);
+	enemy.push_back(RED);
+	enemy.push_back(BLUE);
+	playerFactionInfo = new FactionInfo(PLAYER, friendly, neutral, enemy);
+	friendly.clear();
+	neutral.clear();
+	enemy.clear();
+	// Red Faction
+	friendly.push_back(RED);
+	neutral.push_back(WHITE);
+	neutral.push_back(OTHER);
+	enemy.push_back(PLAYER);
+	enemy.push_back(BLUE);
+	redFactionInfo = new FactionInfo(RED, friendly, neutral, enemy);
+	friendly.clear();
+	neutral.clear();
+	enemy.clear();
+	// Blue Faction
+	friendly.push_back(BLUE);
+	neutral.push_back(WHITE);
+	neutral.push_back(OTHER);
+	enemy.push_back(PLAYER);
+	enemy.push_back(RED);
+	blueFactionInfo = new FactionInfo(BLUE, friendly, neutral, enemy);
+	friendly.clear();
+	neutral.clear();
+	enemy.clear();
+	// White Faction
+	friendly.push_back(WHITE);
+	neutral.push_back(RED);
+	neutral.push_back(BLUE);
+	neutral.push_back(PLAYER);
+	neutral.push_back(OTHER);
+	whiteFactionInfo = new FactionInfo(WHITE, friendly, neutral, enemy);
+	friendly.clear();
+	neutral.clear();
+	enemy.clear();
+	// Other Faction
+	neutral.push_back(PLAYER);
+	neutral.push_back(RED);
+	neutral.push_back(BLUE);
+	neutral.push_back(WHITE);
+	neutral.push_back(OTHER);
+	otherFactionInfo = new FactionInfo(OTHER, friendly, neutral, enemy);
+	friendly.clear();
+	neutral.clear();
+	enemy.clear();
+
 	// Jam:
 	// You may be asking yourself "Why not just put the call to initLeaves()
 	// in the constructor?"  The answer is that the leaves need the env
@@ -634,7 +695,7 @@ void initNewGame()
 
 	// (Gum)
 	// Placing one planet in the environment
-	Vec3 pos (20, 20, 20); // Random or static position?
+	Vec3 pos (0, 0, 100); // Random or static position?
 	planet = new Planet(pos, 25); // radius too big? too small?
 	env->add(planet);
 
@@ -651,6 +712,12 @@ void initNewGame()
 	playerShip = new PShip(new Blaster(), new BasicHull(), new BasicShield());
 	playerShip->setAt(0,0,0);
 	env->add(playerShip);
+
+	// PM:
+	// Initialize the enemy ship.  This will be removed once missions are implemented
+	enemy1 = new BasicRedShip(new Blaster(), new BasicHull(), new BasicShield());
+	enemy1->setAt(0, 0, 200);
+	env->add(enemy1);
 
 	#if (PRINT_FPS)
 		last_time = 0;

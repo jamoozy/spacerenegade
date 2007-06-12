@@ -32,6 +32,7 @@ public:
 	virtual void update();
 	virtual void draw(int pass) { Object::draw(pass); };
 	virtual void hits(Object *o);
+	virtual bool aiShouldConsider() const { return true; };	// If true, ai ignores this.  Only bullets should be ignored.
 
 	virtual double ttl() const { return 60; };   // Time to live in frames.
 	virtual double speed() const { return 1; };  // How fast this travels.

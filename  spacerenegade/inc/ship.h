@@ -9,12 +9,15 @@
 #include "weapon.h"
 #include "hull.h"
 #include "planet.h"
+#include "ai.h"
 
 using std::string;
 
 // General form of ships.  Rather abstract.
 class Ship : public Object
 {
+	friend class ShipAI;
+
 protected:
 	// This is an orthonormal rotation matrix that describes the
 	// orientation of the ship.  With this matrix you can do
@@ -29,6 +32,8 @@ protected:
 	Shield *shield;
 	TractorBeam *tractorBeam;
 	double fuel;   // Amount of fuel left.
+	ShipAI* ai;
+	bool exploding; // If true, the ship will explode
 
 	Ship(char *modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel);
 
@@ -40,7 +45,8 @@ protected:
 	GLdouble rollR[16];
 
 public:
-	virtual ~Ship() { delete weapon; delete hull; delete shield; delete tractorBeam; };
+	virtual ~Ship() { delete weapon; delete hull; delete shield; delete tractorBeam; if(ai) delete ai; };
+	//virtual ~Ship();
 
 	// Rate functions.
 	virtual double roa() const { return 0.005; }; // Rate of Acceleration
@@ -53,13 +59,19 @@ public:
 	Vec3 getDir() const { return Vec3(lcs[8],lcs[9],lcs[10]); };
 	Vec3 getUp() const { return Vec3(lcs[4],lcs[5],lcs[6]); };
 	Vec3 getLeft() const { return Vec3(lcs[0],lcs[1],lcs[2]); };
+	double getRadiansRotated() const; // Number of radians the ship has rolled, Counterclockwise
+	ShipAI* getAI() const { return ai; };
 
 	virtual void update();
 	virtual void draw(int pass);
 	virtual void hurt(double d);
+	virtual void fire();
+	virtual void destroy() {};
 
 	// Special?
 	void toggleTractorBeam() { tractorBeam->toggle(); };
+	void eliminateOldInertia(); // Accelerates in a direction to eliminate inertia that is not in the current direction
+	void setDir(Vec3& newDir);  // Sets the new direction for the ship
 
 	// Movement.
 	virtual void accelerate() { velocity += getDir() * roa(); };
@@ -83,6 +95,7 @@ public:
 	virtual double fuelPcnt() const { return fuel / maxFuel(); };
 	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
 	virtual double shldPcnt() const { return shield->hlthPcnt(); };
+	//virtual double explodeTime() const { return 
 };
 
 
@@ -94,6 +107,7 @@ public:
 // Interface for the player's ship.  Very specific to the needs of the player.
 class PShip : public Ship
 {
+private:
 	//bool lightRnotL;
 	//int lightTime;
 	GLTexture skymap;
@@ -107,6 +121,7 @@ public:
 	virtual void draw(int pass);
 	void drawReticle();
 	virtual void fire();
+	virtual void destroy();
 
 	// Ship methods that need some restrictions put on them.
 	virtual void accelerate();
@@ -129,6 +144,47 @@ public:
 	// Status of the ship. Later these will be affected by the
 	// capacity of the ship and such.
 	virtual double maxFuel() const { return 10000; };
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------ Basic Red Ship ---------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Interface for the the basic red ship.
+class BasicRedShip : public Ship
+{
+public:
+	BasicRedShip(Weapon *weapon, Hull *hull, Shield *shield);
+	virtual ~BasicRedShip() {};
+	virtual string getType() const { return "BasicRedShip"; };
+
+	//virtual void update();
+	virtual void draw(int pass);
+	virtual void hits(Object* o);
+
+	virtual void accelerate();
+	virtual void decelerate();
+	virtual void stabilize();
+	virtual void yawLeft();
+	virtual void yawRight();
+	virtual void rollLeft();
+	virtual void rollRight();
+	virtual void pitchBack();
+	virtual void pitchForward();
+
+	virtual void fire();
+	virtual void destroy();
+
+	// Rate functions inherited from Ship
+	virtual double roa() const { return 0.005; };  // Rate of Acceleration
+	virtual double rod() const { return 0.001; };  // Rate of Deceleration
+	virtual double ros() const { return 0.95; };  // Rate of Stabilization
+	virtual double rot() const { return 0.02; };  // Rate of Turn
+
+	// Status of the ship.
+	virtual double maxHlth() const { return 1000; };
+	virtual double maxFuel() const { return 10000; };
+	virtual double maxAmmo() const { return 100; };
 };
 
 #endif
