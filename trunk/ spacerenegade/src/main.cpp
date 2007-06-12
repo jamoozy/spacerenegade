@@ -20,6 +20,7 @@
 #include "button.h"
 #include "display.h"
 #include "menu.h"
+#include "factionInfo.h"
 #include "mission.h"
 
 using std::cout;
@@ -39,6 +40,8 @@ Menu *menu;        // Gum: The current menu of buttons
 vector <Mission*> missionsOn;
 vector <Mission*> missionsAvailable;
 SoundFactory *soundFactory;
+extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
+	*whiteFactionInfo, *otherFactionInfo;
 
 #if (PRINT_FPS || LIMIT_FPS)
 	int FPS;
@@ -58,6 +61,11 @@ void cleanup()
 	Mouse::cleanUp();
 	if (env) delete env;
 	if (menu) delete menu;
+	if (playerFactionInfo) delete playerFactionInfo;
+	if (redFactionInfo) delete redFactionInfo;
+	if (blueFactionInfo) delete blueFactionInfo;
+	if (whiteFactionInfo) delete whiteFactionInfo;
+	if (otherFactionInfo) delete otherFactionInfo;
 	alutExit();
 	exit(0);
 }
@@ -94,9 +102,9 @@ int main(int argc, char **argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 
 	#if (DEBUG_MODE)
-		glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT); 
+		glutInitWindowSize(IMAGE_WIDTH,IMAGE_HEIGHT);
 		glutInitWindowPosition(0, 0);
-		window = glutCreateWindow("Space Renegade"); 
+		window = glutCreateWindow("Space Renegade");
 	#else
 		glutEnterGameMode();
 		#ifndef WIN32
@@ -111,8 +119,8 @@ int main(int argc, char **argv)
 		glutIdleFunc(NULL);
 	#else
 		glutIdleFunc(display);
-	#endif	
-	
+	#endif
+
 	initStartScreen();
 
 	glutDisplayFunc(display);
@@ -124,8 +132,8 @@ int main(int argc, char **argv)
 	glutMouseFunc(mouseButtHandler);
 	glutMotionFunc(mouseMoveHandler);
 	glutPassiveMotionFunc(mouseMoveHandler);
-	
+
 	glutMainLoop();
-	
+
 	return 0;
 }

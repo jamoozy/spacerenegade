@@ -1,4 +1,5 @@
 #include <sstream>
+#include <cmath>
 #include "vec3.h"
 
 
@@ -16,6 +17,52 @@ void Vec3::normalize()
 	vec[0] /= norm;
 	vec[1] /= norm;
 	vec[2] /= norm;
+}
+
+// Find the distance from this Vec3 to pos
+double Vec3::distance(const Vec3& pos) const
+{
+	double distance = sqrt( pow((x() - pos.x()), 2) +
+	                        pow((y() - pos.y()), 2) +
+	                        pow((z() - pos.z()), 2));
+	return distance;
+}
+
+// Find the angle between this and a, in radians
+double Vec3::angleBetween(const Vec3& b) const
+{
+	double amag = this->norm();
+	double bmag = b.norm();
+	if (amag == 0.0 || bmag == 0.0)
+		return 0.0;
+
+	double d = (*this) * b;
+	d /= (amag * bmag);
+	return acos(d);
+}
+
+Vec3 Vec3::rotate(double angle, double x, double y, double z)
+{
+	Vec3 rot(x, y, z);
+	rot.normalize();
+	double c = cos(angle);
+	double s = sin(angle);
+	GLdouble m[] = 	{ 	x * x * (1 - c) + c,
+						y * x * (1 - c) + z * s,
+						x * z * (1 - c) - y * s,
+						0,
+                        x * y * (1 - c) - z * s,
+						y * y * (1 - c) + c,
+						y * z * (1 - c) + x * s,
+						0,
+						x * z * (1 - c) + y * s,
+						y * z * (1 - c) - x * s,
+						z * z * (1 - c) + c,
+						0,
+						0, 0, 0, 1 };
+	Vec3 oldVec = *this;
+	Vec3 newVec = m * oldVec;
+	return newVec;
 }
 
 // Returns a string representation of this vector.

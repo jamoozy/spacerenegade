@@ -134,7 +134,7 @@ void Leaf::initLeaves()
 	Vec3 center((maxBound+minBound)/2);
 	double diff = maxBound.x() - center.x() + 1;
 
-	Object anchor("",1,1,1);
+	Object anchor("");
 
 	anchor.setAt(center+Vec3(-diff,-diff,-diff));
 	env->add(&anchor);
@@ -239,7 +239,7 @@ void Leaf::initLeaves()
 	else
 		checkedNeighbors[12] = NULL;
 	anchor.getResidence()->remove(&anchor);
-	
+
 	anchor.setAt(center-Vec3(-diff,-diff,-diff));
 	env->add(&anchor);
 	if (anchor.getResidence() != this)
@@ -370,7 +370,7 @@ void Leaf::update()
 					data[j]->hits(data[i]);
 				}
 			}
-			
+
 			// Check all the dudes in the neighboring nodes.
 			for (int j = 0; j < 13; j++) {
 				if (checkedNeighbors[j] != NULL) {
@@ -389,7 +389,14 @@ void Leaf::update()
 
 void Leaf::draw(int pass)
 {
-	for (unsigned int i = 0; i < data.size(); i++)
+/*	glPushMatrix();
+	glDisable(GL_TEXTURE_2D);
+	glColor3f(0.0, 0.0, 1.0);
+	Vec3 center((maxBound+minBound)/2);
+	glTranslated(center.x(), center.y(), center.z());
+	glutSolidCube(4.0);
+	glPopMatrix();
+*/	for (unsigned int i = 0; i < data.size(); i++)
 		if (data[i] != NULL)
 			data[i]->draw(pass);
 }
@@ -429,13 +436,13 @@ OctTree::OctTree(int maxDepth) : head(new Branch(1, maxDepth, Vec3(0,0,0))),
 	gridDim(static_cast<unsigned int>(pow(2.0,maxDepth+1))), grid(NULL) {}
 
 void OctTree::initLeaves()
-{ 
+{
 	head->initLeaves();
 
 	// Assume a cubic matrix and build a 3D array of elements containing
 	// pointers to each of the leaf nodes of this OctTree with the
 	// correct orientation relative to one another in space.
-	
+
 	// Set up the memory for the data structure.
 	grid = new Leaf***[gridDim];
 	for (unsigned int i = 0; i < gridDim; i++)
