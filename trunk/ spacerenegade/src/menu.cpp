@@ -103,7 +103,7 @@ void Button::Place(GLenum mode)
 // --------------------------- Menu Definition ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-Menu::Menu(int type) : type(type), selectedMission(NULL)
+Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 {
 	int height, NUM_MISSIONS; // replace with something more dynamic
 	switch (type)
@@ -236,6 +236,7 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 							vector<Mission*>::iterator iter = missionsAvailable.begin();
 							for (; selectedMission != *iter && iter != missionsAvailable.end(); iter++);
 							missionsAvailable.erase(iter);
+							remake = true;
 						}
 
 						// missionsAvailable.erase(selectedMission);
