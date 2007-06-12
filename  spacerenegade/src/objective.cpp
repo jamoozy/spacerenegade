@@ -6,19 +6,11 @@
 #include <string>
 using std::string;
 
-BountyObjective::BountyObjective()
-{
-	bountyId = 0;
-	num = 0;
-	bountiesKilled = 0;
-}
+BountyObjective::BountyObjective() :
+	bountyId(0), num(0), bountiesKilled(0) {}
 
 BountyObjective::BountyObjective(int bountyId, int num) :
-	bountyId(bountyId), num(num)
-	{
-		bountiesKilled = 0;
-		// create listener
-	}
+	bountyId(bountyId), num(num), bountiesKilled(0) {}
 
 BountyObjective::~BountyObjective() {}
 

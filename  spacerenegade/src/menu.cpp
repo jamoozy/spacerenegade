@@ -103,7 +103,7 @@ void Button::Place(GLenum mode)
 // --------------------------- Menu Definition ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-Menu::Menu(int type) : type(type)
+Menu::Menu(int type) : type(type), selectedMission(NULL)
 {
 	int height, NUM_MISSIONS; // replace with something more dynamic
 	switch (type)
@@ -206,21 +206,41 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 			{
 				if (buttons[j].getID() == -1) // Accept Mission button was pressed
 				{
-					missionsOn.push_back(selectedMission);
-
-					// missionsAvailable.erase(selectedMission);
-					// Remove selectedMission from available missions,
-					// there's definitely a more efficient way to do this
-					// than what I would hack out. (Gum)
-				}
-				else
-					if (buttons[j].getID() >= 100) // a displayMission button was pressed
+					if (selectedMission == NULL)
 					{
-						selectedMission = missionsAvailable[buttons[j].getID() - 100];
-						selectedMission->displayMissionBriefing();
+						cout << "1. No mission selected." << endl;
 					}
 					else
-						buttons[j].buttonPressed();
+					{
+						bool notYetOn = true;
+						for (vector<Mission*>::iterator iter = missionsOn.begin();
+							(iter != missionsOn.end()) &&
+							(notYetOn = (*iter != selectedMission));
+							iter++) cout << "|";
+
+						// Only do this if we're not yet on.
+						if (notYetOn)
+						{
+							missionsOn.push_back(selectedMission);
+
+							vector<Mission*>::iterator iter = missionsAvailable.begin();
+							for (; selectedMission != *iter && iter != missionsAvailable.end(); iter++);
+							missionsAvailable.erase(iter);
+						}
+
+						// missionsAvailable.erase(selectedMission);
+						// Remove selectedMission from available missions,
+						// there's definitely a more efficient way to do this
+						// than what I would hack out. (Gum)
+					}
+				}
+				else if (buttons[j].getID() >= 100) // a displayMission button was pressed
+				{
+					selectedMission = missionsAvailable[buttons[j].getID() - 100];
+					selectedMission->displayMissionBriefing();
+				}
+				else
+					buttons[j].buttonPressed();
 			}
 }
 
