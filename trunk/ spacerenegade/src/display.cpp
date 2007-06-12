@@ -302,11 +302,11 @@ void displayTactical()
 
 	env->update();
 	glDisable(GL_BLEND);
-	env->draw(1);   // 1st pass.
+	env->draw(1);        // 1st pass.
 	glEnable(GL_BLEND);  // Enable transparency.
-	env->draw(2);   // 2nd (transparency) pass.
+	env->draw(2);        // 2nd (transparency) pass.
 
-	drawHUD();      // Keep on transparency for the HUD.
+	drawHUD();         // Keep on transparency for the HUD.
 	drawObjectives();
 
 	glutSwapBuffers();
@@ -378,11 +378,9 @@ void drawObjectives()
 	{
 		Mission *m = missionsOn.at(i);
 		drawText(10, height, m->getTitle() , Color(1,1,1), false);
-		//std::cout << "a: " << m->getNumObjs() << std::endl;
 		for (int k = 0; k < m->getNumObjs(); k++)
 		{
 			height -= 30;
-			//Objective o = m->getObjective(k);
 			Objective *o = m->getObjective(k);
 			drawText(20, height, o->getDescription() , Color(.5,.5,.5), false);
 		}
