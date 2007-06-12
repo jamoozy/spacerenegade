@@ -28,13 +28,59 @@ void ShipAI::update()
 	{
 		// Hold Position until something new happens
 		case WAITING:
-			if(pilotedShip->getPos().distance(playerShip->getPos()) <= engagementRadius)
+			if((myFactionInfo->getAttitude(PLAYER) == ENEMY) 
+				&& pilotedShip->getPos().distance(playerShip->getPos()) <= engagementRadius)
 			{
 				target = playerShip;
-				currentMode = FOLLOW;
+				currentMode = ATTACK;
+			}
+			else 
+			{
+				currentMode = PATROL;
+				destination = Vec3(rr(-250, 250), rr(-250, 250), rr(-250, 250));
 			}
 			break;
-		case FOLLOW:
+		case PATROL:
+			if((myFactionInfo->getAttitude(PLAYER) == ENEMY) 
+				&& pilotedShip->getPos().distance(playerShip->getPos()) <= engagementRadius)
+			{
+				target = playerShip;
+				currentMode = ATTACK;
+			}
+			else 
+			{
+				// If we get nearby, move on
+				if(pilotedShip->getPos().distance(destination) <= proximityDistance * 2)
+				{
+					destination = Vec3(rr(-250, 250), rr(-250, 250), rr(-250, 250));
+				}
+
+				if(updateCountDown <= 0)
+				{
+					AStarSearch astar(pilotedShip->getPos(), destination, proximityDistance, 
+						pilotedShip->getRadius(), 0.0);
+					// Only find the shortest path again if the path to a waypoint is blocked
+					if(!((path.size() > 2) && astar.pathIsClear(path.at(0), path.at(1))))
+					{
+						vector<Vec3> shortestPath = astar.findShortestPath();
+						// Copy to path
+						path.clear();
+						for(unsigned int i = 0; i < shortestPath.size(); i++)
+						{
+							Vec3 temp = shortestPath.at(i);
+							path.push_back(shortestPath.at(i));
+						}
+					}
+					updateCountDown = 60;
+				}
+				else
+					updateCountDown--;
+
+				Vec3 nextWayPoint = path.at(1);
+				goTo(nextWayPoint);
+			}
+			break;
+		case ATTACK:
 			Vec3 currentPos = pilotedShip->getPos();
 			double otherRadius;
 			if(target != NULL)

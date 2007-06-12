@@ -35,7 +35,8 @@ protected:
 	ShipAI* ai;
 	bool exploding; // If true, the ship will explode
 
-	Ship(char *modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel);
+	Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel,
+		   double red, double green, double blue);
 
 	GLdouble pitchF[16];
 	GLdouble pitchB[16];
@@ -162,7 +163,48 @@ class BasicRedShip : public Ship
 {
 public:
 	BasicRedShip(Weapon *weapon, Hull *hull, Shield *shield);
-	virtual ~BasicRedShip() {};
+	virtual ~BasicRedShip();
+	virtual string getType() const { return "BasicRedShip"; };
+
+	//virtual void update();
+	virtual void draw(int pass);
+	virtual void hits(Object* o);
+
+	virtual void accelerate();
+	virtual void decelerate();
+	virtual void stabilize();
+	virtual void yawLeft();
+	virtual void yawRight();
+	virtual void rollLeft();
+	virtual void rollRight();
+	virtual void pitchBack();
+	virtual void pitchForward();
+
+	virtual void fire();
+	virtual void destroy();
+
+	// Rate functions inherited from Ship
+	virtual double roa() const { return 0.005; };  // Rate of Acceleration
+	virtual double rod() const { return 0.001; };  // Rate of Deceleration
+	virtual double ros() const { return 0.95; };  // Rate of Stabilization
+	virtual double rot() const { return 0.02; };  // Rate of Turn
+
+	// Status of the ship.
+	virtual double maxHlth() const { return 500; };
+	virtual double maxFuel() const { return 10000; };
+	virtual double maxAmmo() const { return 100; };
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------ Basic Blue Ship ---------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Interface for the the basic blue ship.
+class BasicBlueShip : public Ship
+{
+public:
+	BasicBlueShip(Weapon *weapon, Hull *hull, Shield *shield);
+	virtual ~BasicBlueShip();
 	virtual string getType() const { return "BasicRedShip"; };
 
 	//virtual void update();

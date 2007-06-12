@@ -25,6 +25,7 @@ using std::vector;
 extern OctTree *env;
 extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
 	*whiteFactionInfo, *otherFactionInfo;
+extern vector<Ship*> enemyShips;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -77,8 +78,9 @@ GLvoid glDrawCube()
 // ----------------------- General-Purpose Ship ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel) :
-	Object(modelName,1,1,1), weapon(weapon), hull(hull), shield(shield),
+Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel,
+		   double red, double green, double blue) :
+	Object(modelName,red,green,blue), weapon(weapon), hull(hull), shield(shield),
 	tractorBeam(new BasicTractorBeam()), fuel(fuel), ai(NULL)
 {
 	// This big messy thing is the initialization of pitchF et al.
@@ -239,7 +241,7 @@ void Ship::stabilize()
 
 // Makes a new, boring ship that just sits there.
 PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
-	Ship("./art/personalship.3DS", weapon, hull, shield, maxFuel())
+	Ship("./art/personalship.3DS", weapon, hull, shield, maxFuel(), 0.0, 1.0, 0.0)
 {
 	// Load variables
 	skymapLoaded = skymap.Load("./art/sky.bmp");
@@ -469,10 +471,24 @@ void PShip::rollRight()
 
 // Makes a new, boring ship that just sits there.
 BasicRedShip::BasicRedShip(Weapon *weapon, Hull *hull, Shield *shield) :
-	Ship("./art/basicredship.3DS", weapon, hull, shield, maxFuel())
+	Ship("./art/basicredship.3DS", weapon, hull, shield, maxFuel(), 1.0, 0.0, 0.0)
 {
 	ai = new ShipAI(this, redFactionInfo);
 	faction = redFactionInfo;
+}
+
+BasicRedShip::~BasicRedShip()
+{
+	vector<Ship*>::iterator startIterator;
+	vector<Ship*>::iterator tempIterator;
+	for( tempIterator = enemyShips.begin(); tempIterator != enemyShips.end(); tempIterator++ ) {
+		if(*tempIterator == this)
+		{
+			enemyShips.erase(tempIterator);
+			//cout << "erased" << endl;
+			break;
+		}
+    }
 }
 
 // Draws the ship.
@@ -544,6 +560,11 @@ void BasicRedShip::hits(Object *o)
 		hurt(200);
 	}
 	//cout << "Enemy ship hp: " << getHlth() << ", Shield: " << shield->getHlth() << endl;
+	// Make it turn on player
+	if(faction->getAttitude(PLAYER) == NEUTRAL)
+	{
+		faction->setAttitude(ENEMY, PLAYER);
+	}
 }
 
 void BasicRedShip::destroy()
@@ -614,6 +635,182 @@ void BasicRedShip::rollLeft()
 
 //
 void BasicRedShip::rollRight()
+{
+//	fuel -= 0.2;
+//	radpyr -= Vec3(0, 0, rot);
+//	recompdir();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// ------------------------- Basic Blue Ship --------------------------------- //
+////////////////////////////////////////////////////////////////////////////////
+
+// Makes a new, boring ship that just sits there.
+BasicBlueShip::BasicBlueShip(Weapon *weapon, Hull *hull, Shield *shield) :
+	Ship("./art/basicblueship.3DS", weapon, hull, shield, maxFuel(), 0.0, 0.0, 1.0)
+{
+	ai = new ShipAI(this, blueFactionInfo);
+	faction = blueFactionInfo;
+}
+
+BasicBlueShip::~BasicBlueShip()
+{
+	vector<Ship*>::iterator startIterator;
+	vector<Ship*>::iterator tempIterator;
+	for( tempIterator = enemyShips.begin(); tempIterator != enemyShips.end(); tempIterator++ ) {
+		if(*tempIterator == this)
+		{
+			enemyShips.erase(tempIterator);
+			//cout << "erased" << endl;
+			break;
+		}
+    }
+}
+
+// Draws the ship.
+void BasicBlueShip::draw(int pass)
+{
+	glPushMatrix();
+
+	// Draw the current path
+/*	glPushMatrix();
+	glColor3d(1.0, 0.0, 0.0);
+	vector<Vec3> currentPath = ai->getPath();
+	glBegin(GL_LINES);
+	for(int i = 0; i < static_cast<int>(currentPath.size()) - 1; i++)
+	{
+		Vec3 start = currentPath.at(i);
+		Vec3 end = currentPath.at(i + 1);
+		glVertex3d(start.x(), start.y(), start.z());
+		glVertex3d(end.x(), end.y(), end.z());
+	}
+	glEnd();
+	glPopMatrix();
+*/
+	glTranslated(position.x(), position.y(), position.z());
+
+	// direction rotation
+	glMultMatrixd(lcs.array());
+
+	if (pass == 1)
+	{
+		if (modelLoaded)
+		{
+			glColor3d(1,1,1);
+			model.Draw();  // Renders the model to the screen
+		}
+		else
+		{
+			// Set color to blue.
+			glColor3f(0.0, 0.0, 1.0);
+			glutWireCone(2,4,5,1);
+		}
+	}
+	else
+	{
+		// Draw that neat shield-bubble around the ship.
+		shield->draw();
+		tractorBeam->draw();
+	}
+
+	glPopMatrix();
+}
+
+void BasicBlueShip::fire()
+{
+	soundFactory->play("gunshot");
+	weapon->fire(this);
+}
+
+void BasicBlueShip::hits(Object *o)
+{
+	Object::hits(o);
+
+	// Jam:
+	// This check allows bullets NOT to hurt the ship they came from.
+	if (o->shouldHurt(this))
+	{
+		// Jam:
+		// This is a constant right now.  Later it will be a function
+		// of different things like hull strength and shields.
+		hurt(200);
+	}
+	//cout << "Enemy ship hp: " << getHlth() << ", Shield: " << shield->getHlth() << endl;
+	// Make it turn on player
+	if(faction->getAttitude(PLAYER) == NEUTRAL)
+	{
+		faction->setAttitude(ENEMY, PLAYER);
+	}
+}
+
+void BasicBlueShip::destroy()
+{
+	soundFactory->play("explosion-ship");
+	//cout << "Destroyed" << endl;
+	delete this;
+}
+
+// Note: AI has infinite fuel
+
+// Adds to the ship's velocity.
+void BasicBlueShip::accelerate()
+{
+	//--fuel;
+	Ship::accelerate();
+}
+
+// Subtracts from the ship's velocity.
+void BasicBlueShip::decelerate()
+{
+	//--fuel;
+	Ship::decelerate();
+}
+
+// Brings the velocity down to 0
+void BasicBlueShip::stabilize()
+{
+	//fuel -= 5;
+	Ship::stabilize();
+}
+
+// Tilt the nose up.
+void BasicBlueShip::pitchBack()
+{
+	//fuel -= 0.2;
+	Ship::pitchBack();
+}
+
+// Tilt the nose down.
+void BasicBlueShip::pitchForward()
+{
+	//fuel -= 0.2;
+	Ship::pitchForward();
+}
+
+// Turn left about the Y(up)-axis
+void BasicBlueShip::yawLeft()
+{
+	//fuel -= 0.2;
+	Ship::yawLeft();
+}
+
+// Turn right about the Y(up)-axis
+void BasicBlueShip::yawRight()
+{
+	//fuel -= 0.2;
+	Ship::yawRight();
+}
+
+//
+void BasicBlueShip::rollLeft()
+{
+//	fuel -= 0.2;
+//	radpyr += Vec3(0, 0, rot);
+//	recompdir();
+}
+
+//
+void BasicBlueShip::rollRight()
 {
 //	fuel -= 0.2;
 //	radpyr -= Vec3(0, 0, rot);

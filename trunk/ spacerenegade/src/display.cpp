@@ -49,7 +49,8 @@ extern Menu *menu;        // Gum: The current menu of buttons
 extern SoundFactory *soundFactory;
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
-BasicRedShip *enemy1;
+
+vector<Ship*> enemyShips;
 
 FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
 	*whiteFactionInfo, *otherFactionInfo;
@@ -669,8 +670,8 @@ void initNewGame()
 	friendly.push_back(RED);
 	neutral.push_back(WHITE);
 	neutral.push_back(OTHER);
-	enemy.push_back(PLAYER);
-	enemy.push_back(BLUE);
+	neutral.push_back(PLAYER);
+	neutral.push_back(BLUE);
 	redFactionInfo = new FactionInfo(RED, friendly, neutral, enemy);
 	friendly.clear();
 	neutral.clear();
@@ -680,8 +681,8 @@ void initNewGame()
 	friendly.push_back(BLUE);
 	neutral.push_back(WHITE);
 	neutral.push_back(OTHER);
-	enemy.push_back(PLAYER);
-	enemy.push_back(RED);
+	neutral.push_back(PLAYER);
+	neutral.push_back(RED);
 	blueFactionInfo = new FactionInfo(BLUE, friendly, neutral, enemy);
 	friendly.clear();
 	neutral.clear();
@@ -720,7 +721,7 @@ void initNewGame()
 
 	// Populate the world with some asteroids.
 	Asteroid *next;
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		Vec3 pos(rr(125,-125), rr(125,-125), rr(125,-125));//-20,0,250-(20*i));//
 		Vec3 vel(rr(0.1,-0.1), rr(0.1,-0.1), rr(0.1,-0.1));//0,0,-0.1);//
@@ -750,9 +751,23 @@ void initNewGame()
 
 	// PM:
 	// Initialize the enemy ship.  This will be removed once missions are implemented
-	enemy1 = new BasicRedShip(new Blaster(), new BasicHull(), new BasicShield());
-	enemy1->setAt(0, 0, 200);
+	Ship* enemy1;
+	enemy1 = new BasicBlueShip(new Blaster(), new BasicHull(), new BasicShield());
+	enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
 	env->add(enemy1);
+	enemyShips.push_back(enemy1);
+	enemy1 = new BasicBlueShip(new Blaster(), new BasicHull(), new BasicShield());
+	enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
+	env->add(enemy1);
+	enemyShips.push_back(enemy1);
+	enemy1 = new BasicRedShip(new Blaster(), new BasicHull(), new BasicShield());
+	enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
+	env->add(enemy1);
+	enemyShips.push_back(enemy1);
+	enemy1 = new BasicRedShip(new Blaster(), new BasicHull(), new BasicShield());
+	enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
+	env->add(enemy1);
+	enemyShips.push_back(enemy1);
 
 	#if (PRINT_FPS)
 		last_time = 0;

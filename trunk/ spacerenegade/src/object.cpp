@@ -33,11 +33,18 @@ Object::Object(char *modelName, double red, double green, double blue) : leaf(NU
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
-
 }
 
 // Create a new obect at the origin that does not move with the specified radius with white for the minimap color
 Object::Object(char *modelName, double objRadius) : leaf(NULL), red(1), green(1), blue(1), radius(objRadius), position(0,0,0), velocity(0,0,0), damage(0)//, faction(Attitude::NEUTRAL)
+{
+	if (modelName != NULL && modelName[0] != '\0')
+		modelLoaded = model.Load(modelName);
+}
+
+// Create a new obect at the origin that does not move with the specified radius with white for the minimap color
+Object::Object(char *modelName, double objRadius, double red, double green, double blue) : 
+	leaf(NULL), red(red), green(green), blue(blue), radius(objRadius), position(0,0,0), velocity(0,0,0), damage(0)//, faction(Attitude::NEUTRAL)
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
@@ -49,7 +56,6 @@ Object::Object(char *modelName, double red, double green, double blue, double px
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
-
 }
 
 // Creates a new object at the given point with the given velocity.
@@ -58,7 +64,6 @@ Object::Object(char *modelName, const Vec3& pos, const Vec3& v, double red, doub
 {
 	if (modelName != NULL && modelName[0] != '\0')
 		modelLoaded = model.Load(modelName);
-
 }
 
 // Does nothing (nothing to be done).
@@ -131,19 +136,14 @@ void Object::hits(Object *o)
 
 	// Find the "speed" that this object hit the other by using
 	// the velocity vector and dot product.
-	double s = diff * getVel();
+	double s = diff * velocity;
 
-	// This means this one is travelling away from the other one
-	// OR
-	// The other one is travelling away faster than this one is
-	// chasing it (happens often when shooting).
-	if (s < 0 || s < o->getVel() * diff) return;
+	// This means this one is travelling away from the other.
+	if (s < 0) return;
 
 	// That should map directly to the force vector...
 	Vec3 force = s * diff;
 	velocity -= force;
 	o->push(force);
 }
-
-
 
