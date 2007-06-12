@@ -181,7 +181,8 @@ void drawText(GLint x, GLint y, string s, Color c, bool center)
 			lines++;
 			glRasterPos2i(x, y-(lines*18));
 		}
-		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
+		else
+			glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s.at(i));
 	}
 
 	// Clean up the matricies we've made.

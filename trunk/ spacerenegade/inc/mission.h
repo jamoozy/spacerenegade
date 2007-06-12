@@ -1,8 +1,10 @@
 #ifndef MISSION_H
 #define MISSION_H
 
+#include <string>
 #include "objective.h"
 #include "object.h"
+
 
 class Mission
 {
@@ -20,6 +22,8 @@ private:
 	// Desired, but not achievable:
 	//   Location startPlanet, finishPlanet; // Start & Finish locations (for delivery, escort, etc)
 	//   Time deadline;
+
+	string insertNewLines(string b, int width);
 
 public:
 	Mission();

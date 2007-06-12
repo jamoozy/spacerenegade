@@ -135,7 +135,7 @@ Menu::Menu(int type) : type(type), selectedMission(NULL)
 
 		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
 			NUM_MISSIONS = (int)missionsAvailable.size();
-			height = 700;
+			height = 720;
 			numButtons = 2 + NUM_MISSIONS;
 
 			buttons = new Button[numButtons];
@@ -149,7 +149,7 @@ Menu::Menu(int type) : type(type), selectedMission(NULL)
 			{
 				Mission *m = missionsAvailable[i];
 				buttons[i + 2] = Button(m->getTitle(), 1, 20, height, .1,.1,.1, (100 + i), NULL);
-				height -= 50;
+				height -= 30;
 			}
 			// handle displaying briefing, objectives, and reward when mission title is clicked
 			break;
