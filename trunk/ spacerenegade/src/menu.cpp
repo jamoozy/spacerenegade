@@ -232,7 +232,7 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 						if (notYetOn)
 						{
 							missionsOn.push_back(selectedMission);
-
+							soundFactory->play("missionaccepted");
 							vector<Mission*>::iterator iter = missionsAvailable.begin();
 							for (; selectedMission != *iter && iter != missionsAvailable.end(); iter++);
 							missionsAvailable.erase(iter);

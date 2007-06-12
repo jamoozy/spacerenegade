@@ -63,6 +63,7 @@ void Mission::displayMissionBriefing()
 
 void Mission::acceptMission()
 {
+
 }
 
 // Automatically inserts "\" at every width'th character,
