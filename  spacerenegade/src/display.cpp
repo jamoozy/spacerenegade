@@ -518,7 +518,6 @@ void displayPlanet()
 	menu->draw(GL_RENDER);
 
 	glutSwapBuffers();
-
 }
 
 void displayGameOver()
@@ -553,6 +552,7 @@ void initStartScreen()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -758,10 +758,11 @@ void initMissionBoard() //(Gum)
 	glLoadIdentity();
 	gluOrtho2D(0, screen_width, 0, screen_height);
 
-	// Restor colorability.
+	// Restore compatible GL state.
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -789,12 +790,13 @@ void initPlanet()
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, screen_width, 0, screen_height);
+	glOrtho(0,screen_width , 0,screen_height, -1.0, 1.0);
 
-	// Restore colorability.
+	// Restore compatible GL state.
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
 
 	// set basic matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -822,12 +824,13 @@ void initGameOver()
 	// Set up the perspective;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0,screen_width , 0,screen_height);
+	glOrtho(0,screen_width , 0,screen_height, -1.0, 1.0);
 
-	// Turn off lighting
+	// Restore a compatible GL state.
 	glDisable(GL_LIGHTING);
 	glDisable(GL_COLOR_MATERIAL);
 	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
 
 	// Clear and reset everything.
 	glMatrixMode(GL_MODELVIEW);
