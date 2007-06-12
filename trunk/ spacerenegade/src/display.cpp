@@ -254,6 +254,7 @@ void drawBox(int x1, int y1, int x2, int y2, double r, double g, double b) // (G
 }
 
 
+
 ////////////////////////////////////////////////////////////////////////////////
 // ------------------ display different screen states ----------------------- //
 ////////////////////////////////////////////////////////////////////////////////
@@ -876,3 +877,4 @@ void initGameOver()
 	// Schedule a re-draw.
 	glutPostRedisplay();
 }
+

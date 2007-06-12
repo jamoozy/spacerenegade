@@ -170,6 +170,7 @@ protected:
 
 public:
 	virtual ~TractorBeam() {};
+	virtual void update(const Ship *s) = 0;
 	virtual void draw() = 0;
 
 	virtual void activate() { on = true; };
@@ -178,7 +179,7 @@ public:
 	virtual bool activated() { return on; };
 
 	virtual double range() { return 10; };
-	virtual double strength() { return 10; };
+	virtual double strength() { return 0.01; };
 };
 
 class BasicTractorBeam : public TractorBeam
@@ -191,6 +192,7 @@ public:
 	BasicTractorBeam();
 	virtual ~BasicTractorBeam() {};
 
+	virtual void update(const Ship *s);
 	virtual void draw();
 };
 

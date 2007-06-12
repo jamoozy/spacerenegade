@@ -71,7 +71,7 @@ string Mission::insertNewLines(string b, int width)
 {
 	string newB = "";
 	string chunk;
-	int k = 0;
+	unsigned int k = 0;
 	int spaceIndex;
 	while (k < b.length())
 	{

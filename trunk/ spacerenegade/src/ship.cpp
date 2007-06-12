@@ -77,6 +77,7 @@ void Ship::update()
 {
 	position += velocity;
 	shield->update();
+	tractorBeam->update(this);
 
 //	if (damage >= maxHealth())
 //		soundFactory->play("explosion-ship");

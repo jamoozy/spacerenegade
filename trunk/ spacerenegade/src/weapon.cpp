@@ -148,6 +148,26 @@ BasicTractorBeam::BasicTractorBeam() : TractorBeam(),
 	G(g * (range()/2) + Vec3(0,0,range())),
 	H(h * (range()/2) + Vec3(0,0,range())) {}
 
+void BasicTractorBeam::update(const Ship* s)
+{
+	if (on)
+	{
+		Vec3 pos = s->getPos() + (s->getDir() * range());
+		vector<Object*> v;
+		env->getArea(pos, range(), v);
+
+		for (vector<Object*>::iterator iter = v.begin(); iter != v.end(); iter++)
+		{
+			if (*iter != s)
+			{
+				Vec3 diff(s->getPos() - (*iter)->getPos());
+				diff.normalize();
+				(*iter)->push(diff * strength());
+			}
+		}
+	}
+}
+
 void BasicTractorBeam::draw()
 {
 	if (on)
