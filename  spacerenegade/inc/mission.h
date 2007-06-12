@@ -10,11 +10,10 @@ private:
 	int id;
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
+	int numObjs; // number of objectives
 	BountyObjective *objectives;
 	int reward; // ex. 1000 credits
-
 	bool isComplete; // all objectives have been met, and player should go to finishPlanet
-	int numObjs; // number of objectives
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
 	// EventListener listens for objective-specific events (such as # of bounties killed)
 
@@ -43,3 +42,4 @@ public:
 };
 
 #endif
+

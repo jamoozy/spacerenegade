@@ -20,7 +20,8 @@ void cleanup();
 // -------------------------- Mission Definition ---------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Mission::Mission(int id) : id(id)
+Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing goes here"),
+	numObjs(0), objectives(NULL), reward(0), isComplete(false)
 {
 	switch (id)
 	{
@@ -40,7 +41,7 @@ Mission::Mission(int id) : id(id)
 			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plzkthxbai."; // insert \n's?
 			numObjs = 1;
 			objectives = new BountyObjective[numObjs];
-			objectives[1] = BountyObjective(1, 10);
+			objectives[0] = BountyObjective(1, 10);
 
 			reward = 2000;
 			isComplete = false;
@@ -50,6 +51,7 @@ Mission::Mission(int id) : id(id)
 
 Mission::~Mission()
 {
+	cout << "giggety" << endl;
 	delete [] objectives;
 }
 
