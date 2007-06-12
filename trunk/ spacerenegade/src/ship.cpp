@@ -126,7 +126,7 @@ Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double f
 
 // Calculate the number of radians the ship has rotated, counterclockwise.
 // For example, if the up vector of the ship is (-1, 0, 0), this will return
-// pi/2.  If it is (0, -1, 0), this will return pi.  If it is (1, 0, 0), 
+// pi/2.  If it is (0, -1, 0), this will return pi.  If it is (1, 0, 0),
 // it will return pi * 3/2
 double Ship::getRadiansRotated() const
 {
@@ -209,7 +209,7 @@ void Ship::setDir(Vec3& newDir)
 	lcs.set(4,newUp.x());
 	lcs.set(5,newUp.y());
 	lcs.set(6,newUp.z());
-	
+
 	lcs.set(8,newDir.x());
 	lcs.set(9,newDir.y());
 	lcs.set(10,newDir.z());
@@ -249,7 +249,7 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 	faction = playerFactionInfo;
 
 	credits = 10000;
-	
+
 	fuelCost = 1;
 	hlthCost = 10;
 	ammoCost = 5;
@@ -355,12 +355,12 @@ void PShip::drawReticle()
 }
 
 
-void PShip::refuel() 
-{ 
+void PShip::refuel()
+{
 	if (canAfford(costToRefuel()))
 	{
-		credits -= costToRefuel(); 
-		fuel = maxFuel(); 
+		credits -= costToRefuel();
+		fuel = maxFuel();
 	}
 	else // only has partial credits
 	{
@@ -370,12 +370,12 @@ void PShip::refuel()
 	}
 }
 
-void PShip::reload() 
-{ 
+void PShip::reload()
+{
 	if (canAfford(costToReload()))
 	{
-		credits -= costToReload(); 
-		weapon->reload(); 
+		credits -= costToReload();
+		weapon->reload();
 	}
 	else // only has partial credits
 	{
@@ -384,11 +384,11 @@ void PShip::reload()
 		credits -= num * ammoCost;
 	}
 }
-void PShip::heal() 
-{ 
+void PShip::heal()
+{
 	if (canAfford(costToHeal()))
 	{
-		credits -= costToHeal(); 
+		credits -= costToHeal();
 		hull->heal();
 	}
 	else // only has partial credits
@@ -611,8 +611,8 @@ void BasicRedShip::hits(Object *o)
 		hurt(200);
 	}
 	//cout << "Enemy ship hp: " << getHlth() << ", Shield: " << shield->getHlth() << endl;
-	// Make it turn on player
-	if(faction->getAttitude(PLAYER) == NEUTRAL)
+	// Make it turn on player if the object was a bullet
+	if(faction->getAttitude(PLAYER) == NEUTRAL && o->aiShouldConsider())
 	{
 		faction->setAttitude(ENEMY, PLAYER);
 	}
@@ -788,7 +788,7 @@ void BasicBlueShip::hits(Object *o)
 	}
 	//cout << "Enemy ship hp: " << getHlth() << ", Shield: " << shield->getHlth() << endl;
 	// Make it turn on player
-	if(faction->getAttitude(PLAYER) == NEUTRAL)
+	if(faction->getAttitude(PLAYER) == NEUTRAL && o->aiShouldConsider())
 	{
 		faction->setAttitude(ENEMY, PLAYER);
 	}
