@@ -969,6 +969,6 @@ void reloadPlayerAmmo()
 
 void healPlayer()
 {
-	cout << "heal not implemented yet" << endl;
+	playerShip->heal();
 }
 

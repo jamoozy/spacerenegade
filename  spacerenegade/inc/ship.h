@@ -137,6 +137,7 @@ public:
 
 	void refuel() { fuel = maxFuel(); };
 	void reload() { weapon->reload(); };
+	void heal() { hull->heal(); };
 
 	// Rate functions inherited from Ship. They act as inheritable constants
 	// for now, later they'll be based on engines and such.
