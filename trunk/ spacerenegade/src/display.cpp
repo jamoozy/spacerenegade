@@ -412,12 +412,15 @@ void drawObjectives()
 	for (int i = 0; i < (int)missionsOn.size(); i++)
 	{
 		Mission *m = missionsOn.at(i);
+		// Check to see if mission has been completed.
+		
 		drawText(10, height, m->getTitle() , Color(1,1,1), false);
 		for (int k = 0; k < m->getNumObjs(); k++)
 		{
 			height -= 30;
 			Objective *o = m->getObjective(k);
-			drawText(20, height, o->getDescription() , Color(.5,.5,.5), false);
+			string des = o->getDescription();
+			drawText(20, height, des, Color(.5,.5,.5), false);
 		}
 		height -= 40;
 	}
