@@ -118,6 +118,7 @@ public:
 	virtual ~PShip() {};
 	virtual string getType() const { return "PShip"; };
 	virtual void hits(Object *o);
+	virtual void update();
 	virtual void draw(int pass);
 	void drawReticle();
 	virtual void fire();
@@ -134,6 +135,9 @@ public:
 	virtual void pitchBack();
 	virtual void pitchForward();
 
+	void refuel() { fuel = maxFuel(); };
+	void reload() { weapon->reload(); };
+
 	// Rate functions inherited from Ship. They act as inheritable constants
 	// for now, later they'll be based on engines and such.
 	virtual double roa() const { return 0.005; };  // Rate of Acceleration
@@ -145,6 +149,8 @@ public:
 	// capacity of the ship and such.
 	virtual double maxFuel() const { return 10000; };
 };
+
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // ------------------------ Basic Red Ship ---------------------------------- //

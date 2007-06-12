@@ -97,6 +97,11 @@ void initGameOver();
 void initPlanet();
 void initMissionBoard();
 
+// Player state changers.
+void refuelPlayer();
+void reloadPlayerAmmo();
+void healPlayer();
+
 
 #endif
 

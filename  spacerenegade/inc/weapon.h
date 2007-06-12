@@ -102,6 +102,8 @@ public:
 
 	virtual void fire(Ship *shooter) {};
 
+	virtual void reload() { ammo = maxAmmo(); };
+
 	// Constants that are functions to get the nice inheritence functionality.
 	virtual double rof() const { return 10; };   // Rate Of Fire in frames.
 	virtual double roh() const { return 10; };   // Rate Of Heating.
