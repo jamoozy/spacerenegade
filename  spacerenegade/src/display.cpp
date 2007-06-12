@@ -64,7 +64,7 @@ GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
 // Sound names.
-string soundNames[5] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust"};
+string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust0","missionaccepted","heal"};
 Sound &ambientMusic = Sound();
 
 
@@ -780,7 +780,7 @@ void initTactical()
 
 	playerShip->stop();
 	
-	ambientMusic.shiftMusic("music/02");
+	ambientMusic.shiftMusic("music/04");
 
 	paused = false;
 
@@ -969,6 +969,7 @@ void reloadPlayerAmmo()
 
 void healPlayer()
 {
+	soundFactory->play("heal");
 	playerShip->heal();
 }
 
