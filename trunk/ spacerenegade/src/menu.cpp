@@ -63,8 +63,10 @@ void Button::drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat 
 	glLoadIdentity();
 	glColor3f(r,g,b);
 	glRasterPos2i(x, y);
-	for(unsigned int i = 0, lines = 0; i < s.size(); i++) {
-		if (s.at(i) == '\n') {
+	for(unsigned int i = 0, lines = 0; i < s.size(); i++)
+	{
+		if (s.at(i) == '\n')
+		{
 			lines++;
 			glRasterPos2i(x, y-(lines*15));
 		}
@@ -221,3 +223,4 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 						buttons[j].buttonPressed();
 			}
 }
+
