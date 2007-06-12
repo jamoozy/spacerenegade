@@ -42,6 +42,12 @@ Keyboard::~Keyboard()
 	delete [] keys;
 }
 
+void Keyboard::reset()
+{
+	for (int i = 0; i < SR_NUM_KEYS; i++)
+		keyboard->keys[i] = false;
+}
+
 Keyboard *Keyboard::getKeyboard()
 {
 	if (keyboard == NULL)

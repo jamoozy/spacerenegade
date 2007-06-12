@@ -41,6 +41,7 @@ class Keyboard
 
 public:
 	static Keyboard *getKeyboard();  // Get the only allowable instance.
+	static void reset();             // Make all keys register as not pressed.
 	static void cleanUp();           // Delete the only instance.
 
 // ---- Object part ------
