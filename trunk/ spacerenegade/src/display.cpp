@@ -64,7 +64,7 @@ GLfloat miniMapX = 853.0f;
 GLfloat miniMapY = 174.0f;
 
 // Sound names.
-string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust0","missionaccepted","heal"};
+string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust","missionaccepted","heal"};
 Sound &ambientMusic = Sound();
 
 

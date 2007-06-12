@@ -378,7 +378,7 @@ void PShip::accelerate()
 	if (fuel - 1 >= 0)
 	{
 		--fuel;
-		soundFactory->play("thrust0");
+		soundFactory->play("thrust");
 		Ship::accelerate();
 	}
 }
