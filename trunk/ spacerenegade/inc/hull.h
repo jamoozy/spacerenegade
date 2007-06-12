@@ -19,6 +19,7 @@ public:
 	virtual ~Hull() {};
 
 	virtual void hurt(double amt) { damage += amt * (1-hap()); };
+	virtual void heal() { damage = 0; };
 
 	virtual double hap() const { return 0; };    // Hit Absorption Percentage.  How much of the damage this Hull absorbs.
 	virtual double maxHlth() const { return 100; };
