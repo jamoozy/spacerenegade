@@ -216,7 +216,7 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 						for (vector<Mission*>::iterator iter = missionsOn.begin();
 							(iter != missionsOn.end()) &&
 							(notYetOn = (*iter != selectedMission));
-							iter++) cout << "|";
+							iter++);
 
 						// Only do this if we're not yet on.
 						if (notYetOn)
