@@ -133,15 +133,6 @@ PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
 {
 	// Load variables 
 	skymapLoaded = skymap.Load("./art/sky.bmp");
-
-	// Load the sound.
-	/*if ((gunShotBuffer = alutCreateBufferFromFile("art/gunshot.wav")) == AL_NONE) {
-		cout << "No buffer returned!" << endl;
-		cout << alutGetErrorString(alutGetError()) << endl;
-	} else {
-		alGenSources(1, &gunShotSource);
-		alSourcei(gunShotSource, AL_BUFFER, gunShotBuffer);
-	}*/
 }
 
 // Draws the ship.
@@ -238,7 +229,6 @@ void PShip::drawReticle()
 
 void PShip::fire()
 {
-	soundFactory->play("gunshot");
 	weapon->fire(this);
 }
 
@@ -263,6 +253,7 @@ void PShip::accelerate()
 	if (fuel - 1 >= 0)
 	{
 		--fuel;
+		soundFactory->play("thrust");
 		Ship::accelerate();
 	}
 }
