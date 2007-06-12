@@ -27,7 +27,7 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 	{
 		case 0:
 			title = "Help Crooky get his revenge!";
-			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plzkthxbai."; // insert \n's?
+			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. ";
 			numObjs = 1;
 			objectives = new BountyObjective*[numObjs];
 			objectives[0] = new BountyObjective(0, 5);
@@ -38,7 +38,7 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 
 		case 1:
 			title = "Help Bumbum get his revenge!";
-			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plzkthxbai."; // insert \n's?
+			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plz kthxbai. ";
 			numObjs = 1;
 			objectives = new BountyObjective*[numObjs];
 			objectives[0] = new BountyObjective(1, 10);
@@ -58,9 +58,36 @@ Mission::~Mission()
 
 void Mission::displayMissionBriefing()
 {
-	drawText(550,450, briefing, Color(1,1,1), false);
+	drawText(515,725, insertNewLines(briefing, 41), Color(1,1,1), false);
 }
 
 void Mission::acceptMission()
 {
+}
+
+// Automatically inserts "\" at every width'th character,
+// formatting to break at spaces.
+string Mission::insertNewLines(string b, int width)
+{
+	string newB = "";
+	string chunk;
+	int k = 0;
+	int spaceIndex;
+	while (k < b.length())
+	{
+		if ((k + width) > b.length()) // end of briefing
+		{
+			newB.append(b.substr(k, b.length()));
+			k += width;
+		}
+		else
+		{
+			chunk = b.substr(k,width+1);
+			spaceIndex = chunk.find_last_of(" ");
+			chunk = chunk.substr(0, spaceIndex);
+			newB.append(chunk + "\n");
+			k += spaceIndex + 1;
+		}
+	}
+	return newB;
 }
