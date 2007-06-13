@@ -187,17 +187,10 @@ public:
 	virtual void draw(int pass);
 	virtual void hits(Object* o);
 
-	virtual void accelerate();
-	virtual void decelerate();
-	virtual void stabilize();
-	virtual void yawLeft();
-	virtual void yawRight();
-	virtual void rollLeft();
-	virtual void rollRight();
-	virtual void pitchBack();
-	virtual void pitchForward();
+	// Note: AI has infinite fuel
+	virtual void rollLeft()  {};
+	virtual void rollRight() {};
 
-	virtual void fire();
 	virtual void destroy();
 
 	// Rate functions inherited from Ship
@@ -228,17 +221,9 @@ public:
 	virtual void draw(int pass);
 	virtual void hits(Object* o);
 
-	virtual void accelerate();
-	virtual void decelerate();
-	virtual void stabilize();
-	virtual void yawLeft();
-	virtual void yawRight();
-	virtual void rollLeft();
-	virtual void rollRight();
-	virtual void pitchBack();
-	virtual void pitchForward();
+	virtual void rollLeft()  {};
+	virtual void rollRight() {};
 
-	virtual void fire();
 	virtual void destroy();
 
 	// Rate functions inherited from Ship

@@ -595,12 +595,6 @@ void BasicRedShip::draw(int pass)
 	glPopMatrix();
 }
 
-void BasicRedShip::fire()
-{
-	soundFactory->play("gunshot");
-	weapon->fire(this);
-}
-
 void BasicRedShip::hits(Object *o)
 {
 	Object::hits(o);
@@ -630,72 +624,7 @@ void BasicRedShip::destroy()
 	delete this;
 }
 
-// Note: AI has infinite fuel
 
-// Adds to the ship's velocity.
-void BasicRedShip::accelerate()
-{
-	//--fuel;
-	Ship::accelerate();
-}
-
-// Subtracts from the ship's velocity.
-void BasicRedShip::decelerate()
-{
-	//--fuel;
-	Ship::decelerate();
-}
-
-// Brings the velocity down to 0
-void BasicRedShip::stabilize()
-{
-	//fuel -= 5;
-	Ship::stabilize();
-}
-
-// Tilt the nose up.
-void BasicRedShip::pitchBack()
-{
-	//fuel -= 0.2;
-	Ship::pitchBack();
-}
-
-// Tilt the nose down.
-void BasicRedShip::pitchForward()
-{
-	//fuel -= 0.2;
-	Ship::pitchForward();
-}
-
-// Turn left about the Y(up)-axis
-void BasicRedShip::yawLeft()
-{
-	//fuel -= 0.2;
-	Ship::yawLeft();
-}
-
-// Turn right about the Y(up)-axis
-void BasicRedShip::yawRight()
-{
-	//fuel -= 0.2;
-	Ship::yawRight();
-}
-
-//
-void BasicRedShip::rollLeft()
-{
-//	fuel -= 0.2;
-//	radpyr += Vec3(0, 0, rot);
-//	recompdir();
-}
-
-//
-void BasicRedShip::rollRight()
-{
-//	fuel -= 0.2;
-//	radpyr -= Vec3(0, 0, rot);
-//	recompdir();
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // ------------------------- Basic Blue Ship --------------------------------- //
@@ -772,12 +701,6 @@ void BasicBlueShip::draw(int pass)
 	glPopMatrix();
 }
 
-void BasicBlueShip::fire()
-{
-	soundFactory->play("gunshot");
-	weapon->fire(this);
-}
-
 void BasicBlueShip::hits(Object *o)
 {
 	Object::hits(o);
@@ -805,72 +728,5 @@ void BasicBlueShip::destroy()
 	//cout << "Destroyed" << endl;
 	missionsAvailable.at(1)->getObjective(0)->incrementKills();
 	delete this;
-}
-
-// Note: AI has infinite fuel
-
-// Adds to the ship's velocity.
-void BasicBlueShip::accelerate()
-{
-	//--fuel;
-	Ship::accelerate();
-}
-
-// Subtracts from the ship's velocity.
-void BasicBlueShip::decelerate()
-{
-	//--fuel;
-	Ship::decelerate();
-}
-
-// Brings the velocity down to 0
-void BasicBlueShip::stabilize()
-{
-	//fuel -= 5;
-	Ship::stabilize();
-}
-
-// Tilt the nose up.
-void BasicBlueShip::pitchBack()
-{
-	//fuel -= 0.2;
-	Ship::pitchBack();
-}
-
-// Tilt the nose down.
-void BasicBlueShip::pitchForward()
-{
-	//fuel -= 0.2;
-	Ship::pitchForward();
-}
-
-// Turn left about the Y(up)-axis
-void BasicBlueShip::yawLeft()
-{
-	//fuel -= 0.2;
-	Ship::yawLeft();
-}
-
-// Turn right about the Y(up)-axis
-void BasicBlueShip::yawRight()
-{
-	//fuel -= 0.2;
-	Ship::yawRight();
-}
-
-//
-void BasicBlueShip::rollLeft()
-{
-//	fuel -= 0.2;
-//	radpyr += Vec3(0, 0, rot);
-//	recompdir();
-}
-
-//
-void BasicBlueShip::rollRight()
-{
-//	fuel -= 0.2;
-//	radpyr -= Vec3(0, 0, rot);
-//	recompdir();
 }
 
