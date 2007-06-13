@@ -36,7 +36,9 @@ void Material::hits(Object *o)
 {
 	if (o == playerShip)
 	{
-		// Add in the "you get this resource" part.
+		// Add in the "you get this resource" part.  Later this should be
+		// an object parameter or be loosely based on the type this is.
+		playerShip->addToCBay(0.1);
 	}
 	
 	killNextTick = true;

@@ -82,10 +82,10 @@ GLvoid glDrawCube()
 // ----------------------- General-Purpose Ship ----------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel,
-		   double red, double green, double blue) :
-	Object(modelName,red,green,blue), weapon(weapon), hull(hull), shield(shield),
-	tractorBeam(new BasicTractorBeam()), fuel(fuel), ai(NULL)
+Ship::Ship(char* modelName, Weapon *weapon, Hull *hull, CargoBay *bay, Shield *shield,
+		double fuel, double red, double green, double blue) :
+	Object(modelName,red,green,blue), weapon(weapon), hull(hull), bay(bay),
+	shield(shield), tractorBeam(new BasicTractorBeam()), fuel(fuel), ai(NULL)
 {
 	// This big messy thing is the initialization of pitchF et al.
 	pitchF[0] = pitchF[15] = 1;
@@ -245,7 +245,7 @@ void Ship::stabilize()
 
 // Makes a new, boring ship that just sits there.
 PShip::PShip(Weapon *weapon, Hull *hull, Shield *shield) :
-	Ship("./art/personalship.3DS", weapon, hull, shield, maxFuel(), 0.0, 1.0, 0.0)
+	Ship("./art/personalship.3DS", weapon, hull, new SCargoBay(), shield, maxFuel(), 0.0, 1.0, 0.0)
 {
 	// Load variables
 	skymapLoaded = skymap.Load("./art/sky.bmp");
@@ -526,7 +526,7 @@ void PShip::rollRight()
 
 // Makes a new, boring ship that just sits there.
 BasicRedShip::BasicRedShip(Weapon *weapon, Hull *hull, Shield *shield) :
-	Ship("./art/basicredship.3DS", weapon, hull, shield, maxFuel(), 1.0, 0.0, 0.0)
+	Ship("./art/basicredship.3DS", weapon, hull, new CargoBay(), shield, maxFuel(), 1.0, 0.0, 0.0)
 {
 	ai = new ShipAI(this, redFactionInfo);
 	faction = redFactionInfo;
@@ -632,7 +632,7 @@ void BasicRedShip::destroy()
 
 // Makes a new, boring ship that just sits there.
 BasicBlueShip::BasicBlueShip(Weapon *weapon, Hull *hull, Shield *shield) :
-	Ship("./art/basicblueship.3DS", weapon, hull, shield, maxFuel(), 0.0, 0.0, 1.0)
+	Ship("./art/basicblueship.3DS", weapon, hull, new CargoBay(), shield, maxFuel(), 0.0, 0.0, 1.0)
 {
 	ai = new ShipAI(this, blueFactionInfo);
 	faction = blueFactionInfo;
