@@ -21,7 +21,7 @@ void cleanup();
 ////////////////////////////////////////////////////////////////////////////////
 
 Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing goes here"),
-	numObjs(0), objectives(NULL), reward(0), isComplete(false)
+	numObjs(0), reward(0), isComplete(false)
 {
 	switch (id)
 	{

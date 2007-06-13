@@ -36,7 +36,7 @@ public:
 	void normalize();  // Maintain direction but make length 1
 	double distance(const Vec3& pos) const; // Find the distance from this Vec3 to pos
 	double angleBetween(const Vec3& b) const; // Find the angle between this and a, in radians
-	Vec3 Vec3::rotate(double angle, double x, double y, double z); // Find the rotation of this vec angle radiance CCW about the specified vector
+	Vec3 rotate(double angle, double x, double y, double z); // Find the rotation of this vec angle radiance CCW about the specified vector
 	string str();  // String representation: [x, y, z]
 
 	// Addition and Subtraction by another Vec3.

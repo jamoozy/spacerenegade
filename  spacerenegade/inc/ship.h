@@ -149,9 +149,9 @@ public:
 	void reload();
 	void heal();
 
-	int costToRefuel() { return fuelCost * (maxFuel() - fuel); };
-	int costToReload() { return ammoCost * (maxAmmo() - getAmmo()); };
-	int costToHeal() { return hlthCost * (maxHlth() - getHlth()); };
+	int costToRefuel() { return static_cast<int>(fuelCost * (maxFuel() - fuel)); };
+	int costToReload() { return static_cast<int>(ammoCost * (maxAmmo() - getAmmo())); };
+	int costToHeal() { return static_cast<int>(hlthCost * (maxHlth() - getHlth())); };
 
 	int getCredits() { return credits; };
 	void addToCredits(int c) { credits += c; };

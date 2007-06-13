@@ -39,6 +39,7 @@ protected:
 public:
 	// Constructors/Deconstructors
 	ShipAI(Ship* myShip, FactionInfo* myFaction);
+	virtual ~ShipAI() {};
 
 	// Getters
 	virtual Ship* getShip() { return pilotedShip; };

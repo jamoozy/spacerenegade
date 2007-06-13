@@ -1,3 +1,4 @@
+#include <iostream>
 #include "object.h"
 #include "ship.h"
 #include "factionInfo.h"
@@ -6,6 +7,10 @@
 #include "ai.h"
 #include "astarsearch.h"
 #include <vector>
+
+using std::cout;
+using std::cerr;
+using std::endl;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -19,8 +24,7 @@ using namespace std;
 ShipAI::ShipAI(Ship* myShip, FactionInfo* myFaction) : pilotedShip(myShip),
 		myFactionInfo(myFaction), engagementRadius(400.0), currentMode(WAITING),
 		target(NULL), destination(Vec3(0.0, 0.0, 0.0)), proximityDistance(10.0),
-		fireCoolDown(0), updateCountDown(0)
-{}
+		fireCoolDown(0), updateCountDown(0) {}
 
 void ShipAI::update()
 {
@@ -80,6 +84,13 @@ void ShipAI::update()
 				goTo(nextWayPoint);
 			}
 			break;
+
+		case FOLLOW:
+			break;
+
+		case GUARD:
+			break;
+
 		case ATTACK:
 			Vec3 currentPos = pilotedShip->getPos();
 			double otherRadius;
@@ -134,8 +145,7 @@ void ShipAI::update()
 
 			}
 			break;
-	};
-
+	}
 }
 
 bool ShipAI::goTo(const Vec3& pos)
