@@ -66,7 +66,7 @@ GLfloat miniMapY = 174.0f;
 
 // Sound names.
 string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust","missionaccepted","heal"};
-Sound &ambientMusic = Sound();
+Sound ambientMusic;
 
 
 struct perspectiveData 
@@ -206,6 +206,7 @@ void drawText(GLint x, GLint y, string s, Color c, bool center)
 		x -= (GLint)(s.length() * 4.5);
 		y += 7;
 	}
+
 	glRasterPos2i(x, y);
 	for(unsigned int i = 0, lines = 0; i < s.size(); i++)
 	{
@@ -310,12 +311,6 @@ void displayTacticalPaused()
 	drawText(512,384, "PAUSED", Color(1,1,1), true);
 	glutSwapBuffers();
 	glEnable(GL_LIGHTING);
-}
-
-void pauseMenu() // (Gum) Called when in a menu
-{
-	playerShip->stabilize();
-	glutSwapBuffers();
 }
 
 void displayTactical()
@@ -542,6 +537,12 @@ void displayMissionBoard()
 	}
 	menu->draw(GL_RENDER);
 
+	glutSwapBuffers();
+}
+
+void pauseMenu() // (Gum) Called when in a menu
+{
+	playerShip->stabilize();
 	glutSwapBuffers();
 }
 

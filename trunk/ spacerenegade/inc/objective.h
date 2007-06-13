@@ -10,6 +10,8 @@ protected:
 	Objective() {};
 
 public:
+	virtual ~Objective() {};
+
 	// Listener of some sort
 	virtual bool isComplete() { return false; };
 	virtual string getDescription()
@@ -22,10 +24,10 @@ public:
 class BountyObjective : public Objective
 {
 private:
+	string shipName;
 	int bountyId; // id of enemy ship
 	int num; // number of enemies to kill
 	int bountiesKilled;
-	string shipName;
 
 public:
 	BountyObjective();

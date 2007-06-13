@@ -223,7 +223,7 @@ vector<Vec3> AStarSearch::findShortestPath()
 			if (residence->checkedNeighbors[i] != NULL && pathIsClear(x, residence->checkedNeighbors[i]->center()))
 			{
 				Vec3 nodeCenter = residence->checkedNeighbors[i]->center();
-				double d = x.distance(nodeCenter);
+//				double d = x.distance(nodeCenter);
 				vector<Vec3> pathToNode = curPath;
 				pathToNode.push_back(nodeCenter);
 				Path newPath = Path(pathToNode, endPos);
@@ -234,7 +234,7 @@ vector<Vec3> AStarSearch::findShortestPath()
 			if (residence->unCheckedNeighbors[i] != NULL && pathIsClear(x, residence->unCheckedNeighbors[i]->center()))
 			{
 				Vec3 nodeCenter = residence->unCheckedNeighbors[i]->center();
-				double d = x.distance(nodeCenter);
+//				double d = x.distance(nodeCenter);
 				vector<Vec3> pathToNode = curPath;
 				pathToNode.push_back(residence->unCheckedNeighbors[i]->center());
 				Path newPath = Path(pathToNode, endPos);

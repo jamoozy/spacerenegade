@@ -214,7 +214,7 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 		for (int j = 0; j < numButtons; j++)
 			if (buffer[i*4 + 3] == buttons[j].getID())
 			{
-				if (buttons[j].getID() == -1) // Accept Mission button was pressed
+				if (buttons[j].getID() == static_cast<GLuint>(-1)) // Accept Mission button was pressed
 				{
 					if (selectedMission == NULL)
 					{

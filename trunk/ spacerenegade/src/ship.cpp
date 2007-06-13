@@ -873,3 +873,4 @@ void BasicBlueShip::rollRight()
 //	radpyr -= Vec3(0, 0, rot);
 //	recompdir();
 }
+
