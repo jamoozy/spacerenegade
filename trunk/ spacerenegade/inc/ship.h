@@ -29,14 +29,15 @@ protected:
 
 	Weapon *weapon; // What this ship shoots with.
 	Hull *hull;
+	CargoBay *bay;
 	Shield *shield;
 	TractorBeam *tractorBeam;
 	double fuel;   // Amount of fuel left.
 	ShipAI* ai;
 	bool exploding; // If true, the ship will explode
 
-	Ship(char* modelName, Weapon *weapon, Hull *hull, Shield *shield, double fuel,
-		   double red, double green, double blue);
+	Ship(char* modelName, Weapon *weapon, Hull *hull, CargoBay *bay, Shield *shield,
+			double fuel, double red, double green, double blue);
 
 	GLdouble pitchF[16];
 	GLdouble pitchB[16];
@@ -46,7 +47,7 @@ protected:
 	GLdouble rollR[16];
 
 public:
-	virtual ~Ship() { delete weapon; delete hull; delete shield; delete tractorBeam; if(ai) delete ai; };
+	virtual ~Ship() { delete weapon; delete hull; delete bay; delete shield; delete tractorBeam; if(ai) delete ai; };
 	//virtual ~Ship();
 
 	// Rate functions.
@@ -87,17 +88,21 @@ public:
 
 	// Status stuff.
 	virtual double maxHlth() const { return hull->maxHlth(); };
+	virtual double maxCBay() const { return bay->capacity(); };
 	virtual double maxFuel() const { return 10000; };
 	virtual double maxAmmo() const { return weapon->maxAmmo(); };
 	virtual double getHlth() const { return hull->getHlth(); };
+	virtual double getWght() const { return bay->getWeight(); };
 	virtual double getFuel() const { return fuel; };
 	virtual double getAmmo() const { return weapon->getAmmo(); };
 	virtual double hlthPcnt() const { return hull->hlthPcnt(); };
+	virtual double cbayPcnt() const { return bay->getWeight() / bay->capacity(); };
 	virtual double fuelPcnt() const { return fuel / maxFuel(); };
 	virtual double ammoPcnt() const { return weapon->getAmmo() / weapon->maxAmmo(); };
 	virtual double shldPcnt() const { return shield->hlthPcnt(); };
-	virtual void addToFuel (int num) { fuel += num; };
 	virtual void addToHlth (int num) { hull->addToHlth(num); };
+	virtual void addToCBay (double w) { bay->add(w); };
+	virtual void addToFuel (int num) { fuel += num; };
 	virtual void addToAmmo (int num) { weapon->addToAmmo(num); };
 	//virtual double explodeTime() const { return 
 };

@@ -438,6 +438,8 @@ void drawMeters()
 	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->ammoPcnt()));
 	glColor3d(.7,.7,.1);
 	glRecti(800, 575, 835, 575 + (int)(170 * playerShip->shldPcnt()));
+	glColor3d(.9,.6,.1);
+	glRecti(745, 575, 780, 575 + (int)(170 * playerShip->cbayPcnt()));
 
 	// Draw the tick marks
 	glColor3d(.9, .9, .9);
@@ -461,6 +463,7 @@ void drawMeters()
 	drawText(909, 550, "Fuel" , Color(1,1,1), false);
 	drawText(854, 550, "Ammo" , Color(1,1,1), false);
 	drawText(799, 550, "Shld" , Color(1,1,1), false);
+	drawText(745, 550, "CBay" , Color(1,1,1), false);
 
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
@@ -472,7 +475,10 @@ void drawMeters()
 	astream << "ammo left: " << playerShip->getAmmo();
 	stringstream sstream(stringstream::in | stringstream::out);
 	sstream << "shld left: " << playerShip->shldPcnt();
+	stringstream cstream(stringstream::in | stringstream::out);
+	cstream << "cbay left: " << playerShip->cbayPcnt();
 
+	drawText(0,60, cstream.str(), Color(1,1,1), false);
 	drawText(0,45, hstream.str(), Color(1,1,1), false);
 	drawText(0,30, fstream.str(), Color(1,1,1), false);
 	drawText(0,15, astream.str(), Color(1,1,1), false);

@@ -74,5 +74,35 @@ public:
 	virtual double maxHlth() const { return 100; };
 };
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+// -------------------------------- Cargo Bays ------------------------------ //
+////////////////////////////////////////////////////////////////////////////////
+
+class CargoBay
+{
+protected:
+	double weight;   // of contents
+
+public:
+	CargoBay() : weight(0) {};
+	virtual ~CargoBay() {};
+
+	virtual double getWeight() const { return weight; }; // currently held
+	virtual void add(double w) { weight += w; };
+
+	virtual double capacity() const { return 0; }; // Metric tons?
+};
+
+class SCargoBay : public CargoBay
+{
+public:
+	SCargoBay() : CargoBay() {};
+	virtual ~SCargoBay() {};
+
+	virtual double capacity() const { return 1; }; // Metric tons?
+};
+
 #endif
 
