@@ -265,8 +265,8 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 					}
 					else
 					{
-						cout << "2. A mission selected." << endl;
-						bool notYetOn = true;
+//						cout << "2. A mission selected." << endl;
+//						bool notYetOn = true;
 					/*	for (vector<Mission*>::iterator iter = missionsComplete.begin();
 							(iter != missionsComplete.end()) &&
 							(notYetOn = (*iter != selectedMission));

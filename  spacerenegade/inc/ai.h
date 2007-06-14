@@ -43,7 +43,7 @@ protected:
 public:
 	// Constructors/Deconstructors
 	ShipAI(Ship* myShip, FactionInfo* myFaction);
-	virtual ~ShipAI() { updateThread->stop(); delete updateThread; };
+	virtual ~ShipAI();
 
 	// Getters
 	virtual Ship* getShip() { return pilotedShip; };

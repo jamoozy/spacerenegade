@@ -21,14 +21,24 @@ extern OctTree *env;
 
 using namespace std;
 
-ShipAI::ShipAI(Ship* myShip, FactionInfo* myFaction) : pilotedShip(myShip),
-		myFactionInfo(myFaction), engagementRadius(400.0), currentMode(WAITING),
-		target(NULL), destination(Vec3(0.0, 0.0, 0.0)), proximityDistance(10.0),
-		fireCoolDown(0), updateCountDown(0), updateThread(NULL)
+ShipAI::ShipAI(Ship* myShip, FactionInfo* myFaction) : updateThread(NULL),
+		pilotedShip(myShip), myFactionInfo(myFaction), engagementRadius(400.0),
+		currentMode(WAITING), target(NULL), destination(Vec3(0.0, 0.0, 0.0)),
+		proximityDistance(10.0), fireCoolDown(0), updateCountDown(0)
 {
+#ifdef WIN32
 	updateThread = new ShipAIThread(this);
 	updateThread->start();
+#endif
 }
+
+ShipAI::~ShipAI()
+{
+#ifdef WIN32
+	updateThread->stop();
+	delete updateThread;
+#endif
+};
 
 void ShipAI::update()
 {

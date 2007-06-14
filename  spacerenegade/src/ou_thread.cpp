@@ -38,6 +38,8 @@
  * from use of the Software.
  */
 
+#ifdef WIN32
+
 #include <string>
 using namespace std;
 
@@ -293,3 +295,6 @@ unsigned int _ou_thread_proc(void* param) {
 	tp->run();
 	return 0;
 }
+
+#endif
+
