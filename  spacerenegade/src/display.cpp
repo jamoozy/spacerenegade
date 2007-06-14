@@ -69,7 +69,7 @@ string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","t
 Sound ambientMusic;
 
 
-struct perspectiveData 
+struct perspectiveData
 {
 	float fieldOfView;
 	float aspect;
@@ -133,7 +133,7 @@ void Sound::shiftMusic(string newName)
 	}
 	play();
 	setLooping();
-	
+
 }
 
 
@@ -146,7 +146,7 @@ SoundFactory::SoundFactory(string *names)
 
 	for(unsigned int i = 0; i < names->size(); i++)
 		sounds.push_back(Sound(names[i]));
-	
+
 }
 
 void SoundFactory::play(const string &name)
@@ -408,7 +408,7 @@ void drawObjectives()
 	{
 		Mission *m = missionsOn.at(i);
 		// Check to see if mission has been completed.
-		
+
 		drawText(10, height, m->getTitle() , Color(1,1,1), false);
 		for (int k = 0; k < m->getNumObjs(); k++)
 		{
@@ -557,7 +557,7 @@ void displayPlanet()
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	
+
 	std::stringstream ss1;
 	std::stringstream ss2;
 	std::stringstream ss3;
@@ -628,7 +628,7 @@ void initStartScreen()
 	// Setting this ensures all the right display
 	// and input functions are called.
 	screenState = START_SCREEN;
-	
+
 	ambientMusic.shiftMusic("music/01");
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
@@ -664,7 +664,7 @@ void initStartScreen()
 // while initTactical sets up just graphics, to be used after leaving a planet
 void initNewGame()
 {
-	//screenState = TACTICAL; 
+	//screenState = TACTICAL;
 	soundFactory = new SoundFactory(soundNames);
 
 	paused = false;
@@ -850,10 +850,10 @@ void initNewGame()
 void initTactical()
 {
 	bool leavingPlanet = (screenState == PLANET);
-	screenState = TACTICAL; 
+	screenState = TACTICAL;
 
 	playerShip->stop();
-	
+
 	ambientMusic.shiftMusic("music/04");
 
 	paused = false;

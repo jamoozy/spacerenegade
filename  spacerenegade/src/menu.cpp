@@ -20,6 +20,7 @@ extern Menu *menu;
 
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
+extern vector <Mission*> missionsComplete;
 
 static GLfloat FONTWIDTH = 9; // We're using GLUT_BITMAP_9_BY_15
 static GLfloat FONTHEIGHT = 15; // We're using GLUT_BITMAP_9_BY_15
@@ -82,16 +83,16 @@ void Button::Place(GLenum mode)
 	if (mode == GL_SELECT)
 	{
 		glLoadName(id);
-		glRectf((xPos) - border, 
-				(yPos) - border, 
-				(xPos) + border + (numOfLetters * FONTWIDTH), 
+		glRectf((xPos) - border,
+				(yPos) - border,
+				(xPos) + border + (numOfLetters * FONTWIDTH),
 				(yPos) + border + (FONTHEIGHT));
 	}
 	else if (mode == GL_RENDER)
 	{
 		glRectf((xPos) - border,
 				(yPos) - border,
-				(xPos) + border + (numOfLetters * FONTWIDTH), 
+				(xPos) + border + (numOfLetters * FONTWIDTH),
 				(yPos) + border + (FONTHEIGHT));
 		drawText((int)floor(xPos), (int)floor(yPos), title, 1.0, 1.0, 1.0);
 	}
@@ -141,6 +142,7 @@ Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 
 		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
 			NUM_MISSIONS = (int)missionsAvailable.size();
+
 			height = 720;
 			numButtons = 2 + NUM_MISSIONS;
 
@@ -150,7 +152,7 @@ Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 			buttons [0] = Button("Accept Mission", 5, 150, 300, .1,.7,.1, -1, NULL); // Accept Mission will have id -1 (See processHits)
 			buttons [1] = Button("Exit", 5, 500, 30, .4,.5,.7, 2, initPlanet);
 
-			//draw mission titles
+			//draw available mission titles
 			for (int i = 0; i < NUM_MISSIONS; i ++)
 			{
 				Mission *m = missionsAvailable[i];

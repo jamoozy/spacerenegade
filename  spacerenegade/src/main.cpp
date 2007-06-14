@@ -39,6 +39,7 @@ OctTree *zoomx;
 Menu *menu;        // Gum: The current menu of buttons
 vector <Mission*> missionsOn;
 vector <Mission*> missionsAvailable;
+vector <Mission*> missionsComplete;
 SoundFactory *soundFactory;
 extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
 	*whiteFactionInfo, *otherFactionInfo;
