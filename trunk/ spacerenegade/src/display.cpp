@@ -484,22 +484,22 @@ void drawMeters()
 
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
-	stringstream hstream(stringstream::in | stringstream::out);
-	hstream << "hlth left: " << playerShip->getHlth();
-	stringstream fstream(stringstream::in | stringstream::out);
-	fstream << "fuel left: " << playerShip->fuelPcnt();
-	stringstream astream(stringstream::in | stringstream::out);
-	astream << "ammo left: " << playerShip->getAmmo();
-	stringstream sstream(stringstream::in | stringstream::out);
-	sstream << "shld left: " << playerShip->shldPcnt();
-	stringstream cstream(stringstream::in | stringstream::out);
-	cstream << "cbay left: " << playerShip->cbayPcnt();
-
-	drawText(0,60, cstream.str(), Color(1,1,1), false);
-	drawText(0,45, hstream.str(), Color(1,1,1), false);
-	drawText(0,30, fstream.str(), Color(1,1,1), false);
-	drawText(0,15, astream.str(), Color(1,1,1), false);
-	drawText(0, 0, sstream.str(), Color(1,1,1), false);
+//	stringstream hstream(stringstream::in | stringstream::out);
+//	hstream << "hlth left: " << playerShip->getHlth();
+//	stringstream fstream(stringstream::in | stringstream::out);
+//	fstream << "fuel left: " << playerShip->fuelPcnt();
+//	stringstream astream(stringstream::in | stringstream::out);
+//	astream << "ammo left: " << playerShip->getAmmo();
+//	stringstream sstream(stringstream::in | stringstream::out);
+//	sstream << "shld left: " << playerShip->shldPcnt();
+//	stringstream cstream(stringstream::in | stringstream::out);
+//	cstream << "cbay left: " << playerShip->cbayPcnt();
+//
+//	drawText(0,60, cstream.str(), Color(1,1,1), false);
+//	drawText(0,45, hstream.str(), Color(1,1,1), false);
+//	drawText(0,30, fstream.str(), Color(1,1,1), false);
+//	drawText(0,15, astream.str(), Color(1,1,1), false);
+//	drawText(0, 0, sstream.str(), Color(1,1,1), false);
 
 	#if (PRINT_FPS)
 		if (last_time != time(NULL))
