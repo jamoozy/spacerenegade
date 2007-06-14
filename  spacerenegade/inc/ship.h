@@ -104,7 +104,7 @@ public:
 	virtual void addToCBay (double w) { bay->add(w); };
 	virtual void addToFuel (int num) { fuel += num; };
 	virtual void addToAmmo (int num) { weapon->addToAmmo(num); };
-	//virtual double explodeTime() const { return 
+	//virtual double explodeTime() const { return
 };
 
 
@@ -155,6 +155,7 @@ public:
 	void heal();
 	int getProfit();
 	void sellMaterials();
+	void addCredits(int amt);
 
 	int costToRefuel() { return static_cast<int>(fuelCost * (maxFuel() - fuel)); };
 	int costToReload() { return static_cast<int>(ammoCost * (maxAmmo() - getAmmo())); };
