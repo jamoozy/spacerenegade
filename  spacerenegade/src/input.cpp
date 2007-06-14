@@ -265,6 +265,7 @@ void startScreenKeyboard(unsigned char key, int x, int y)
 // Tactical-specific one-hit actions. -------------------------
 void tacticalKeyboard(unsigned char key, int x, int y)
 {
+	Ship* enemy1;
 	switch (key)
 	{
 		case 'k':
@@ -274,6 +275,20 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 			break;
 //		case 't':
 //		case 'T':
+		case '{':
+		case '[':
+			enemy1 = new BasicBlueShip(new Blaster(), new BasicHull(), new BasicShield());
+			enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
+			env->add(enemy1);
+			enemyShips.push_back(enemy1);
+			break;
+		case '}':
+		case ']':
+			enemy1 = new BasicRedShip(new Blaster(), new BasicHull(), new BasicShield());
+			enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
+			env->add(enemy1);
+			enemyShips.push_back(enemy1);
+			break;
 		case 13: // Enter
 			if (playerShip->ammoPcnt() > 0)
 				playerShip->fire();
