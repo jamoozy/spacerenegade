@@ -161,6 +161,8 @@ void updateKeyboard(unsigned char key, int x, int y)
 		Keyboard::getKeyboard()->setDown(key - '0');
 	else if (key == ' ')
 		Keyboard::getKeyboard()->setDown(SR_KEY_SPACE);
+	else if (key == 13)
+		Keyboard::getKeyboard()->setDown(SR_KEY_ENTER);
 	else
 		std::cout << "got a \"normal\" " << (int)key << " down." << std::endl;
 }
@@ -175,6 +177,8 @@ void updateKeyboardUp(unsigned char key, int x, int y)
 		Keyboard::getKeyboard()->setUp(key - '0');
 	else if (key == ' ')
 		Keyboard::getKeyboard()->setUp(SR_KEY_SPACE);
+	else if (key == 13)
+		Keyboard::getKeyboard()->setUp(SR_KEY_ENTER);
 	else
 		std::cout << "got a \"normal\" " << (int)key << " up." << std::endl;
 }
@@ -268,13 +272,14 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 			if (!enemyShips.empty())
 				enemyShips.at(0)->destroy();
 			break;
-		case 't':
-		case 'T':
+//		case 't':
+//		case 'T':
+		case 13: // Enter
 			if (playerShip->ammoPcnt() > 0)
 				playerShip->fire();
 			break;
-		case 'q':
-		case 'Q':
+//		case 'q':
+//		case 'Q':
 		case 27:  // Esc
 			cleanup();
 			break;
@@ -365,9 +370,11 @@ void handleTacticalInput()
 	if (playerShip->fuelPcnt() > 0)
 	{
 		// Yaw.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_S))
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_S) ||
+			Keyboard::getKeyboard()->isDown(SR_KEY_LEFT))
 			playerShip->yawLeft();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_F))
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_F) ||
+			Keyboard::getKeyboard()->isDown(SR_KEY_RIGHT))
 			playerShip->yawRight();
 
 		// Acceleration.
@@ -379,9 +386,11 @@ void handleTacticalInput()
 			playerShip->stabilize();
 
 		// Pitch.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_D))
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_D) ||
+			Keyboard::getKeyboard()->isDown(SR_KEY_DOWN))
 			playerShip->pitchBack();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_E))
+		if (Keyboard::getKeyboard()->isDown(SR_KEY_E) ||
+			Keyboard::getKeyboard()->isDown(SR_KEY_UP))
 			playerShip->pitchForward();
 
 		// Roll.
