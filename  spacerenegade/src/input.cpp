@@ -22,6 +22,7 @@ extern int screen_width;
 extern int screen_height;
 extern bool paused;
 extern int zoom;
+extern vector<Ship*> enemyShips;
 
 
 
@@ -262,6 +263,11 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+		case 'k':
+		case 'K':
+			if (!enemyShips.empty())
+				enemyShips.at(0)->destroy();
+			break;
 		case 't':
 		case 'T':
 			if (playerShip->ammoPcnt() > 0)
@@ -460,18 +466,18 @@ void mouseClick(int button, int state, int x, int y)
 	GLint viewport[4];
 
 	if(button != GLUT_LEFT_BUTTON || state != GLUT_DOWN) return;
-	
+
 	glGetIntegerv(GL_VIEWPORT, viewport);
-	
+
 	glSelectBuffer(BUFSIZE, selectBuffer);
 
 	#undef BUFSIZE
-	
+
 	(void) glRenderMode(GL_SELECT);
-	
+
 	glInitNames();
 	glPushName(0);
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
@@ -481,11 +487,11 @@ void mouseClick(int button, int state, int x, int y)
 	gluOrtho2D(0,screen_width , 0,screen_height);
 	menu->draw(GL_SELECT);
 	hits = glRenderMode(GL_RENDER);
-	
+
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glFlush();
-	
+
 	if(hits == 1)
 		processHits(hits, selectBuffer);
 }

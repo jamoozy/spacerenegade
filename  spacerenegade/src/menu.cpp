@@ -5,6 +5,7 @@
 #include <cmath>
 #include "display.h"
 #include "menu.h"
+#include "ship.h"
 #include "mission.h"
 
 using std::string;
@@ -17,6 +18,7 @@ extern GLfloat miniMapX;
 extern GLfloat miniMapY;
 
 extern Menu *menu;
+extern PShip *playerShip;
 
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
@@ -106,7 +108,7 @@ void Button::Place(GLenum mode)
 
 Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 {
-	int height, NUM_MISSIONS; // replace with something more dynamic
+	int height, NUM_MISSIONS, NUM_COMPLETED_MISSIONS; // replace with something more dynamic
 	switch (type)
 	{
 		case START_SCREEN:
@@ -141,22 +143,32 @@ Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 			break;
 
 		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
-			NUM_MISSIONS = (int)missionsAvailable.size();
+			NUM_MISSIONS = missionsAvailable.size();
+			NUM_COMPLETED_MISSIONS = missionsComplete.size();
 
 			height = 720;
-			numButtons = 2 + NUM_MISSIONS;
+			numButtons = 3 + NUM_MISSIONS + NUM_COMPLETED_MISSIONS;
 
 			buttons = new Button[numButtons];
 			//draw the two main buttons
 
-			buttons [0] = Button("Accept Mission", 5, 150, 300, .1,.7,.1, -1, NULL); // Accept Mission will have id -1 (See processHits)
-			buttons [1] = Button("Exit", 5, 500, 30, .4,.5,.7, 2, initPlanet);
+			buttons [0] = Button("Accept Mission", 5, 150, 300, .7,.1,.1, -1, NULL); // Accept Mission will have id -1 (See processHits)
+			buttons [1] = Button("Claim Reward", 5, 150, 250, .1,.7,.1, -2, NULL); // Claim reward will have id 1 (See processHits)
+			buttons [2] = Button("Exit", 5, 500, 30, .4,.5,.7, 2, initPlanet);
 
 			//draw available mission titles
 			for (int i = 0; i < NUM_MISSIONS; i ++)
 			{
 				Mission *m = missionsAvailable[i];
-				buttons[i + 2] = Button(m->getTitle(), 1, 20, height, .1,.1,.1, (100 + i), NULL);
+				buttons[i + NUM_COMPLETED_MISSIONS + 3] = 
+					Button(m->getTitle(), 1, 20, height, .7,.1,.1, (100 + i), NULL);
+				height -= 30;
+			}
+			// Draw completed mission titles
+			for (int i = 0; i < NUM_COMPLETED_MISSIONS; i++)
+			{
+				Mission *m = missionsComplete.at(i);
+				buttons[i + 3] = Button(m->getTitle(), 1, 20, height, .1,.7,.1, (200 + i), NULL);
 				height -= 30;
 			}
 			// handle displaying briefing, objectives, and reward when mission title is clicked
@@ -233,7 +245,7 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 							iter++);
 
 						// Only do this if we're not yet on.
-						if (notYetOn)
+						if (notYetOn && !selectedMission->isCompleted())
 						{
 							missionsOn.push_back(selectedMission);
 							soundFactory->play("missionaccepted");
@@ -245,7 +257,39 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 
 					}
 				}
-				else if (buttons[j].getID() >= 100) // a displayMission button was pressed
+				else if (buttons[j].getID() == static_cast<GLuint>(-2)) // Claim Reward button was pressed
+				{
+					if (selectedMission == NULL)
+					{
+						cout << "1. No mission selected." << endl;
+					}
+					else
+					{
+						cout << "2. A mission selected." << endl;
+						bool notYetOn = true;
+					/*	for (vector<Mission*>::iterator iter = missionsComplete.begin();
+							(iter != missionsComplete.end()) &&
+							(notYetOn = (*iter != selectedMission));
+							iter++);
+
+					*/	// Only do this if we're not yet on.
+						if (selectedMission->isCompleted())
+						{
+							playerShip->addCredits(selectedMission->getReward());
+							vector<Mission*>::iterator iter = missionsComplete.begin();
+							for (; selectedMission != *iter && iter != missionsComplete.end(); iter++);
+							missionsComplete.erase(iter);
+
+							remake = true;
+						}
+
+					}
+				}
+				else if (buttons[j].getID() >= 200) // a displayMission button was pressed for a completed mission
+				{
+					selectedMission = missionsComplete[buttons[j].getID() - 200];
+				}
+				else if (buttons[j].getID() >= 100) // a displayMission button was pressed for an available mission
 				{
 					selectedMission = missionsAvailable[buttons[j].getID() - 100];
 				}

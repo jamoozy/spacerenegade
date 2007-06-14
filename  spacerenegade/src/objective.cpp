@@ -44,7 +44,7 @@ string BountyObjective::getDescription()
 			oss << response << " " << shipName << " destroyed.";
 		}
 		else
-			oss << "Mission Complete!";
+			oss << "Objective Complete";
 	}
 	return oss.str();
 }

@@ -30,6 +30,7 @@ extern FactionInfo *playerFactionInfo, *redFactionInfo, *blueFactionInfo,
 extern vector<Ship*> enemyShips;
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
+extern vector <Mission*> missionsComplete;
 
 #ifndef M_PI
 	#define M_PI 3.14159265358979
@@ -415,6 +416,11 @@ int PShip::getProfit() // (Gum)
 	return (bay->getWeight()) * MATPRICE;
 }
 
+void PShip::addCredits(int amt) // PM
+{
+	credits += amt;
+}
+
 void PShip::fire()
 {
 	weapon->fire(this);
@@ -632,13 +638,18 @@ void BasicRedShip::destroy()
 {
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
-		Mission *m = NULL;
-	for(unsigned int i = 0; i < missionsOn.size(); i++)
+	Mission *m = NULL;
+	for(vector<Mission*>::iterator iter = missionsOn.begin(); iter < missionsOn.end(); iter++)
 	{
-		m = missionsOn.at(i);
+		m = *iter;
 		if(m->getID() == 0)
 		{
 			m->getObjective(0)->incrementKills();
+			if(m->isCompleted())
+			{
+                missionsComplete.push_back(m);
+				missionsOn.erase(iter);
+			}
 		}
 	}
 	delete this;
@@ -747,12 +758,17 @@ void BasicBlueShip::destroy()
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
 	Mission *m = NULL;
-	for(unsigned int i = 0; i < missionsOn.size(); i++)
+	for(vector<Mission*>::iterator iter = missionsOn.begin(); iter < missionsOn.end(); iter++)
 	{
-		m = missionsOn.at(i);
+		m = *iter;
 		if(m->getID() == 1)
 		{
 			m->getObjective(0)->incrementKills();
+			if(m->isCompleted())
+			{
+                missionsComplete.push_back(m);
+				missionsOn.erase(iter);
+			}
 		}
 	}
 	delete this;
