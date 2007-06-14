@@ -265,6 +265,20 @@ void PShip::update()
 	position += velocity;
 	shield->update();
 	tractorBeam->update(this);
+
+	Vec3 nextPos = position + velocity;
+	if (nextPos.x() < -OctTree::BOUND)
+		position = Vec3(OctTree::BOUND-1, position.y(), position.z());
+	else if (OctTree::BOUND < nextPos.x())
+		position = Vec3(-OctTree::BOUND+1, position.y(), position.z());
+	if (nextPos.y() < -OctTree::BOUND)
+		position = Vec3(position.x(), OctTree::BOUND-1, position.z());
+	else if (OctTree::BOUND < nextPos.y())
+		position = Vec3(position.x(), -OctTree::BOUND+1, position.z());
+	if (nextPos.z() < -OctTree::BOUND)
+		position = Vec3(position.x(), position.y(), OctTree::BOUND-1);
+	else if (OctTree::BOUND < nextPos.z())
+		position = Vec3(position.x(), position.y(), -OctTree::BOUND+1);
 }
 
 // Draws the ship.
