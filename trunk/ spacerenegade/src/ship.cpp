@@ -632,7 +632,15 @@ void BasicRedShip::destroy()
 {
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
-	missionsAvailable.at(0)->getObjective(0)->incrementKills();
+		Mission *m = NULL;
+	for(unsigned int i = 0; i < missionsOn.size(); i++)
+	{
+		m = missionsOn.at(i);
+		if(m->getID() == 0)
+		{
+			m->getObjective(0)->incrementKills();
+		}
+	}
 	delete this;
 }
 
@@ -738,7 +746,15 @@ void BasicBlueShip::destroy()
 {
 	soundFactory->play("explosion-ship");
 	//cout << "Destroyed" << endl;
-	missionsAvailable.at(1)->getObjective(0)->incrementKills();
+	Mission *m = NULL;
+	for(unsigned int i = 0; i < missionsOn.size(); i++)
+	{
+		m = missionsOn.at(i);
+		if(m->getID() == 1)
+		{
+			m->getObjective(0)->incrementKills();
+		}
+	}
 	delete this;
 }
 

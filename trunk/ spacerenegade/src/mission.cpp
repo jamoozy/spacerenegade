@@ -21,7 +21,7 @@ void cleanup();
 ////////////////////////////////////////////////////////////////////////////////
 
 Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing goes here"),
-	numObjs(0), reward(0), isComplete(false)
+	numObjs(0), reward(0), completed(false)
 {
 	switch (id)
 	{
@@ -30,8 +30,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. ";
 			objectives.push_back(new BountyObjective("Red Ships", 0, 2));
 
-			reward = 1000;
-			isComplete = false;
+			reward = 5000;
+			completed = false;
 			break;
 
 		case 1:
@@ -39,8 +39,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plz kthxbai. ";
 			objectives.push_back(new BountyObjective("Blue Ships", 1, 2));
 
-			reward = 2000;
-			isComplete = false;
+			reward = 5000;
+			completed = false;
 			break;
 	}
 }
@@ -62,6 +62,16 @@ void Mission::displayMissionBriefing()
 void Mission::acceptMission()
 {
 
+}
+
+bool Mission::isComplete() const
+{
+	bool complete = true;
+	for(unsigned int i = 0; i < objectives.size(); i++)
+	{
+		complete = complete && objectives.at(i)->isComplete();
+	}
+	return complete;
 }
 
 // Automatically inserts "\" at every width'th character,

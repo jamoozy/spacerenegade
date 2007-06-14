@@ -16,7 +16,7 @@ private:
 	int numObjs; // number of objectives
 	std::vector<BountyObjective*> objectives;
 	int reward; // ex. 1000 credits
-	bool isComplete; // all objectives have been met, and player should go to finishPlanet
+	bool completed; // all objectives have been met, and player should go to finishPlanet
 	//boolean hasFailed; // one or more conditions have been failed (such as allowing a ship to die)
 	// EventListener listens for objective-specific events (such as # of bounties killed)
 
@@ -35,9 +35,11 @@ public:
 	string getTitle() const       { return title; };
 	string getBriefing() const    { return briefing; };
 	int getReward() const         { return reward; };
+	int getID() const             { return id; };
 	//Objective getObjectives();
 	int getNumObjectives() const  { return objectives.size(); };
 	Objective* getObjective(int i) { return objectives.at(i);};
+	bool isComplete() const;
 	//BountyObjective getObjective(int i) {return objectives[i];};
 
 	void acceptMission();
