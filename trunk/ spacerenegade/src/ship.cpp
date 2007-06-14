@@ -650,6 +650,7 @@ void BasicRedShip::destroy()
                 missionsComplete.push_back(m);
 				missionsOn.erase(iter);
 			}
+			break;
 		}
 	}
 	delete this;
@@ -769,6 +770,7 @@ void BasicBlueShip::destroy()
                 missionsComplete.push_back(m);
 				missionsOn.erase(iter);
 			}
+			break;
 		}
 	}
 	delete this;

@@ -24,7 +24,11 @@ using namespace std;
 ShipAI::ShipAI(Ship* myShip, FactionInfo* myFaction) : pilotedShip(myShip),
 		myFactionInfo(myFaction), engagementRadius(400.0), currentMode(WAITING),
 		target(NULL), destination(Vec3(0.0, 0.0, 0.0)), proximityDistance(10.0),
-		fireCoolDown(0), updateCountDown(0) {}
+		fireCoolDown(0), updateCountDown(0), updateThread(NULL)
+{
+	updateThread = new ShipAIThread(this);
+	updateThread->start();
+}
 
 void ShipAI::update()
 {
