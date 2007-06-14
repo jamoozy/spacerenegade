@@ -5,6 +5,9 @@
 #include "ship.h"
 #include "factionInfo.h"
 #include "vec3.h"
+#include "ou_thread.h"
+
+using namespace openutils;
 
 // Base Artificial Intelligence for ships
 class ShipAI
@@ -14,6 +17,7 @@ public:
 	enum Mode { WAITING, PATROL, FOLLOW, ATTACK, GUARD };
 
 protected:
+	Thread *updateThread; // Thread that handles processing of AI
 	Ship* pilotedShip; // Ship that this AI controls
 	FactionInfo* myFactionInfo;
 	double engagementRadius; // Maximum distance that the AI will pursue an enemy
@@ -39,7 +43,7 @@ protected:
 public:
 	// Constructors/Deconstructors
 	ShipAI(Ship* myShip, FactionInfo* myFaction);
-	virtual ~ShipAI() {};
+	virtual ~ShipAI() { updateThread->stop(); delete updateThread; };
 
 	// Getters
 	virtual Ship* getShip() { return pilotedShip; };
@@ -50,6 +54,16 @@ public:
 	virtual void update(); // Process logic, such as moving the ship and firing
 
 
+};
+
+// Thread for handling the updating of the AI
+class ShipAIThread : public Thread
+{
+	ShipAI* ai;
+public:
+	ShipAIThread(ShipAI *myAI) : ai(myAI) {}
+
+	void run() { ai->update(); };
 };
 
 #endif // ai.h
