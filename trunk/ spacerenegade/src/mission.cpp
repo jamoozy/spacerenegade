@@ -28,7 +28,7 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 		case 0:
 			title = "A Test of Honor";
 			briefing = "Greetings, traveler. I understand you are looking for work.\n\nMy name is Lieutenant Crooky, and we are looking for more Blue soldiers. If you want to join our alliance, prove your devotion by destroying two Red ships. We'll reward not only with 10,000 credits, but an opportunity to one day lead the entire Blue faction into glory. ";
-			completeBriefing = "Well done. You are clearly devoted to our cause. Expect to see more offers from us in the future, with higher stakes and higher rewards.  \n \n Here is 5000 credits, as promised.";
+			completeBriefing = "Well done. You are clearly devoted to our cause. Expect to see more offers from us in the future, with higher stakes and higher rewards.  \n \n Here is 10,000 credits, as promised.";
 			objectives.push_back(new BountyObjective("Red Ships", 0, 2));
 
 			reward = 10000;
@@ -38,7 +38,7 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 		case 1:
 			title = "Blood Red";
 			briefing = "Hey, kid! Your face tells me you're looking for money. Well, we've got the money if you've got the guts.\n\nThey call me Bumbum the Corpulent, for I am the leader of the mightiest faction in the galaxy: The Reds. If you wanna join the party, you gotta have guts. Shoot down two Blue ships and you'll get 10,000 credits... and we may just call you a fellow Red. ";
-			completeBriefing = "Ha! You sure know how to party. If you're hungry for more, drop by the mission board some other time.  \n \n Here's 10,000 clams. Don't spend it all in one place! HAHAHA.";
+			completeBriefing = "Ha! You sure know how to party. If you're hungry for more, drop by the mission board some other time.  \n \n Here's 10,000 clams. Don't spend it all in one place! HA HA HA.";
 			objectives.push_back(new BountyObjective("Blue Ships", 1, 2));
 
 			reward = 10000;
