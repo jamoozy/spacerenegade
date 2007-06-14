@@ -309,9 +309,11 @@ void displayStartScreen()
 void displayTacticalPaused()
 {
 	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
 	drawText(512,384, "PAUSED", Color(1,1,1), true);
 	glutSwapBuffers();
 	glEnable(GL_LIGHTING);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void displayTactical()
@@ -338,7 +340,6 @@ void displayTactical()
 	env->draw(2);        // 2nd (transparency) pass.
 
 	drawHUD();         // Keep on transparency for the HUD.
-	drawObjectives();
 
 	glutSwapBuffers();
 
@@ -385,12 +386,13 @@ void drawHUD()
 
 	// Enable transparency, disable the lighting and deptch checking,
 	// and draw the HUD here.
-	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);  // Now it won't look like the HUD is part of the world.
+	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_TEXTURE_2D);  // Gives us full-range colors for some reason.
 
 	drawMeters();
 	drawMiniMap();
+	drawObjectives();
 
 	// Shift things back into the "normal" camera that lets us look.
 	glMatrixMode(GL_PROJECTION);
@@ -788,13 +790,6 @@ void initNewGame()
 	missionsAvailable.push_back(new Mission(0));
 	missionsAvailable.push_back(new Mission(1));
 
-	// Jam:
-	// Initialize the player's ship.  Don't delete it, because deleting
-	// the environment should have taken care of it already.
-	playerShip = new PShip(new Blaster(), new BasicHull(), new BasicShield());
-	playerShip->setAt(0,0,0);
-	env->add(playerShip);
-
 	// PM:
 	// Initialize the enemy ship.  This will be removed once missions are implemented
 	Ship* enemy1;
@@ -814,6 +809,13 @@ void initNewGame()
 	enemy1->setAt(rr(-125, 125), rr(-125, 125), rr(-125, 125));
 	env->add(enemy1);
 	enemyShips.push_back(enemy1);
+
+	// Jam:
+	// Initialize the player's ship.  Don't delete it, because deleting
+	// the environment should have taken care of it already.
+	playerShip = new PShip(new Blaster(), new BasicHull(), new BasicShield());
+	playerShip->setAt(0,0,0);
+	env->add(playerShip);
 
 	#if (PRINT_FPS)
 		last_time = 0;
