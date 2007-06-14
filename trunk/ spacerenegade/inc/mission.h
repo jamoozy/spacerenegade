@@ -13,6 +13,7 @@ private:
 	int id;
 	string title; // Headline of mission ("Help Crooky get his revenge!")
 	string briefing; // Detailed explanation of missions as told by client
+	string completeBriefing; // Debriefing for when mission is done
 	int numObjs; // number of objectives
 	std::vector<BountyObjective*> objectives;
 	int reward; // ex. 1000 credits
@@ -30,16 +31,15 @@ public:
 	Mission();
 	virtual ~Mission();
 	Mission(int id); // probably only one or two missions in demo
-	bool isCompleted() const      { return isComplete; };
+	bool isCompleted() const;
 	//bool hasFailed(); // won't use conditions in the demo
 	string getTitle() const       { return title; };
-	string getBriefing() const    { return briefing; };
+	string getBriefing() const    { if (isCompleted()) return completeBriefing; else return briefing; };
 	int getReward() const         { return reward; };
 	int getID() const             { return id; };
 	//Objective getObjectives();
 	int getNumObjectives() const  { return objectives.size(); };
 	Objective* getObjective(int i) { return objectives.at(i);};
-	bool isComplete() const;
 	//BountyObjective getObjective(int i) {return objectives[i];};
 
 	void acceptMission();
