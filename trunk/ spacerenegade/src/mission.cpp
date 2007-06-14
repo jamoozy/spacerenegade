@@ -27,7 +27,8 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 	{
 		case 0:
 			title = "Help Crooky get his revenge!";
-			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. ";
+			briefing = "My name is Crooky and I want you to kill reds. Reds killed my pa. You kill reds now plz kthxbai. ";
+			completeBriefing = "Thanks for killing those reds for me.  \n \n Here is 5000 credits.";
 			objectives.push_back(new BountyObjective("Red Ships", 0, 2));
 
 			reward = 5000;
@@ -37,6 +38,7 @@ Mission::Mission(int id) : id(id), title("Title goes here"), briefing("Briefing 
 		case 1:
 			title = "Help Bumbum get his revenge!";
 			briefing = "My name is Bumbum and I want you to kill blues. Blues killed my ma. You kill blues now plz kthxbai. ";
+			completeBriefing = "Thanks for killing those blues for me.  \n \n Here is 5000 credits.";
 			objectives.push_back(new BountyObjective("Blue Ships", 1, 2));
 
 			reward = 5000;
@@ -56,7 +58,7 @@ Mission::~Mission()
 
 void Mission::displayMissionBriefing()
 {
-	drawText(515,725, insertNewLines(briefing, 41), Color(1,1,1), false);
+	drawText(515,725, insertNewLines(getBriefing(), 41), Color(1,1,1), false);
 }
 
 void Mission::acceptMission()
@@ -64,7 +66,7 @@ void Mission::acceptMission()
 
 }
 
-bool Mission::isComplete() const
+bool Mission::isCompleted() const
 {
 	bool complete = true;
 	for(unsigned int i = 0; i < objectives.size(); i++)

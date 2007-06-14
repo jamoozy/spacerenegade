@@ -53,7 +53,11 @@ void Bullet::draw(int pass)
 
 		glTranslated(position.x(), position.y(), position.z());
 		glColor3d(0.8,0,0);
+		GLfloat bullet_mat_emis[] = { 1.0, 0.0, 0.0, 1.0 };
+		GLfloat default_emis[] = {0.0, 0.0, 0.0, 1.0};
+		glMaterialfv(GL_FRONT, GL_EMISSION, bullet_mat_emis);
 		glutSolidCube(.5);
+		glMaterialfv(GL_FRONT, GL_EMISSION, default_emis);
 
 		glPopMatrix();
 	}

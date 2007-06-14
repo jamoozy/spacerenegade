@@ -49,6 +49,7 @@ extern Menu *menu;        // Gum: The current menu of buttons
 extern SoundFactory *soundFactory;
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
+extern vector <Mission*> missionsComplete;
 
 vector<Ship*> enemyShips;
 
@@ -407,6 +408,22 @@ void drawObjectives()
 	for (int i = 0; i < (int)missionsOn.size(); i++)
 	{
 		Mission *m = missionsOn.at(i);
+		// Check to see if mission has been completed.
+
+		drawText(10, height, m->getTitle() , Color(1,1,1), false);
+		for (int k = 0; k < m->getNumObjs(); k++)
+		{
+			height -= 30;
+			Objective *o = m->getObjective(k);
+			string des = o->getDescription();
+			drawText(20, height, des, Color(.5,.5,.5), false);
+		}
+		height -= 40;
+	}
+	// repeat for completed missiosn
+	for (int i = 0; i < (int)missionsComplete.size(); i++)
+	{
+		Mission *m = missionsComplete.at(i);
 		// Check to see if mission has been completed.
 
 		drawText(10, height, m->getTitle() , Color(1,1,1), false);
