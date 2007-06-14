@@ -91,6 +91,7 @@ public:
 
 	virtual double getWeight() const { return weight; }; // currently held
 	virtual void add(double w) { weight += w; };
+	virtual void empty() { weight = 0; };
 
 	virtual double capacity() const { return 0; }; // Metric tons?
 };

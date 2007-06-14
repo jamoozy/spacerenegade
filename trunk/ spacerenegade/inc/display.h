@@ -101,6 +101,7 @@ void initMissionBoard();
 void refuelPlayer();
 void reloadPlayerAmmo();
 void healPlayer();
+void sellMaterials();
 
 
 #endif

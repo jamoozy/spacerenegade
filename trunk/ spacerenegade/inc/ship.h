@@ -153,6 +153,8 @@ public:
 	void refuel();
 	void reload();
 	void heal();
+	int getProfit();
+	void sellMaterials();
 
 	int costToRefuel() { return static_cast<int>(fuelCost * (maxFuel() - fuel)); };
 	int costToReload() { return static_cast<int>(ammoCost * (maxAmmo() - getAmmo())); };

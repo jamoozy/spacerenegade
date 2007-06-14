@@ -403,6 +403,18 @@ void PShip::heal()
 	}
 }
 
+void PShip::sellMaterials() // (Gum)
+{
+	credits += getProfit();
+	bay->empty();
+}
+
+int PShip::getProfit() // (Gum)
+{
+	int MATPRICE = 10000; // more/less?
+	return (bay->getWeight()) * MATPRICE;
+}
+
 void PShip::fire()
 {
 	weapon->fire(this);

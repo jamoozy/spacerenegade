@@ -562,10 +562,13 @@ void displayPlanet()
 	std::stringstream ss2;
 	std::stringstream ss3;
 	std::stringstream ss4;
+	std::stringstream ss5;
 	std::stringstream ss1a;
 	std::stringstream ss2a;
 	std::stringstream ss3a;
+	std::stringstream ss4a;
 	std::string str;
+	std::string str2;
 
 	ss1 << 100 * playerShip->fuelPcnt();
 	ss1 >> str;
@@ -588,9 +591,15 @@ void displayPlanet()
 	ss3a >> str;
 	drawText(600, 300, "Costs " + str + " credits to fully heal", Color(.4, 1, .4), false);
 
-	ss4 << playerShip->getCredits();
+	ss4 << 100 * playerShip->getWght();
 	ss4 >> str;
-	drawText(600, 250, "Money:  " + str + " credits", Color(.4, .4, 1), false);
+	ss4a << playerShip->getProfit();
+	ss4a >> str2;
+	drawText(600, 260, "Sell " + str + " tons of Manaterium for " + str2 + " credits", Color(.4, 1, .4), false);
+
+	ss5 << playerShip->getCredits();
+	ss5 >> str;
+	drawText(600, 200, "Money:  " + str + " credits", Color(.4, .4, 1), false);
 
 	menu->draw(GL_RENDER);
 
@@ -1045,3 +1054,7 @@ void healPlayer()
 	//}
 }
 
+void sellMaterials()
+{
+	playerShip->sellMaterials();
+}
