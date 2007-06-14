@@ -129,13 +129,14 @@ Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
 			break;
 
 		case PLANET:
-			numButtons = 5;
+			numButtons = 6;
 			buttons = new Button[numButtons];
-			buttons[0] = Button("Mission Board", 5 , 500,450 , .3,.3,1 , 1, initMissionBoard);
-			buttons[1] = Button("Refuel",5 , 500, 400 , .3,.3,1 , 2, refuelPlayer);
-			buttons[2] = Button("More Ammo",5 , 500, 350 , .3,.3,1 , 3, reloadPlayerAmmo);
-			buttons[3] = Button("Heal",5 , 500, 300 , .3,.3,1 , 4, healPlayer);
-			buttons[4] = Button("Leave",5 , 500, 250 , .3,.3,1 , 5, initTactical);
+			buttons[0] = Button("Mission Board", 5 , 450,450 , .3,.3,1 , 1, initMissionBoard);
+			buttons[1] = Button("Refuel",5 , 450, 400 , .3,.3,1 , 2, refuelPlayer);
+			buttons[2] = Button("More Ammo",5 , 450, 350 , .3,.3,1 , 3, reloadPlayerAmmo);
+			buttons[3] = Button("Heal",5 , 450, 300 , .3,.3,1 , 4, healPlayer);
+			buttons[4] = Button("Sell materials",5 , 450, 250 , .3,.3,1 , 5, sellMaterials);
+			buttons[5] = Button("Leave",5 , 450, 200 , .3,.3,1 , 6, initTactical);
 			break;
 
 		case MISSION_BOARD: // (Gum) (Note: this would be a lot easier if I could pass parameters into the functions I'm passing)
@@ -240,10 +241,6 @@ void Menu::processHits(GLint hits, GLuint buffer[])
 							remake = true;
 						}
 
-						// missionsAvailable.erase(selectedMission);
-						// Remove selectedMission from available missions,
-						// there's definitely a more efficient way to do this
-						// than what I would hack out. (Gum)
 					}
 				}
 				else if (buttons[j].getID() >= 100) // a displayMission button was pressed
