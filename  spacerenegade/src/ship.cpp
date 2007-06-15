@@ -427,7 +427,7 @@ void PShip::sellMaterials() // (Gum)
 int PShip::getProfit() // (Gum)
 {
 	int MATPRICE = 10000; // more/less?
-	return (bay->getWeight()) * MATPRICE;
+	return static_cast<int>((bay->getWeight()) * MATPRICE);
 }
 
 void PShip::addCredits(int amt) // PM
