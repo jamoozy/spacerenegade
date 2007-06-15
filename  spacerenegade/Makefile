@@ -28,9 +28,11 @@ OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
 SRCS = $(notdir $(wildcard $(SRCDIR)/*.cpp))
 INCL = $(notdir $(wildcard $(INCDIR)/*.h))
 
+first: $(TARGET)
+
 all: dirs $(TARGET)
 
-r: clean all
+r: clean $(TARGET)
 
 # Main project target
 $(TARGET) : $(OBJS)
