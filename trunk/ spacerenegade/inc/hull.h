@@ -80,28 +80,40 @@ public:
 // -------------------------------- Cargo Bays ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
+// Cargo Bay with 0 capacity.  Only used for ships that don't actually have
+// cargo bays.  In that sense, this is sort of a dummy object.  I could have
+// just as well used NULL, but meh.
 class CargoBay
 {
 protected:
-	double weight;   // of contents
+	double weight;   // of contents.  Later this will be changed with something
+	                 // more descriptive, like an array of objects.
 
 public:
-	CargoBay() : weight(0) {};
+	CargoBay() : weight(0) {};  // Creates new, empty CargoBay.
 	virtual ~CargoBay() {};
 
-	virtual double getWeight() const { return weight; }; // currently held
-	virtual void add(double w) { weight += w; };
+	// When weight gets changed later on, this should also change.
+	virtual double getWeight() const { return weight; };
+
+	// Returns true if the amount could be added or not.
+	virtual bool add(double w);
+
+	// Make this empty.
 	virtual void empty() { weight = 0; };
 
-	virtual double capacity() const { return 0; }; // Metric tons?
+	// Determind maximum you can fit in here.
+	virtual double capacity() const { return 0; };
 };
 
+// Small Cargo Bay.
 class SCargoBay : public CargoBay
 {
 public:
-	SCargoBay() : CargoBay() {};
+	SCargoBay() : CargoBay() {};  // Create new, empty SCargoBay.
 	virtual ~SCargoBay() {};
 
+	// Overwrite this, because this object can actually hold some stuff.
 	virtual double capacity() const { return 1; }; // Metric tons?
 };
 

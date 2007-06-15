@@ -56,12 +56,10 @@ const int Thread::P_LOWEST = THREAD_PRIORITY_LOWEST;
 const int Thread::P_NORMAL = THREAD_PRIORITY_NORMAL;
 const int Thread::P_CRITICAL = THREAD_PRIORITY_TIME_CRITICAL;
 
-/**@ The Thread class implementation
-**@/
+// The Thread class implementation
 
-/** Thread()
-  * default constructor
-**/  
+
+// Thread()
 Thread::Thread() {
 	m_hThread = NULL;
 	m_strName = "null";
@@ -216,8 +214,8 @@ void Thread::release(const char* m) {
 	}
 }
 
-/**@ The Mutex class implementation
-**@/
+// The Mutex class implementation
+
 
 /** Mutex()
   * default constructor
