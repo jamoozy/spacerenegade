@@ -443,8 +443,8 @@ void handleTacticalInput()
 			Keyboard::getKeyboard()->isDown(SR_PITCH_BACK_3))
 			playerShip->pitchBack();
 		if (Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1) ||
-			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1) ||
-			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1))
+			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_2) ||
+			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_3))
 			playerShip->pitchForward();
 
 		// Roll.
