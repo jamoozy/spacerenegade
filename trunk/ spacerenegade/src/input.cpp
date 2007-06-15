@@ -24,6 +24,25 @@ extern bool paused;
 extern int zoom;
 extern vector<Ship*> enemyShips;
 
+// Aliases for all of the controls.
+int SR_PITCH_BACK_1, SR_PITCH_BACK_2, SR_PITCH_BACK_3,
+    SR_PITCH_FORWARD_1, SR_PITCH_FORWARD_2, SR_PITCH_FORWARD_3, 
+    SR_YAW_RIGHT_1, SR_YAW_RIGHT_2, SR_YAW_RIGHT_3,
+    SR_YAW_LEFT_1, SR_YAW_LEFT_2, SR_YAW_LEFT_3,
+    SR_ROLL_LEFT_1, SR_ROLL_LEFT_2, SR_ROLL_LEFT_3,
+    SR_ROLL_RIGHT_1, SR_ROLL_RIGHT_2, SR_ROLL_RIGHT_3,
+    SR_ACCELERATE_1, SR_ACCELERATE_2, SR_ACCELERATE_3,
+    SR_DECELERATE_1, SR_DECELERATE_2, SR_DECELERATE_3,
+    SR_BREAK_1, SR_BREAK_2, SR_BREAK_3,
+    SR_FIRE_PRIMARY_1, SR_FIRE_PRIMARY_2, SR_FIRE_PRIMARY_3,
+    SR_FIRE_SECONDARY_1, SR_FIRE_SECONDARY_2, SR_FIRE_SECONDARY_3,
+    SR_FIRE_TERTIARY_1, SR_FIRE_TERTIARY_2, SR_FIRE_TERTIARY_3,
+    SR_ZOOM_IN_1, SR_ZOOM_IN_2, SR_ZOOM_IN_3,
+    SR_ZOOM_OUT_1, SR_ZOOM_OUT_2, SR_ZOOM_OUT_3,
+    SR_MINIMAP_ZOOM_IN_1, SR_MINIMAP_ZOOM_IN_2, SR_MINIMAP_ZOOM_IN_3,
+    SR_MINIMAP_ZOOM_OUT_1, SR_MINIMAP_ZOOM_OUT_2, SR_MINIMAP_ZOOM_OUT_3,
+    SR_TRACTOR_BEAM_TOGGLE_1, SR_TRACTOR_BEAM_TOGGLE_2, SR_TRACTOR_BEAM_TOGGLE_3;
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,11 +55,6 @@ Keyboard::Keyboard() : keys(new bool[SR_NUM_KEYS])
 {
 	for (int i = 0; i < SR_NUM_KEYS; i++)
 		keys[i] = false;
-}
-
-Keyboard::~Keyboard()
-{
-	delete [] keys;
 }
 
 void Keyboard::reset()
@@ -57,25 +71,70 @@ Keyboard *Keyboard::getKeyboard()
 	return keyboard;
 }
 
-bool Keyboard::isDown(int key) const
-{
-	return keys[key];
-}
-
-void Keyboard::setDown(int key)
-{
-	keys[key] = true;
-}
-
-void Keyboard::setUp(int key)
-{
-	keys[key] = false;
-}
-
 void Keyboard::cleanUp()
 {
-	delete keyboard;
+	if (keyboard != NULL)
+	{
+		delete keyboard;
+		keyboard = NULL;
+	}
 }
+
+void initKeyboardLayout()
+{
+	SR_PITCH_BACK_1 = SR_KEY_D;
+	SR_PITCH_BACK_2 = SR_KEY_DOWN;
+	SR_PITCH_BACK_3 = -1;
+	SR_PITCH_FORWARD_1 = SR_KEY_E;
+	SR_PITCH_FORWARD_2 = SR_KEY_UP;
+	SR_PITCH_FORWARD_3 = -1;
+	SR_YAW_RIGHT_1 = SR_KEY_F;
+	SR_YAW_RIGHT_2 = SR_KEY_RIGHT;
+	SR_YAW_RIGHT_3 = -1;
+	SR_YAW_LEFT_1 = SR_KEY_S;
+	SR_YAW_LEFT_2 = SR_KEY_LEFT;
+	SR_YAW_LEFT_3 = -1;
+	SR_ROLL_LEFT_1 = SR_KEY_W;
+	SR_ROLL_LEFT_2 = -1;
+	SR_ROLL_LEFT_3 = -1;
+	SR_ROLL_RIGHT_1 = SR_KEY_R;
+	SR_ROLL_RIGHT_2 = -1;
+	SR_ROLL_RIGHT_3 = -1;
+	SR_ACCELERATE_1 = SR_KEY_SPACE;
+	SR_ACCELERATE_2 = -1;
+	SR_ACCELERATE_3 = -1;
+	SR_DECELERATE_1 = SR_KEY_A;
+	SR_DECELERATE_2 = -1;
+	SR_DECELERATE_3 = -1;
+	SR_BREAK_1 = SR_KEY_G;
+	SR_BREAK_2 = -1;
+	SR_BREAK_3 = -1;
+	SR_FIRE_PRIMARY_1 = SR_KEY_ENTER;
+	SR_FIRE_PRIMARY_2 = -1;
+	SR_FIRE_PRIMARY_3 = -1;
+	SR_FIRE_SECONDARY_1 = -1;
+	SR_FIRE_SECONDARY_2 = -1;
+	SR_FIRE_SECONDARY_3 = -1;
+	SR_FIRE_TERTIARY_1 = -1;
+	SR_FIRE_TERTIARY_2 = -1;
+	SR_FIRE_TERTIARY_3 = -1;
+	SR_ZOOM_IN_1 = -1;
+	SR_ZOOM_IN_2 = -1;
+	SR_ZOOM_IN_3 = -1;
+	SR_ZOOM_OUT_1 = -1;
+	SR_ZOOM_OUT_2 = -1;
+	SR_ZOOM_OUT_3 = -1;
+	SR_MINIMAP_ZOOM_IN_1 = SR_KEY_Z;
+	SR_MINIMAP_ZOOM_IN_2 = -1;
+	SR_MINIMAP_ZOOM_IN_3 = -1;
+	SR_MINIMAP_ZOOM_OUT_1 = -1;
+	SR_MINIMAP_ZOOM_OUT_2 = -1;
+	SR_MINIMAP_ZOOM_OUT_3 = -1;
+	SR_TRACTOR_BEAM_TOGGLE_1 = SR_KEY_X;
+	SR_TRACTOR_BEAM_TOGGLE_2 = -1;
+	SR_TRACTOR_BEAM_TOGGLE_3 = -1;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,42 +165,12 @@ Mouse::Mouse() : lastX(0), lastY(0), diffX(0), diffY(0), buttons(new bool[3])
 	buttons[0] = buttons[1] = buttons[2] = false;
 }
 
-Mouse::~Mouse()
-{
-	delete [] buttons;
-}
-
 void Mouse::setLastMousePos(int x, int y)
 {
 	diffX = x - lastX;
 	diffY = y - lastY;
 	lastX = x;
 	lastY = y;
-}
-
-void Mouse::setDown(int button)
-{
-	buttons[button] = true;
-}
-
-void Mouse::setUp(int button)
-{
-	buttons[button] = false;
-}
-
-double Mouse::getDiffX() const
-{
-	return diffX;
-}
-
-double Mouse::getDiffY() const
-{
-	return diffY;
-}
-
-void Mouse::clearDiffs()
-{
-	diffX = diffY = 0;
 }
 
 
@@ -273,8 +302,6 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 			if (!enemyShips.empty())
 				enemyShips.at(0)->destroy();
 			break;
-//		case 't':
-//		case 'T':
 		case '{':
 		case '[':
 			enemy1 = new BasicBlueShip(new Blaster(), new BasicHull(), new BasicShield());
@@ -289,6 +316,8 @@ void tacticalKeyboard(unsigned char key, int x, int y)
 			env->add(enemy1);
 			enemyShips.push_back(enemy1);
 			break;
+//		case 't':
+//		case 'T':
 		case 13: // Enter
 			if (playerShip->ammoPcnt() > 0)
 				playerShip->fire();
@@ -385,33 +414,47 @@ void handleTacticalInput()
 	if (playerShip->fuelPcnt() > 0)
 	{
 		// Yaw.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_S) ||
-			Keyboard::getKeyboard()->isDown(SR_KEY_LEFT))
+		if (Keyboard::getKeyboard()->isDown(SR_YAW_LEFT_1) ||
+			Keyboard::getKeyboard()->isDown(SR_YAW_LEFT_2) ||
+			Keyboard::getKeyboard()->isDown(SR_YAW_LEFT_3))
 			playerShip->yawLeft();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_F) ||
-			Keyboard::getKeyboard()->isDown(SR_KEY_RIGHT))
+		if (Keyboard::getKeyboard()->isDown(SR_YAW_RIGHT_1) ||
+			Keyboard::getKeyboard()->isDown(SR_YAW_RIGHT_2) ||
+			Keyboard::getKeyboard()->isDown(SR_YAW_RIGHT_3))
 			playerShip->yawRight();
 
 		// Acceleration.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_SPACE))
+		if (Keyboard::getKeyboard()->isDown(SR_ACCELERATE_1) ||
+			Keyboard::getKeyboard()->isDown(SR_ACCELERATE_2) ||
+			Keyboard::getKeyboard()->isDown(SR_ACCELERATE_3))
 			playerShip->accelerate();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_A))
+		if (Keyboard::getKeyboard()->isDown(SR_DECELERATE_1) ||
+			Keyboard::getKeyboard()->isDown(SR_DECELERATE_2) ||
+			Keyboard::getKeyboard()->isDown(SR_DECELERATE_3))
 			playerShip->decelerate();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_G))
+		if (Keyboard::getKeyboard()->isDown(SR_BREAK_1) ||
+			Keyboard::getKeyboard()->isDown(SR_BREAK_2) ||
+			Keyboard::getKeyboard()->isDown(SR_BREAK_3))
 			playerShip->stabilize();
 
 		// Pitch.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_D) ||
-			Keyboard::getKeyboard()->isDown(SR_KEY_DOWN))
+		if (Keyboard::getKeyboard()->isDown(SR_PITCH_BACK_1) ||
+			Keyboard::getKeyboard()->isDown(SR_PITCH_BACK_2) ||
+			Keyboard::getKeyboard()->isDown(SR_PITCH_BACK_3))
 			playerShip->pitchBack();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_E) ||
-			Keyboard::getKeyboard()->isDown(SR_KEY_UP))
+		if (Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1) ||
+			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1) ||
+			Keyboard::getKeyboard()->isDown(SR_PITCH_FORWARD_1))
 			playerShip->pitchForward();
 
 		// Roll.
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_W))
+		if (Keyboard::getKeyboard()->isDown(SR_ROLL_LEFT_1) ||
+			Keyboard::getKeyboard()->isDown(SR_ROLL_LEFT_2) ||
+			Keyboard::getKeyboard()->isDown(SR_ROLL_LEFT_3))
 			playerShip->rollLeft();
-		if (Keyboard::getKeyboard()->isDown(SR_KEY_R))
+		if (Keyboard::getKeyboard()->isDown(SR_ROLL_RIGHT_1) ||
+			Keyboard::getKeyboard()->isDown(SR_ROLL_RIGHT_2) ||
+			Keyboard::getKeyboard()->isDown(SR_ROLL_RIGHT_3))
 			playerShip->rollRight();
 	}
 }

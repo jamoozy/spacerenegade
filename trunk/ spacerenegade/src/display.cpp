@@ -16,7 +16,6 @@
 #include "menu.h"
 #include "mission.h"
 #include "factionInfo.h"
-
 #include "objective.h"
 
 using std::cout;
@@ -145,6 +144,8 @@ void Sound::shiftMusic(string newName)
 SoundFactory::SoundFactory(string *names)
 {
 
+	// Clear pre-existing ALUT errors.
+	alutGetError();
 	for(unsigned int i = 0; i < names->size(); i++)
 		sounds.push_back(Sound(names[i]));
 
