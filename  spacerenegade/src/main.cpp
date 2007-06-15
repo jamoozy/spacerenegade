@@ -122,6 +122,8 @@ int main(int argc, char **argv)
 		glutIdleFunc(display);
 	#endif
 
+	initKeyboardLayout();
+
 	initStartScreen();
 
 	glutDisplayFunc(display);

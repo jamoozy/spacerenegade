@@ -16,7 +16,7 @@
 using std::vector;
 using std::string;
 
-enum { START_SCREEN, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
+enum { START_SCREEN, OPTIONS, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
 
 class Sound
 {

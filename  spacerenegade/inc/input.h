@@ -5,7 +5,7 @@
 // ------------------------- Key/Button name enums -------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-// For all keys.
+// Names for all keys.
 enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
        SR_KEY_H, SR_KEY_I, SR_KEY_J, SR_KEY_K, SR_KEY_L, SR_KEY_M, SR_KEY_N,
        SR_KEY_O, SR_KEY_P, SR_KEY_Q, SR_KEY_R, SR_KEY_S, SR_KEY_T, SR_KEY_U,
@@ -25,7 +25,7 @@ enum { SR_KEY_A = 0, SR_KEY_B, SR_KEY_C, SR_KEY_D, SR_KEY_E, SR_KEY_F, SR_KEY_G,
 
        SR_NUM_KEYS };
 
-// For all buttons.
+// Names for all mouse buttons.
 enum { SR_MOUSE_LEFT = 0, SR_MOUSE_CENTER, SR_MOUSE_RIGHT };
 
 
@@ -42,7 +42,7 @@ class Keyboard
 public:
 	static Keyboard *getKeyboard();  // Get the only allowable instance.
 	static void reset();             // Make all keys register as not pressed.
-	static void cleanUp();           // Delete the only instance.
+	static void cleanUp();  // Delete the only instance.
 
 // ---- Object part ------
 
@@ -51,12 +51,14 @@ private:
 	Keyboard();   // Create the key array of size SR_NUM_KEYS.
 
 public:
-	~Keyboard();  // Delete keys.
+	~Keyboard() { delete [] keys; };  // Delete keys.
 
-	bool isDown(int key) const;  // Returns true if the key is pressed.
-	void setDown(int key);       // Set key as pushed.
-	void setUp(int key);         // Set key as not pushed.
+	bool isDown(int key) const { return (key == -1)? false : keys[key]; };  // Returns true if the key is pressed.
+	void setDown(int key) { keys[key] = true; };  // Set key as pushed.
+	void setUp(int key) { keys[key] = false; };   // Set key as not pushed.
 };
+
+void initKeyboardLayout();
 
 
 // This class holds details about what the mouse is up to.
@@ -79,15 +81,15 @@ private:
 	Mouse();  // Makes everything 0 and buttons new bool[3].
 
 public:
-	~Mouse(); // Delete butttons.
+	~Mouse() { delete [] buttons; }; // Delete butttons.
 
 	void setLastMousePos(int x, int y);  // Updates last* and diff*
 	void isDown(int button) const;       // Returns true if the button is pressed.
-	void setDown(int button);            // Set button as pushed.
-	void setUp(int button);              // Set button as not pushed.
-	double getDiffX() const;
-	double getDiffY() const;
-	void clearDiffs();
+	void setDown(int button) { buttons[button] = true; };    // Set button as pushed.
+	void setUp(int button) { buttons[button] = false; };     // Set button as not pushed.
+	double getDiffX() const { return diffX; };
+	double getDiffY() const { return diffY; };
+	void clearDiffs() { diffX = diffY = 0; };
 };
 
 
