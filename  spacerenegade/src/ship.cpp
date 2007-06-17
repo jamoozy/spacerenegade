@@ -173,8 +173,8 @@ void Ship::draw(int pass)
 	if (pass == 1)
 	{
 		// Set color to purple.
-		glColor3f(.7,0,.8);
-		glutWireCone(2,4,5,1);
+		glColor3f(.7,0.0,.8);
+		glutSolidCone(2,4,5,1);
 	}
 	else
 	{
@@ -305,9 +305,10 @@ void PShip::draw(int pass)
 
 	if (pass == 1)
 	{
+		drawReticle();
+
 		if (modelLoaded)
 		{
-			drawReticle();
 			glColor3d(1,1,1);
 			model.Draw();  // Renders the model to the screen
 
@@ -336,8 +337,8 @@ void PShip::draw(int pass)
 		else
 		{
 			// Set color to purple.
-			glColor3f(.7,0,.8);
-			glutWireCone(2,4,5,1);
+			glColor3f(0.2,0.6,0.2);
+			glutSolidCone(2,4,5,1);
 		}
 	}
 	else
@@ -613,8 +614,8 @@ void BasicRedShip::draw(int pass)
 		else
 		{
 			// Set color to red.
-			glColor3f(1.0, 0.0, 0.0);
-			glutWireCone(2,4,5,1);
+			glColor3f(0.6,0.2,0.2);
+			glutSolidCone(2,4,5,1);
 		}
 	}
 	else
@@ -732,9 +733,9 @@ void BasicBlueShip::draw(int pass)
 		}
 		else
 		{
-			// Set color to blue.
-			glColor3f(0.0, 0.0, 1.0);
-			glutWireCone(2,4,5,1);
+			// Set color to red.
+			glColor3f(0.2,0.2,0.6);
+			glutSolidCone(2,4,5,1);
 		}
 	}
 	else

@@ -14,7 +14,7 @@ extern OctTree *env;
 
 // Creates a new planet at the given point
 Planet::Planet(const Vec3& pos, double radius) :
-	Object("art/spacestation_v1.3DS", pos, Vec3(),0,1,0) // temporary model for now, add textures later?
+	Object("art/spacestation.3DS", pos, Vec3(),0,1,0) // temporary model for now, add textures later?
 { setRadius(radius); }
 
 // Draw this planet.
@@ -34,8 +34,8 @@ void Planet::draw(int pass)
 		}
 		else
 		{
-			glColor3f(1,1,1);
-			glutWireSphere(5,16,8);
+			glColor3f(0.6,0.6,0.9);
+			glutSolidSphere(radius,16,8);
 		} 
 
 		glPopMatrix();
