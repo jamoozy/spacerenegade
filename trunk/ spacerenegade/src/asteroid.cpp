@@ -119,8 +119,8 @@ void Asteroid::draw(int pass)
 		}
 		else
 		{
-			glColor3f(1,1,1);
-			glutWireSphere(5,16,8);
+			glColor3f(0.5,0.9,0.5);
+			glutSolidSphere(radius,4,2);
 		} 
 
 		glPopMatrix();
