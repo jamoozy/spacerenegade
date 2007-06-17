@@ -61,8 +61,8 @@ int screen_height = IMAGE_HEIGHT;
 int screenState;
 bool paused;
 int zoom = 1;
-GLfloat miniMapX = 853.0f;
-GLfloat miniMapY = 174.0f;
+GLfloat miniMapX = 924.0f;
+GLfloat miniMapY = 100.0f;
 
 // Sound names.
 string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust","missionaccepted","heal"};
@@ -195,7 +195,7 @@ void drawText(GLint x, GLint y, string s, Color c, bool center)
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0.0, screen_width, 0.0, screen_height);
+	glOrtho(0.0, screen_width, 0.0, screen_height, -1.0, 1.0);
 
 	// Nullify all effects of the modelview matrix.
 	glMatrixMode(GL_MODELVIEW);
@@ -242,15 +242,27 @@ void glCircle(GLfloat cx, GLfloat cy, GLfloat r, int side)
 
 void resize(int w, int h)
 {
-	glViewport(0,0, (GLsizei)w, (GLsizei)h);
 	screen_width = w;
 	screen_height = h;
-	pD.aspect = (float)w / (float)h;
+
+	// Reposition the minimap
+	miniMapX = w - 100;
+
+	// Make readjust the "normal" projection (for tactical view).
+	glViewport(0,0, (GLsizei)w, (GLsizei)h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	pD.aspect = (float)w / (float)h;
+	gluPerspective(pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane);
+
+	// Recreate the 2D projection for the HUD.
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
+	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
+	glPopMatrix();
 
 	// This one gives nice frustum for 2D
-	glFrustum(-0.1 * pD.aspect, 0.1 * pD.aspect, -0.1, 0.1, 0.1, 20.0);
 	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -445,45 +457,45 @@ void drawMeters()
 {
 	// Background blue-ish boxes of the meters.
 	glColor3d(.3,.3,.9);
-	glRecti(960, 570, 1005, 750);
-	glRecti(905, 570, 950, 750);
-	glRecti(850, 570, 895, 750);
+	glRecti(screen_width-65,  screen_height-170, screen_width-20,  screen_height-20);
+	glRecti(screen_width-120, screen_height-170, screen_width-75,  screen_height-20);
+	glRecti(screen_width-175, screen_height-170, screen_width-130, screen_height-20);
 
 	// The bar that communicates the information.
 	glColor3d(.3,.8,.3);
-	glRecti(965, 575, 1000, 575 + (int)(170 * playerShip->hlthPcnt()));
+	glRecti(screen_width-60, screen_height-165, screen_width-25, screen_height-165 + (int)(140 * playerShip->hlthPcnt()));
 	glColor3d(.7,.7,.2);
-	glRecti(910, 575, 945, 575 + (int)(170 * playerShip->fuelPcnt()));
+	glRecti(screen_width-115, screen_height-165, screen_width-80,  screen_height-165 + (int)(140 * playerShip->fuelPcnt()));
 	glColor3d(.8,.3,.3);
-	glRecti(855, 575, 890, 575 + (int)(170 * playerShip->ammoPcnt()));
+	glRecti(screen_width-170, screen_height-165, screen_width-135,  screen_height-165 + (int)(140 * playerShip->ammoPcnt()));
 	glColor3d(.7,.7,.1);
-	glRecti(800, 575, 835, 575 + (int)(170 * playerShip->shldPcnt()));
+	glRecti(screen_width-230, screen_height-165, screen_width-190,  screen_height-165 + (int)(140 * playerShip->shldPcnt()));
 	glColor3d(.9,.6,.1);
-	glRecti(745, 575, 780, 575 + (int)(170 * playerShip->cbayPcnt()));
+	glRecti(screen_width-285, screen_height-165, screen_width-250,  screen_height-165 + (int)(140 * playerShip->cbayPcnt()));
 
 	// Draw the tick marks
-	glColor3d(.9, .9, .9);
+	glColor3d(0.9, 0.9, 0.9);
 	glBegin(GL_LINES);
-	glVertex2i(965, 575);
-	glVertex2i(1000, 575);
-	glVertex2i(1000, 745);
-	glVertex2i(965, 745);
-	glVertex2i(910, 575);
-	glVertex2i(945, 575);
-	glVertex2i(945, 745);
-	glVertex2i(910, 745);
-	glVertex2i(855, 575);
-	glVertex2i(890, 575);
-	glVertex2i(890, 745);
-	glVertex2i(855, 745);
+	glVertex2i(screen_width-60, screen_height-165);
+	glVertex2i(screen_width-25, screen_height-165);
+	glVertex2i(screen_width-25, screen_height-25);
+	glVertex2i(screen_width-60,  screen_height-25);
+	glVertex2i(screen_width-115, screen_height-165);
+	glVertex2i(screen_width- 80, screen_height-165);
+	glVertex2i(screen_width- 80, screen_height-25);
+	glVertex2i(screen_width-115, screen_height-25);
+	glVertex2i(screen_width-170, screen_height-165);
+	glVertex2i(screen_width-135, screen_height-165);
+	glVertex2i(screen_width-135, screen_height-25);
+	glVertex2i(screen_width-170, screen_height-25);
 	glEnd();
 
 	// The labels of the meters
-	drawText(964, 550, "Hlth" , Color(1,1,1), false);
-	drawText(909, 550, "Fuel" , Color(1,1,1), false);
-	drawText(854, 550, "Ammo" , Color(1,1,1), false);
-	drawText(799, 550, "Shld" , Color(1,1,1), false);
-	drawText(745, 550, "CBay" , Color(1,1,1), false);
+	drawText(screen_width-075, screen_height-100, "Hlth" , Color(1,1,1), false);
+	drawText(screen_width-115, screen_height-100, "Fuel" , Color(1,1,1), false);
+	drawText(screen_width-170, screen_height-100, "Ammo" , Color(1,1,1), false);
+	drawText(screen_width-230, screen_height-100, "Shld" , Color(1,1,1), false);
+	drawText(screen_width-285, screen_height-100, "CBay" , Color(1,1,1), false);
 
 	// Prints the ammo left on the bottom-left of the screen.
 	// This should probably be somewhere else, though ...
@@ -654,7 +666,7 @@ void initStartScreen()
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, screen_width, 0, screen_height);
+	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
 
 	// Turn off lighting
 	glDisable(GL_LIGHTING);
@@ -842,7 +854,7 @@ void initNewGame()
 	// speedier change between the HUD and the rest.
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, screen_width, 0, screen_height);
+	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
 	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
 	glPopMatrix();
 
@@ -914,7 +926,7 @@ void initTactical()
 	// speedier change between the HUD and the rest.
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0, screen_width, 0, screen_height);
+	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
 	glGetDoublev(GL_PROJECTION_MATRIX, tacticalHudProjMat);
 	glPopMatrix();
 
@@ -950,7 +962,7 @@ void initMissionBoard() //(Gum)
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D(0, screen_width, 0, screen_height);
+	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
 
 	// Restore compatible GL state.
 	glDisable(GL_LIGHTING);
