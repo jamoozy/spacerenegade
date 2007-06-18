@@ -48,7 +48,7 @@ extern Menu *menu;        // Gum: The current menu of buttons
 extern SoundFactory *soundFactory;
 extern vector<Mission*> missionsAvailable;
 extern vector<Mission*> missionsOn;
-extern vector <Mission*> missionsComplete;
+extern vector<Mission*> missionsComplete;
 
 vector<Ship*> enemyShips;
 
@@ -288,6 +288,9 @@ void display()
 		case START_SCREEN:
 			displayStartScreen();
 			break;
+		case OPTIONS_SCREEN:
+			displayOptionsScreen();
+			break;
 		case TACTICAL:
 			if (paused) {
 				displayTacticalPaused();
@@ -313,9 +316,16 @@ void displayStartScreen()
 {
 	// Clear the screen and the depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	menu->draw(GL_RENDER);
+	glutSwapBuffers();
+}
 
+// Displays the options available to the user.
+void displayOptionsScreen()
+{
+	// Clear the screen and the depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	menu->draw(GL_RENDER);
 	glutSwapBuffers();
 }
 
@@ -571,7 +581,7 @@ void displayMissionBoard()
 	if (menu->needsRefresh())
 	{
 		delete menu;
-		menu = new Menu(screenState);
+		menu = new Menu();
 	}
 	menu->draw(GL_RENDER);
 
@@ -685,7 +695,43 @@ void initStartScreen()
 
 	// Create the appropriate menu.
 	if (menu) delete menu;
-	menu = new Menu(screenState);
+	menu = new Menu();
+
+	// Schedule a re-draw.
+	glutPostRedisplay();
+}
+
+void initOptionsScreen()
+{
+	// Setting this ensures all the right display
+	// and input functions are called.
+	screenState = OPTIONS_SCREEN;
+
+	ambientMusic.shiftMusic("music/01");
+
+	// Set up the nice (0,0) -> (w,h) window for drawing
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();
+//	glOrtho(0, screen_width, 0, screen_height, -1.0, 1.0);
+
+	// Turn off lighting
+//	glDisable(GL_LIGHTING);
+//	glDisable(GL_COLOR_MATERIAL);
+//	glDisable(GL_TEXTURE_2D);
+//	glDisable(GL_DEPTH_TEST);
+
+	// set basic matrix mode
+//	glMatrixMode(GL_MODELVIEW);
+//	glLoadIdentity();
+
+	// Set up OpenGL for picking.
+	glRenderMode(GL_SELECT);
+	glInitNames();
+	glRenderMode(GL_RENDER);
+
+	// Create the appropriate menu.
+	if (menu) delete menu;
+	menu = new Menu();
 
 	// Schedule a re-draw.
 	glutPostRedisplay();
@@ -983,7 +1029,7 @@ void initMissionBoard() //(Gum)
 
 	// Create the appropriate menu.
 	if (menu) delete menu;
-	menu = new Menu(screenState);
+	menu = new Menu();
 
 	// Schedule a re-draw.
 	glutPostRedisplay();
@@ -1019,7 +1065,7 @@ void initPlanet()
 
 	// Create the appropriate menu.
 	if (menu) delete menu;
-	menu = new Menu(screenState);
+	menu = new Menu();
 
 	// Schedule a re-draw.
 	glutPostRedisplay();
@@ -1054,7 +1100,7 @@ void initGameOver()
 
 	// Create the appropriate menu.
 	if (menu) delete menu;
-	menu = new Menu(GAME_OVER);
+	menu = new Menu();
 
 	// Schedule a re-draw.
 	glutPostRedisplay();

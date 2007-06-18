@@ -23,7 +23,7 @@ public:
 	       GLfloat xPos, GLfloat yPos,
 	       GLfloat red, GLfloat green, GLfloat blue,
 	       GLuint id, void (*pressFunc)());
-	virtual ~Button();
+	virtual ~Button() {};
 
 	void Place(GLenum mode);
 	void drawText(GLint x, GLint y, string s, GLfloat r, GLfloat g, GLfloat b);
@@ -47,7 +47,6 @@ class Menu
 private:
 	Button *buttons;
 	int numButtons;
-	int type;
 	Mission *selectedMission; // for clicking on missions, reading briefing, and accepting
 	bool remake;
 

@@ -12,6 +12,7 @@ using std::string;
 using std::cout;
 using std::endl;
 
+extern int screenState;
 extern int screen_width;
 extern int screen_height;
 extern GLfloat miniMapX;
@@ -46,10 +47,6 @@ Button::Button(string title, GLfloat border, GLfloat xPos, GLfloat yPos, GLfloat
 	RGB[0] = red;
 	RGB[1] = green;
 	RGB[2] = blue;
-}
-
-Button::~Button()
-{
 }
 
 void Button::buttonPressed()
@@ -106,20 +103,30 @@ void Button::Place(GLenum mode)
 // --------------------------- Menu Definition ------------------------------ //
 ////////////////////////////////////////////////////////////////////////////////
 
-Menu::Menu(int type) : type(type), selectedMission(NULL), remake(false)
+Menu::Menu() : selectedMission(NULL), remake(false)
 {
 	int height, NUM_MISSIONS, NUM_COMPLETED_MISSIONS; // replace with something more dynamic
-	switch (type)
+	switch (screenState)
 	{
 		case START_SCREEN:
-			numButtons = 4;
+			numButtons = 5;
 			buttons = new Button[numButtons];
 			buttons[0] = Button("New Game", 5 , 500,450 , 0.6,0.8,0.2 , 1, initNewGame);
 			buttons[1] = Button("Load Game",5 , 500,400 , 0.6,0.8,0.2 , 2, NULL);
-			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3, NULL);
+			buttons[2] = Button("Options",  5 , 500,350 , 0.6,0.8,0.2 , 3, initOptionsScreen);
 			buttons[3] = Button("Quit",     5 , 500,300 , 0.6,0.8,0.2 , 4, cleanup);
 			//buttons[4] = Button("TEST",     5 , 500,250 , 0.6,0.8,0.2 , 5, initPlanet);
 			//buttons[5] = Button("Game Over",     5 , 500,200 , 0.6,0.8,0.2 , 6, initGameOver);
+			break;
+
+		case OPTIONS_SCREEN:
+			numButtons = 5;
+			buttons = new Button[numButtons];
+			buttons[0] = Button("Keyboard Layout", 5 , 500,450 , 0.6,0.8,0.2 , 1, NULL);
+			buttons[1] = Button("Mouse Options", 5 , 500,400 , 0.6,0.8,0.2 , 2, NULL);
+			buttons[2] = Button("Video Options", 5 , 500,350 , 0.6,0.8,0.2 , 3, NULL);
+			buttons[3] = Button("Sound Options", 5 , 500,300 , 0.6,0.8,0.2 , 4, NULL);
+			buttons[4] = Button("Done", 5 , 500,250 , 0.6,0.8,0.2 , 5, initStartScreen);
 			break;
 
 		case TACTICAL:
@@ -195,7 +202,7 @@ void Menu::setProjection()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	gluOrtho2D(0.0, screen_width, 0.0, screen_height);
+	glOrtho(0.0, screen_width, 0.0, screen_height, -1.0, 1.0);
 	glMatrixMode(GL_MODELVIEW);
 }
 

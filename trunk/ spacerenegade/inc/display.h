@@ -16,7 +16,7 @@
 using std::vector;
 using std::string;
 
-enum { START_SCREEN, OPTIONS, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
+enum { START_SCREEN, OPTIONS_SCREEN, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
 
 class Sound
 {
@@ -77,6 +77,7 @@ void drawBox(int x1, int y1, int x2, int y2, double r, double g, double b); // (
 // Display functions.
 void display();
 void displayStartScreen();
+void displayOptionsScreen();
 void displayTacticalPaused();
 void displayTactical();
 void adjustGlobalLighting();
@@ -91,6 +92,7 @@ void pauseMenu(); // (Gum)
 
 // Initializations.
 void initStartScreen();
+void initOptionsScreen();
 void initNewGame();
 void initTactical();
 void initGameOver();
