@@ -18,31 +18,29 @@ using std::string;
 
 enum { START_SCREEN, OPTIONS_SCREEN, TACTICAL, PLANET, MISSION_BOARD, GAME_OVER };
 
-class Sound
-{
-private:
-	string name;
-	ALuint buffer, source;
-
-public:
-	Sound() {};
-	Sound(string name);
-
-	void play();
-	void stop();
-	void setLooping();
-	string getName() const {return name;};
-
-	bool operator==(const string& name);
-
-	void shiftMusic(string name);
-
-};
-
-
 class SoundFactory
 {
 private:
+	class Sound
+	{
+	private:
+		string name;
+		ALuint buffer, source;
+
+	public:
+		Sound() {};
+		Sound(string name);
+
+		void play();
+		void stop();
+		void setLooping();
+		string getName() const { return name; };
+
+		bool operator==(const string& name);
+
+		void shiftMusic(string name);
+	};
+
 	vector<Sound> sounds;
 	
 public:

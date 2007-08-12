@@ -66,7 +66,7 @@ GLfloat miniMapY = 100.0f;
 
 // Sound names.
 string soundNames[7] = {"gunshot","hit","explosion-asteroid","explosion-ship","thrust","missionaccepted","heal"};
-Sound ambientMusic;
+//Sound ambientMusic;
 
 
 struct perspectiveData
@@ -81,10 +81,10 @@ double tacticalHudProjMat[16];  // Project matrix when the HUD is being drawn in
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// ------------------------- Sound Class ------------------------------------ //
+// ------------------------- Sound Classes ---------------------------------- //
 ////////////////////////////////////////////////////////////////////////////////
 
-Sound::Sound(string name) : name(name)
+SoundFactory::Sound::Sound(string name) : name(name)
 {
 	string directory = "art/" + name + ".wav";
 	// Load the sound.
@@ -97,49 +97,46 @@ Sound::Sound(string name) : name(name)
 	}
 }
 
-void Sound::play()
+void SoundFactory::Sound::play()
 {
 	if (buffer != AL_NONE)
 		alSourcePlay(source);
 }
 
-void Sound::stop()
+void SoundFactory::Sound::stop()
 {
 	if (buffer != AL_NONE)
 		alSourceStop(source);
 }
 
-void Sound::setLooping()
+void SoundFactory::Sound::setLooping()
 {
 	alSourcei(source, AL_LOOPING, AL_TRUE);
 }
 
-bool Sound::operator ==(const string &soundName)
+bool SoundFactory::Sound::operator ==(const string &soundName)
 {
 	return (name.compare(soundName) == 0);
 }
 
-void Sound::shiftMusic(string newName)
+void SoundFactory::Sound::shiftMusic(string newName)
 {
 	stop();
 	string directory = "art/" + newName + ".wav";
+
 	// Load the sound.
 	if ((buffer = alutCreateBufferFromFile(directory.c_str())) == AL_NONE) {
 		cout << "ALUT Error for file " << directory << ": "
-			<< alutGetErrorString(alutGetError()) << endl;
+		     << alutGetErrorString(alutGetError()) << endl;
 	} else {
 		alGenSources(1, &source);
 		alSourcei(source, AL_BUFFER, buffer);
 	}
 	play();
 	setLooping();
-
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-// --------------------- SoundFactory Class --------------------------------- //
-////////////////////////////////////////////////////////////////////////////////
+// ---------------- sound factory -------------
 
 SoundFactory::SoundFactory(string *names)
 {
@@ -671,7 +668,7 @@ void initStartScreen()
 	// and input functions are called.
 	screenState = START_SCREEN;
 
-	ambientMusic.shiftMusic("music/01");
+//	ambientMusic.shiftMusic("music/01");
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
@@ -707,7 +704,7 @@ void initOptionsScreen()
 	// and input functions are called.
 	screenState = OPTIONS_SCREEN;
 
-	ambientMusic.shiftMusic("music/01");
+//	ambientMusic.shiftMusic("music/01");
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
 //	glMatrixMode(GL_PROJECTION);
@@ -932,7 +929,7 @@ void initTactical()
 
 	playerShip->stop();
 
-	ambientMusic.shiftMusic("music/04");
+//	ambientMusic.shiftMusic("music/04");
 
 	paused = false;
 
@@ -1039,7 +1036,7 @@ void initPlanet()
 {
 	screenState = PLANET;
 
-	ambientMusic.shiftMusic("music/01");
+//	ambientMusic.shiftMusic("music/01");
 
 	// Set up the nice (0,0) -> (w,h) window for drawing
 	glMatrixMode(GL_PROJECTION);
@@ -1075,7 +1072,7 @@ void initGameOver()
 {
 	screenState = GAME_OVER;
 
-	ambientMusic.shiftMusic("music/01");
+//	ambientMusic.shiftMusic("music/01");
 
 	// Set up the perspective;
 	glMatrixMode(GL_PROJECTION);
